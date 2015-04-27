@@ -1,0 +1,70 @@
+
+    <header class="yicallHeader">
+        <a class="icon icon-position"></a>
+		<h1>购物车</h1>
+    </header>
+
+	<div id="cart" class="header-margin-top">
+
+        <ul class="list">
+            <li class="divider">选择收货人</li>
+            <li class="reciver">
+                <div class="radio"><input id="radio_1" type="radio" name="radio_test" value="1" onclick="onRadioClick(this)"><label for="radio_1"> </label></div>
+                <a href="#addressPanel">
+                    <div class="name" id="defaultname">请选择收货地址</div>
+                    <div class="tel" id="defaulttel"></div>
+                    <div class="address" id="defaultadd"></div>
+                    <div class="arrowright">></div>
+                </a>
+            </li>
+            <li class="divider">选择支付方式</li>
+            <li class="payment">
+                <div class="row">
+                    <div class="col-xs-6"><input id="radio_2" type="radio" name="radio_test1" value="1" onclick="onRadioClick(this)"><label for="radio_2">支付宝</label></div>
+                    <div class="col-xs-6"><input id="radio_3" type="radio" name="radio_test1" value="2" onclick="onRadioClick(this)"><label for="radio_3">微信支付</label></div>
+                </div>
+            </li>
+            <li class="divider">选择商品</li>
+            <li class="choosepro">
+                <ul class="prolist " id="cargoodslist">
+                    <!-- 单个商品 start -->
+                    <li class="grayline">
+                        <div class="radio"><input id="r_id" type="radio" name="radio_list" value="id" onclick="onLisitRadioClick(this)"></div>
+                        <div class="img">
+                            <img src="" />
+                        </div>
+                        <div class="title  fontsize-l ellipsis"></div>
+                        <div class="intro fontsize-xn">筋道可口，美味不停歇</div>
+                        <div class="fav text-center grayline-left"><i class="icon icon-addfav"></i>加入收藏</div>
+                        <p class="nowprice  fontsize-xl ">$5.2</p>
+                        <p class="oldprice">$6.2</p>
+                        <div class="Ladder-price">
+                            <div><label>5~10瓶：</label>￥2.0元 </div>
+                            <div><label>2~5瓶：</label>￥2.2元 </div>
+                            <div><label>1瓶：</label>￥2.5元 </div>
+                        </div>
+                        <div class="total">总计：6.8元</div>
+                        <div class="setcount">
+                            <div class=" fontsize-xl">
+                                <a class="reduce pull-left text-center " id ="lid" onclick="onCartClick(this)">-</a>
+                                <input type="text" class="count pull-left text-center"  id="cid" placeholder="0">
+                                <a class="add pull-left text-center" id="rid" onclick="onCartClick(this)">+</a>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- 单个商品 end-->
+                </ul>
+            </li>
+        </ul>
+        <ul class="detailed list inset" style="position:relative;">
+            <li>
+                <div class="price">选中金额 ：<span class="red" id="totalmoney">￥2.0</span></div>
+                <div class="count"> 选中数量：<span class="red" id="totalcount">3</span></div>
+            </li>
+        </ul>
+
+	  <div class="confirm">
+	  	<div>应付金额:<span class="red" id="totalpay">￥2.0</span></div>
+	  	<div class="pull-right">继续选购 <button type="button" class="button btn-green  btn-lg btn-block" onclick="onOrderOk()">确定下单 </button></div>
+	  </div>
+	  </div>

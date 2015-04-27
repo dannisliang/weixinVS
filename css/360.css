@@ -1,0 +1,31 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/*index*/
+#slideNav .bd ul li p{ font-size:0.5em;}
+#footer{ font-size:0.6em;}
+
+/*nav*/
+#afui .nav p{font-size:0.5em;}
+
+
+/*abotMenu*/
+
+#afui .aboutMenu .list > li > a{font-size:0.8em; padding:0px; margin:0px;}
+
+/*about*/
+#afui .edits p{ font-size:0.8em; line-height:0.8em;}
+
+/*回到顶部*/
+.gotop{ top:1%;}
+
+/*产品*/
+#afui .rfwyMenu ul li > a {font-size:0.8em;}
+
+#afui .rfwyList p,#afui .rfwyList strong{ font-size:0.5em;}
+
+.rfwyMenu ul li > a{background-size:30px 15px;}
+.rfwyMenu ul li > a.on{background-size:30px 15px;}
+
+.suloTab .hd ul li{ font-size:0.65em;}

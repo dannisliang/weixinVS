@@ -1,0 +1,69 @@
+
+<header class="yicallHeader" id="headProview">
+    <a class="icon icon-previous"></a>
+    <h1>商品详情</h1>
+</header>
+
+<div id="pro-view" class="header-margin-top">
+    <div class="proimages">
+        <div id="proviewScroll" class="proviewScroll">
+            <div class="bd">
+                <ul>
+                    <li>
+                        <div class="grid">
+                            <div class="col4"><a href="#"><img class="colimage" src="" alt="" /></a></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="hd">
+                <ul></ul>
+            </div>
+        </div>
+        <div class="fav text-center">
+            <i class="icon icon-addfav"></i>
+        </div>
+    </div>
+    <div>
+        <div class="caption">
+            <div class="protitle  fontsize-l ellipsis" id="captiontitle"></div>
+            <div class="intro fontsize-xn">碳酸饮料 可口 低糖低热量 韩国原装进口饮料</div>
+            <div class="Ladder-price row">
+                <div class="col-xs-4 Ladder1">
+                    <span>单件</span>
+                    <span class="nowprice  fontsize-xl ">$5.2</span>
+                    <span class="oldprice">$6.2</span>
+                </div>
+                <div class="col-xs-4 Ladder2">
+                    <span>2~4件</span>
+                    <span class="price ">$5.2</span>
+                </div>
+                <div class="col-xs-4 Ladder3">
+                    <span>>5件 </span>
+                    <span class="price">$5.2</span>
+                </div>
+            </div>
+            <div class="setpricepanel">
+                <div class="setcount">
+                    <div class=" fontsize-xl">
+                        <a class="reduce pull-left text-center " id ="proviewL" onclick="onProviewClick(this)"></a>
+                        <input type="text" class="count pull-left text-center" id="exampleInputAmount" placeholder="0">
+                        <a class="add pull-left text-center" id="proviewR" onclick="onProviewClick(this)"></a>
+                    </div>
+                </div>
+                <div class="total  fontsize-xn"><span class="black">共</span><span class="red"> 0</span><span class="black">件 </span><span class="gray4">￥0元</span></div>
+
+            </div>
+        </div>
+    </div>
+    <div class="recommendpros">
+        <div class="viewmore">
+            <div class=" title  grayline-top grayline-bottom" onclick="onGetGoodsPicinfo()"><i class="icon icon-morepic"></i> 商品详情<span class="arrow-down"></span></div>
+            <div class="body">
+                <div id="productpicdes">
+                     <iframe id="infohtml" frameborder="no" border="0" marginwidth="0" marginheight="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

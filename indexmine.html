@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>yicalljifav2</title>
+
+    <!-- yicalljifav2 references -->
+    <link href="css/index.css" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="css/customTheme.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/af.ui.css" />
+    <link rel="stylesheet" type="text/css" href="css/af.ui.base.css" />
+    <link rel="stylesheet" type="text/css" href="css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bak-bootstrap.css" />
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/jquery.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/iscroll-probe.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/fastclick.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/appframework.ui.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/utils.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/sqlUtils.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="scripts/globalData.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/test.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/http.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/yicall.css" />
+    <script type="text/javascript" charset="utf-8" src="scripts/yicall.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/protocolID.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/platform.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/search.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/prolist.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/school.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/reg.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/login.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/cart.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/regSuccess.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/mine.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/address.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/proview.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/model/goodsInfo.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/utils/sqlHelper.js"></script>
+
+
+	<script type="text/javascript" src="scripts/hardwareApply.js"></script>
+    <style type="text/css">
+        #l-map {
+            height: 200px;
+            width: 100%;
+        }
+
+        #r-result {
+            width: 100%;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="scripts/js.js"></script>
+    <script type="text/javascript" src="scripts/jsonp.js"></script>
+    <script type="text/javascript" src="scripts/utils/TouchSlide.1.1.source.js"></script>
+
+    <!--media-->
+    <link rel="stylesheet" href="css/css.css" />
+    <link rel="stylesheet" media="screen and (max-width: 360px)" href="css/360.css" />
+    <link rel="stylesheet" media="screen and (min-width:361px) and (max-width: 480px)" href="css/480.css" />
+    <link rel="stylesheet" media="screen and (min-width:481px) and (max-width: 640px)" href="css/640.css" />
+    <link rel="stylesheet" media="screen and (min-width:641px) " href="css/960.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/src/grid.css" /><!--栅格布局-->
+    <script type="text/javascript">
+        var leftScroll;
+        $.afui.autoLaunch = true; //默认情况下，它被设置为true，并且你的应用程序将立即运行。我们将其设置为false，以显示一个启动画面
+
+
+        /* This function runs when the body is loaded.  当body加载完再加载这个函数 */
+        var init = function ()
+        {
+            getDataByURL(pageSettingUrl, ongetPageSetting, "companyId=" + goods.companyId);
+            window.setTimeout(function ()
+            {
+                // $.afui.launch();
+                loadindex();
+            }, 500);// 我们等待1.5秒调用$。ui.launch DOMContentLoaded火灾后（在DOM元素加载完之后？）
+        };
+        document.addEventListener("DOMContentLoaded", init, false);
+
+        /* 此代码是用于英特尔原生应用 */
+        var onDeviceReady = function ()
+        {
+            intel.xdk.device.hideSplashScreen();
+        };
+        document.addEventListener("intel.xdk.device.ready", onDeviceReady, false);
+		getMyInfo();
+        //var scrollLeft;
+
+        //function loaded() {
+        //    scrollLeft = new IScroll('#wrapperLeft');
+        //}
+    </script>
+</head>
+<body>
+    <div class="view" id="mainview">
+        <div class="pages">
+            <div class="panel" id="home" >
+                <div id="slideNav" class="slideNav">
+                    <div class="bd">
+                        <ul>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4"><a href="#"><img class="colimage" src="images/temp/topad.jpg" alt="" /></a></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4"><a href="#"><img class="colimage" src="images/temp/topad.jpg" alt="" /></a></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4"><a href="#"><img class="colimage" src="images/temp/topad.jpg" alt="" /></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hd">
+                        <ul></ul>
+                    </div>
+                </div>
+                <div class="user_own">
+                    <ul>
+                        <li>
+                            <a href="#"><img src="images/ic_my_evaluation.png"><span class="af-badge">3</span></a>
+                            <p>飓风行动</p>
+                        </li>
+                        <li>
+                            <a href="#"><img src="images/jf.png"></a>
+                            <p>户外</p>
+                        </li>
+                        <li>
+                            <a href="#"><img src="images/my_attention.png"></a>
+                            <p>积分</p>
+                        </li>
+                        <li>
+                            <a href="#"><img src="images/bottom_cart_c.png"></a>
+                            <p>购物车</p>
+                        </li>
+                        <li>
+                            <a href="#"><img src="images/my_order.png"></a>
+                            <p>我的订单</p>
+                        </li>
+                    </ul>
+                    <div class="claer"></div>
+                </div>
+                <div class="eatplustitle" id="eatplustitle">
+                    吃货plus
+                </div>
+                <div class="eatplus" id="eatplus">
+                    <div class="plusleft">
+                        <a href="#"><img src="images/14.jpg"></a>
+                    </div>
+                    <div class="plusright">
+                        <a href="#"><img src="images/18.jpg"></a>
+                    </div>
+                    <div class="plusright">
+                        <a href="#"><img src="images/temp/19.jpg"></a>
+                    </div>
+                </div>
+                <div class="eatplustitle" id="festvialtile">
+                    情人节你打算送什么？
+                </div>
+                <div id="picScroll" class="picScroll">
+
+                    <div class="bd">
+                        <ul>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4">
+                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
+                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
+                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
+                                    </div>                                  
+                                </div>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4">
+                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
+                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
+                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hd">
+                        <ul></ul>
+                    </div>
+                </div>
+                <div id="textSelHotBrowse">
+                    <a href="javascript:void(0)" onclick="temp()">商品</a>
+                    <a href="#">价格</a>
+                    <a href="#">特惠</a>
+                </div>
+            </div>
+            <div class="panel" id="prolistPanel" data-include="html/prolist.html">
+            </div> 
+
+            <div class="panel" id="school" data-include="html/chooseschool.html">
+            </div>
+            <div class="panel" id="searchPanel" data-include="html/search.html">
+            </div>
+            <div class="panel" id="cartPanel" data-include="html/cart.html">
+            </div>    
+            <div class="panel" id="addressPanel" data-include="html/addresspanel.html">
+            </div>
+            <div class="panel" id="loginPanel" data-include="html/login.html">
+            </div>
+            <div class="panel" id="regPanel" data-include="html/reg.html">
+            </div>
+            <div class="panel" id="minePanel" data-include="html/mine.html" data-selected="true">
+            </div>
+            <div class="panel" id="regSucPanel" data-include="html/regsuccess.html">
+            </div>
+            <div class="panel" id="proviewPanel" data-include="html/proview.html">
+            </div>
+            <div class="panel" id="placeorderPanel" data-include="html/placeorder.html">
+            </div>
+            <div class="panel" id="tackpicture" data-title="拍照测试">
+                <ul>
+                    <a class="button block" id="captrueBtn">拍照</a>
+                </ul>
+                <ul>
+                    <a class="button block" id="browserBtn">浏览</a>
+                </ul>
+                <div class="imageContainer">
+                    <img id="myImage" />
+                </div>
+            </div>
+            <div class="panel" id="getLocation" data-title="定位测试">
+                <ul>
+                    <a class="button block" id="locationBtn">获取位置信息</a>
+                </ul>
+                <p id="geolocation">点击按钮开始定位</p>
+                <div id="l-map"></div>
+                <div id="r-result"></div>
+            </div>
+            <div class="panel" id="search">
+                <header class="yicallHeader">
+                    <a class="backButton back">后退</a>
+                    <input type="search" class="input_search_key" placeholder=" 输入搜索内容" id="searchId">
+                    <input type="submit" class="button" style="right:0;position:absolute" value="搜索" onclick="getSearchGoodUrl()"/>
+                </header>
+                <div class="search_suggest" id="gov_search_suggest">
+                    <ul>顶顶顶</ul>
+                </div>  
+                <div id="textSelHotBrowse">
+                    <a href="javascript:void(0)" onclick="saveProduct()">商品</a>
+                    <a href="#">价格</a>
+                    <a href="#">特惠</a>
+                </div>
+            </div>
+            <div class="panel" id="panelProduct">
+                <header class="yicallHeader">
+                    <a class="backButton back">换回得到</a>
+                    <h1 id="h1PanlHeader">商品详情</h1>
+                </header>
+                <div id="slideNav" class="slideNav">
+                    <div class="bd">
+                        <ul>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4"><a href="#"><img src="images/m1.jpg" alt="" /></a></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4"><a href="#"><img src="images/m2.jpg" alt="" /></a></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="grid">
+                                    <div class="col4"><a href="#"><img src="images/m3.jpg" alt="" /></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hd">
+                        <ul></ul>
+                    </div>
+                </div>
+            </div>
+            <a class="button" data-toast data-type="error" data-message="Bottom Center" data-position="bc" id="globalMessageHint" style="display:none"></a>
+        </div>
+        <footer>
+            <a href="#home" data-transition="invoke"><i class="yicall-icon icon-home"></i><div>首  页</div></a>
+            <a href="#prolistPanel" data-transition="invoke"><i class="yicall-icon icon-list"></i><div>分 类 </div></a>
+            <a href="#proviewPanel" data-transition="invoke"><i class="yicall-icon icon-fav"></i><div>最爱</div></a>
+            <a href="#cartPanel" data-transition="invoke">
+                <i class="yicall-icon icon-cart"></i><div> 购物车</div>
+                <span class="af-badge" id="afbadgeCart">5</span>
+            </a>
+            <a href="#minePanel" data-transition="invoke"><i class="yicall-icon icon-mine"></i><div>我  的</div></a>
+        </footer>
+    </div>
+    
+    <!-- Cordova reference, this is added to your app when it's built. -->
+    <script src="scripts/platformOverrides.js"></script>
+
+    <script src="scripts/index.js"></script>
+</body>
+</html>

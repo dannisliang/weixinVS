@@ -1,0 +1,26 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*index*/
+#slideNav .bd ul li p{ font-size:0.6em;}
+#footer{ font-size:0.6em;}
+
+/*nav*/
+#afui .nav p{font-size:0.6em;}
+
+/*abotMenu*/
+
+#afui .aboutMenu .list > li > a{font-size:1em; padding:0px; margin:0px; font-weight:normal;}
+
+/*about*/
+#afui .edits p{ font-size:0.9em; line-height:0.9em;}
+
+/*回到顶部*/
+.gotop{ top:5%;}
+
+#afui .rfwyList p,#afui .rfwyList strong{ font-size:0.65em;}
+
+.rfwyMenu ul li > a{background-size:40px 25px;}
+.rfwyMenu ul li > a.on{background-size:40px 25px;}
+
+.suloTab .hd ul li{ font-size:0.75em;}

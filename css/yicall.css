@@ -1,0 +1,422 @@
+﻿/*#region common */
+.panel {
+  padding: 0;
+}
+
+.yicallHeader {
+    position: absolute;
+}
+
+/*#endregion */
+
+/*#region Browse */
+
+#sort {
+    background-color: white;
+}
+
+#textSelBrowse{
+    position:absolute;
+    top:44px;
+    left:98px;
+}
+
+#textSelHotBrowse{
+    position: absolute;
+    top: 80px;
+    left: 98px;
+}
+/*#slideBoxBrowse{
+    position: absolute;
+    top: 44px;
+    right: 0;
+    left: 50px;
+}
+
+.picBrowse > img{
+    width:200px;
+}*/
+
+/*#region scroll */
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    -ms-touch-action: none;
+}
+
+body, ul, li {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+body {
+    font-size: 12px;
+    font-family: ubuntu, helvetica, arial;
+    overflow: hidden; /* this is important to prevent the whole page to bounce */
+}
+
+#wrapperLeft {
+	position: relative;
+	width: 300px;
+	height: 300px;
+	overflow: hidden;
+
+	/* Prevent native touch events on Windows */
+	-ms-touch-action: none;
+
+	/* Prevent the callout on tap-hold and text selection */
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	/* Prevent text resize on orientation change, useful for web-apps */
+	-webkit-text-size-adjust: none;
+	-moz-text-size-adjust: none;
+	-ms-text-size-adjust: none;
+	-o-text-size-adjust: none;
+	text-size-adjust: none;
+}
+
+#scrollerLeft {
+	position: absolute;
+
+	/* Prevent elements to be highlighted on tap */
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+
+	/* Put the scroller into the HW Compositing layer right from the start */
+	-webkit-transform: translateZ(0);
+	-moz-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	-o-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+#wrapper {
+  margin-top: 10px;
+  /* background: #ccc; */
+  overflow: hidden;
+  position:relative;
+    height: 100%;
+}
+
+#scroller {
+    position: absolute;
+    z-index: 1;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    width: 100%;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    -o-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
+#scroller ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+}
+
+#scroller li {
+    padding: 0 10px;
+    height: 80px;
+    line-height: 80px;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #fff;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+.pullDownLabel, .pullUpLabel {
+    color: #999;
+}
+
+.pullDown, .pullUp {
+    background: #fff;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 0.8em;
+    color: #888;
+}
+
+.pullDown .pullDownIcon, .pullUp .pullUpIcon {
+    display: block;
+    float: left;
+    opacity: 0.4;
+    width: 40px;
+    height: 40px;
+    background: url(../images/pull_to_refresh.png) 0 0 no-repeat;
+    -webkit-background-size: 40px 80px;
+    -ms-background-size: 40px 80px;
+    background-size: 40px 80px;
+    -webkit-transition-property: -webkit-transform;
+    -ms-transition-property: -webkit-transform;
+    -webkit-transition-duration: 250ms;
+    -ms-transition-duration: 250ms;
+}
+
+.pullDown .pullDownIcon {
+    -webkit-transform: rotate(0deg) translateZ(0);
+    -ms-transform: rotate(0deg) translateZ(0);
+}
+
+.pullUp .pullUpIcon {
+    -webkit-transform: rotate(-180deg) translateZ(0);
+    -ms-transform: rotate(-180deg) translateZ(0);
+}
+
+.pullDown.flip .pullDownIcon {
+    -webkit-transform: rotate(-180deg) translateZ(0);
+    -ms-transform: rotate(-180deg) translateZ(0);
+}
+
+.pullUp.flip .pullUpIcon {
+    -webkit-transform: rotate(0deg) translateZ(0);
+    -ms-transform: rotate(0deg) translateZ(0);
+}
+
+.pullDown.loading .pullDownIcon, .pullUp.loading .pullUpIcon {
+    background-position: 0 100%;
+    -webkit-transform: rotate(0deg) translateZ(0);
+    -ms-transform: rotate(0deg) translateZ(0);
+    -webkit-transition-duration: 0ms;
+    -ms-transition-duration: 0ms;
+    -webkit-animation-name: loading;
+    -ms-animation-name: loading;
+    -webkit-animation-duration: 1s;
+    -ms-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -ms-animation-timing-function: linear;
+}
+
+@-webkit-keyframes loading {
+    from {
+        -webkit-transform: rotate(0deg) translateZ(0);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg) translateZ(0);
+    }
+}
+
+@-ms-keyframes loading {
+    from {
+        -ms-transform: rotate(0deg) translateZ(0);
+    }
+
+    to {
+        -ms-transform: rotate(360deg) translateZ(0);
+    }
+}
+
+
+/*#endregion */
+
+/*#region search */
+#searchId {
+    position: absolute;
+  width: 210px;
+  left: 50px;
+  top: 3px;
+  height: 16px;
+  background: #E25906;
+  border:none;
+  color:#fff;
+}
+#searchId::-webkit-input-placeholder {
+  color: #fff;
+}
+#searchId:-moz-placeholder {
+  color: #fff;
+}
+#searchId:-ms-input-placeholder {
+  color: #fff;
+}​
+/*#endregion */
+#splitLeft{
+    color:white;
+}
+
+#left{
+    width:9px;
+    box-shadow: 0 0 8px 0 rgba(16, 1, 1, 0);
+}
+
+#left .view.active .pages .panel.active{
+    padding-bottom: 0;
+}
+
+#sortMenu{
+    height:50px;
+}
+
+#listSortLeft {
+    width: 98px;
+}
+
+#listSortLeft > li > a:after, #listSortRight > li > a:after {
+    display: none;
+}
+
+#listSortRight {
+    position: absolute;
+    top: 10px;
+    left: 98px;
+}
+
+img {
+    border: 0;
+}
+
+#listSortRight > li {
+    float: left;
+    border-bottom-width: 0;
+}
+
+#listSortRight > li > a {
+    height: 90px;
+    width: 80px;
+}
+
+#listSortRight > li > a > img {
+    height: 65px;
+    width: 65px;
+    min-height: 65px;
+    min-width: 65px;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    border: none;
+}
+
+#listSortRight > li > a > p {
+    position: absolute;
+    bottom: -59px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    font-size: 10px;
+    line-height: 11px;
+}
+
+/*#endregion */
+
+/*#region productinof */
+
+#infoline {
+    width: 100%;
+    height: 2px;
+    background-color: #808080;
+    position: relative;
+    margin-top:20px;
+    margin-bottom:2px;
+}
+
+#PhotoSwipeTarget {
+    /*width: expression(deviceWidth + "px");
+    height: expression(deviceWidth + "px");
+    width:300px;
+    height:300px;*/
+}
+.redtext
+{
+    color:#ff0000;
+}
+#price
+{
+    margin-top:-5px;
+    color:#ff0000;
+}
+.infobtn
+{
+    text-align:center;
+    color:#ff0000;    
+}
+.yellowbg1
+{
+    width: 120px;
+    height:50px;
+    background-color: orange;
+    border-radius: 5px;
+    float:left;
+    margin-left:20px;
+    text-align:center;
+    line-height:50px;
+    font-size:16px;
+    color:black;
+    text-decoration:none;
+}
+.yellowbg2
+{
+    width: 120px;
+    height:50px;
+    background-color: orange;
+    border-radius: 5px;
+    float:right;
+    margin-right:20px;
+    text-align:center;
+    line-height:50px;
+    font-size:16px;
+    color:black;
+    text-decoration:none;
+    
+}
+.des
+{
+    width:80px;
+    height:19px;
+}
+#productheader
+{
+    z-index:2000;
+}
+.btnimg
+{
+    width: 36px;
+    height:36px;
+    margin-top:2px;
+    margin-bottom:-15px;
+}
+/*#endregion */
+
+.imageContainer
+{
+    width:100%;
+    height:288px;
+    position:relative;
+    background-color:#fbfbfb;
+    border:1px solid #b8b8b8;
+}
+
+#myImage
+{
+    width:100%;
+    height:288px;
+    display:block;
+}

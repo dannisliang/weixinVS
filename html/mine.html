@@ -1,0 +1,41 @@
+
+    <header class="yicallHeader">
+        <span class="icon icon-previous"></span>
+		<h1>个人中心</h1>
+    </header>
+
+	<div id="mine" class="panel  header-margin-top">
+		<div class="top">
+			<div class="headimg">
+			<img src="./images/head_08.png"  class="img-circle"/>
+			</div>
+			<div class="text-center info" id="phoneMine">
+				<!--13958745874-->
+				<!--<button type="button" class="button btn-white btn-sm" onclick="bindingPhoneMineClicked()" id="bindingPhoneBtnMine">绑定手机</button>-->
+			</div>
+			<div class="text-center info" id="weininNickname">梅川酷子
+			</div>
+			<div id="noLoginMine">您还没有登录哦~
+				<button type="button" class="button btn-white btn-sm" onclick="showLoginPanel()">马上登录</button>
+			</div>
+		</div>
+ 
+		<div class="row quicklink grayline-bottom box-shadow-1">
+		  <div class="col-xs-6 text-center fontsize-n"><a href="####" class="">未完成订单</a></div>
+		  <div class="col-xs-6 text-center fontsize-n grayline-left"><a href="####">待评价订单</a></div>
+		</div>
+
+		<div class="menulist">
+		   <ul class="list">
+		    <li class="divider"></li>
+		    <li><span class="icon icon-mymessage"></span>我的消息</li>
+		    <li><span class="icon icon-myorder"></span>我的订单</li>
+		    <li><span class="icon icon-myintegral"></span>我的积分</li>
+		    <li><span class="icon icon-myaddress"></span>我的常用地址</li>
+		    <li><span class="icon icon-myinfo"></span>我的资料</li>
+		    <li><span class="icon icon-mysugest"></span>我的建议</li>
+		  </ul>
+		  <button type="button" class="button btn-green  btn-lg btn-block">注销登录</button>
+		</div>
+        <!--<iframe src="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxbdb1d9d88feb1979&redirect_uri=http://o.narwell.com/yicalljifa/service/rest/emallapp.nologin.goods.goodsService/collection/weixinUserInfoCallback&response_type=code&scope=snsapi_base&state=1&connect_redirect=1#wechat_redirect" style="display:none" id="weixinIframe" onload="getWeixinData()"></iframe>-->
+    </div> 
