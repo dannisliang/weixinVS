@@ -6,11 +6,33 @@
 function setCountByID(id,count)
 {
     if(count >0)
-        saveOrUpdate(orderTable, ['count'], [count], 'id', id );
+        saveOrUpdate(orderTable, ['count'], [count], 'id', id ,onSQLCallBack);
     else
-        deleteRow(orderTable, "id=?", [id]);
-}
+    {
+        deleteRow(orderTable, "id=?", [id],onSQLCallBack);
+    }
 
+
+}
+function onSQLCallBack(boo)
+{
+  if(boo)
+  {
+      var tempCount = 0;
+      select(orderTable, "id, count", "", null, function (rows) {
+          if (rows) {
+              for (var i = 0; i < rows.length; i++) {
+                  tempCount += Number(rows.item(i).count);
+              }
+                  changeNumGoodsCart(tempCount);
+          }else
+          {
+              changeNumGoodsCart(0);
+          }
+
+      });
+  }
+}
 //根据id获取本地缓存购物车商品数量
 function getGoodsCountByID(id,callback, index)
 {

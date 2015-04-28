@@ -276,17 +276,8 @@ function temp() {
     sortsClicked(1);
 }
 
-function changeNumGoodsCart(count, bAdd){
-    var numEnd;
-    var numGoods = parseInt(getLocal(charVec.numGoodsCartLo), 10);
-    if(isNaN(numGoods)){
-        numGoods = 0;
-    }
-    if(bAdd){
-        numEnd = numGoods +count;
-    }else{
-        numEnd = numGoods -count;
-    }
+function changeNumGoodsCart(numEnd){
+    numEnd =  numEnd  < 0  ?  0 : numEnd;
     $("#afbadgeCart").text(numEnd);
     setLocal(charVec.numGoodsCartLo, numEnd);
     if(numEnd == 0){

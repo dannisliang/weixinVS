@@ -1,40 +1,254 @@
 ﻿$(document).on("panelload", '#prolistPanel', function (e) {
+    function resetUrlData(){
+        goods.page = 1;
+    }
+    // 标签分类被点击
     tagProlistClicked = function(index){
-
+        dataByCondition.tagId = tagProlistId[index];
+        loadGoodsListByCondition(true, true);
     }
 
+    tagProlistFunc = function(index, div, id){
+        div.attr("onclick", "tagProlistClicked(" +index +")");
+        tagProlistId[index] = id;
+    }
+
+    // 标签获取成功
     getTagUrlSuccess = function(dataJson){
-        commonATextSel(dataJson, $("#tagProlist"), "tagProlistClicked");
+        commonATextSel(dataJson, $("#tagProlist"), tagProlistFunc);
     }
 
+    // 二级分类被点击
     nextCategoryClicked = function(index){
-
+        bLeftSortClick = false;
+        resetUrlData();
+        dataByCondition.categoryId = nextCategoryId[index];
+        if(bSpecialPanel){
+            loadGoodsListByCondition(true, true, true);
+        }else{
+            loadGoodsListByCondition(true, true);
+            getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, "categoryId=" +nextCategoryId[index], true);    // 筛选区
+        }
     }
 
+    // 二级分类属性更改回调
+    nextCategoryFunc = function(index, div, id){
+        div.attr("onclick", "nextCategoryClicked(" +index +")");
+        nextCategoryId[index] = id;
+    }
+
+    // 二级分类属性更改
     onCategoryPropertiesSuccess = function(dataJson){
-        commonATextSel(dataJson, $("#sortProlist"), "nextCategoryClicked");
+        if(dataJson.length != 0){
+            dataByCondition.categoryId = dataJson[0].id;
+        }
+        commonATextSel(dataJson, $("#sortProlist"), nextCategoryFunc);
     }
 
+    // 按照右边分类筛选商品
+    function loadGoodsListByCondition(bRefresh, bReset, bSpecial, index){
+        if(bShowNextPage || bReset){
+            bRefreshProlist = bRefresh;
+            var data = "";
+            data += "buyerId=" +userInfo.id;
+            data += "&page=" + goods.page;
+            data += "&categoryId=" +dataByCondition.categoryId;
+            if(index != null){
+                if(index == 0){
+                    goods.sort = "saleCount";
+                    data += "&sort=saleCount";
+                }else{
+                    goods.sort = "salePrice";
+                    data += "&sort=salePrice";
+                }
+                data += "&order=asc";
+            }
+            if(bSpecial == null && ! bSpecialPanel){
+                data += "&tagId=" +dataByCondition.tagId;
+                data+= "&filterStr=";
+                for(var i = 0; i<idxFilter; i++){
+                    if(i==0){
+                        data += selectCategoryId[i] +":" +selectContent[i];
+                    }else{
+                        data += "#" +selectCategoryId[i] +":" +selectContent[i];
+                    }
+                }
+                getDataByURL(getCategoryGoodsByConditionUrl, getGoodListUrlSuccess, data, true);
+            }else{
+                data += "&companyId=" +goods.companyId;
+                getDataByURL(getSpecialOfferGoodsByCategoryIdUrl, getGoodListUrlSuccess, data, true);
+            }
+        }
+    }
+
+    attrSortClicked = function(index){
+        commonATextSel(dataJson, $("#sortProlist"), nextCategoryFunc);
+    }
+
+    commonAttrSortClicked = function(string, index){
+        if($("#" +string +index).text().indexOf("已") != -1){
+            for(var i = 0; i<idxFilter;i++){
+                if(selectContent[i] == $("#" +string +index).text().substr(1)){
+                    if(idxFilter-1 != 0){
+                        selectCategoryId[i] = selectCategoryId[idxFilter-1];
+                        selectContent[i] = selectCategoryId[idxFilter-1];
+                    }else{
+                        selectCategoryId[i] = null;
+                        selectContent[i] = null;
+                    }
+                }
+            }
+            idxFilter--;
+            $("#" +string +index).text($("#" +string +index).text().substr(1));
+            goods.page = 1;
+            loadGoodsListByCondition(true, true);
+        }else{
+            selectCategoryId[idxFilter] = categoryPropertiesId[parseInt(index/10)];
+            selectContent[idxFilter] = $("#" +string +index).text();
+            idxFilter++;
+            $("#" +string +index).text("已" +$("#" +string +index).text());
+            goods.page = 1;
+            loadGoodsListByCondition(true, true);
+        }
+    }
+
+    // 一级分类筛选区点击事件
+    firstAttrSortClicked = function(index){
+        commonAttrSortClicked("firstAttrSortId", index);
+    }
+
+    // 二级分类筛选区点击事件
+    secondAttrSortClicked = function(index){
+        commonAttrSortClicked("secondAttrSortId", index);
+    }
+
+    // 隐藏筛选区
+    hideFilterDiv = function(){
+        $("#sortAll").find("li").each(function(index, elm){
+            if($(elm).find("div").attr("id").indexOf("first") != -1){
+                $(elm).hide();
+            }
+            if($(elm).find("div").attr("id").indexOf("second") != -1){
+                $(elm).hide();
+            }
+        })
+    }
+
+    // 更改二级分类筛选区
+    getCategoryPropertiesUrlSuccess = function(dataJson){
+        var toAddString;
+        if(bLeftSortClick){
+            toAddString = "firstAttrSort";
+        }else{
+            toAddString = "secondAttrSort";
+        }
+        if(dataJson.length != 0){
+            for(var i=0;i<dataJson.length;i++){
+                var $div;
+                if($("#" +toAddString +"0").length != 0){
+                    $div = $("#" +toAddString +"0").parent().clone();
+                }else{
+                    $div = $("#" +toAddString).parent().clone();
+                }
+                if(i == 0){
+                    $("#sortAll").find("li").each(function(index, elm){
+                        if(bLeftSortClick){
+                            if($(elm).find("div").attr("id").indexOf("first") != -1){
+                                $(elm).remove();
+                            }
+                            if($(elm).find("div").attr("id").indexOf("second") != -1){
+                                $(elm).hide();
+                            }
+                        }else{
+                            if($(elm).find("div").attr("id").indexOf("first") != -1){
+                                $(elm).hide();
+                            }
+                            if($(elm).find("div").attr("id").indexOf("second") != -1){
+                                $(elm).remove();
+                            }
+                        }
+                    })
+                }
+                $div.find("span").text(dataJson[i].name +"：");
+                $div.show();
+                $div.find("div").attr("id", toAddString +i);
+                categoryPropertiesId[i] = dataJson[i].id;
+                var arrContent=dataJson[i].content.split(",");
+                for(var j=0;j<arrContent.length;j++){
+                    var $child = $div.find("a").first().clone();
+                    if(j == 0){
+                        $div.find("a").remove();
+                    }
+                    $child.text(arrContent[j]);
+                    $child.show();
+                    $child.attr("onclick", toAddString +"Clicked(\""+i+j +"\")");
+                    $child.attr("id", toAddString +"Id"+i+j);
+                    $div.find("div").append($child);
+                }
+                $("#sortAll").append($div);
+            }
+        }else{
+            $("#sortAll").find("li").each(function(index, elm){
+                if(bLeftSortClick){
+                    if($(elm).find("div").attr("id").indexOf("first") != -1){
+                        $(elm).hide();
+                    }
+                    if($(elm).find("div").attr("id").indexOf("second") != -1){
+                        $(elm).hide();
+                    }
+                }else{
+                    if($(elm).find("div").attr("id").indexOf("second") != -1){
+                        $(elm).hide();
+                    }
+                }
+            })
+        }
+    }
+
+    // 点击一级分类
     prolistRight = function (index) {
         if ($("#pro-sort .sort-left .sort-list li")[index].className == 'current')
             return;
         $("#pro-sort .sort-left .sort-list li").removeClass("current");
         $("#pro-sort .sort-left .sort-list li")[index].className = 'current';
         goods.page = 1;
+        goods.sort = "saleCount";
+        myScroll.scrollTo(0);
+        myScroll.refresh();
+        $("#sortsProlist a").each(function(id, elm){
+            if(id != 0){
+                $(elm).removeClass("current");
+            }else{
+                $(elm).addClass("current");
+            }
+        })
         if (index != 0) {
             $("#pro-sort .sort-pro-list .topad img").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
+            $("#tagProlist").parent().show();
             goods.categoryId = prolistLeftID[index];
-            bSpecialPanel = true;
-            getDataByURL(getNextCategoryUrl, onCategoryPropertiesSuccess, "categoryId=" + prolistLeftID[index], true);
-            getDataByURL(getTagUrl, getTagUrlSuccess, "", true);
+            bSpecialPanel = false;
+            bLeftSortClick = true;
+            var data = "categoryId=" + prolistLeftID[index];
+            getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, data, true);  //属性
+            getDataByURL(getNextCategoryUrl, onCategoryPropertiesSuccess, data, true);  //分类
+            getDataByURL(getTagUrl, getTagUrlSuccess, "", true);    //标签
+            data += "&companyId=" +goods.companyId;
+            getDataByURL(pageSettingUrl, pageSettingUrlSuccess, data, true);    //动态图
         } else {
             $("#pro-sort .sort-pro-list .topad img").hide();
             $("#pro-sort .sort-pro-list .list-mod").show();
-            bSpecialPanel = false;
+            $("#tagProlist").parent().hide();
+            hideFilterDiv();
+            bSpecialPanel = true;
             getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
         }
+        bShowNextPage = true;
         load_content("refresh", false);
+    }
+
+    pageSettingUrlSuccess = function (dataJson){
+
     }
 
     onSortLeftSuccess = function (dataJson) {
@@ -67,6 +281,7 @@
         bSpecialPanel = true;
         load_content();
         bLoadRightProlist = true;
+        hideFilterDiv();
     }
     //leftScroll = new IScroll('#wrapperLeft');
     $("#pro-sort .sort-left").css({
@@ -87,7 +302,9 @@
     //getDataByURL(getCategoryByRightUrl, onSortRightSuccess, "id=613f3f8d6b134ca3b290e33a04610a92", true);
     getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
     $("#pro-sort .sort-pro-list .topad img").hide();
+    $("#tagProlist").parent().hide();
 
+    // 人气价格排序
     sortsClicked = function (index){
         $("#sortsProlist a").each(function(id, elm){
             if(id != index){
@@ -96,19 +313,22 @@
                 $(elm).addClass("current");
             }
         })
+        loadGoodsListByCondition(true, true, null, index);
     }
 });
 
-function commonATextSel(dataJson, div, callbackString){
+function commonATextSel(dataJson, div, callback){
     for(var i=0;i<dataJson.length;i++){
-        var $child = div.find("a").first().clone();
-        if(i == 0){
-            div.find("a").remove();
+        if(dataJson[i].isHide == null){
+            var $child = div.find("a").first().clone();
+            if(i == 0){
+                div.find("a").remove();
+            }
+            $child.text(dataJson[i].name);
+            $child.show();
+            callback(i, $child, dataJson[i].id);
+            div.append($child);
         }
-        $child.attr("onclick", callbackString +"(" +i +")");
-        $child.text(dataJson[i].name);
-        $child.show();
-        div.append($child);
     }
 }
 
@@ -116,27 +336,34 @@ function loadGoodsList(bRefresh, bSpecial){
     if(bShowNextPage){
         bRefreshProlist = bRefresh;
         var data = "";
-        data += "companyId=" +goods.companyId;
-        data += "&categoryId=" +goods.categoryId;
-        data += "&rows=" + goods.rows;
-        data += "&sort=" + goods.sort;
-        data += "&order=" + goods.order;
+        data += "buyerId=" +userInfo.id;
         data += "&page=" + goods.page;
-        data += "&buyerId=" +userInfo.id;
         if(bSpecial == null){
-            getDataByURL(getGoodListUrl, getGoodListUrlSuccess, data, true);
+            data += "&categoryId=" +goods.categoryId;
+            getDataByURL(getGoodsByNonLastCategoryUrl, getGoodListUrlSuccess, data, true);
         }else{
+            data += "&companyId=" +goods.companyId;
             getDataByURL(getSpecialOfferUrl, getGoodListUrlSuccess, data, true);
         }
     }
 }
 
+var bLeftSortClick = false; // 是否是点击的左边分类
 var bRefreshProlist = false;
 var bLoadRightProlist = false;
 var bSpecialPanel = false;  // 是否是加载的特惠专区
 var goodsHeadTittle = new Array();  // 商品详细页标题
 var bAddFavArr = new Array();   // 是否已收藏
 var goodsPageId = new Array();  // 商品页Id
+var nextCategoryId = new Array();   //下一级分类id
+var tagProlistId = new Array();   //标签id
+var categoryPropertiesId = new Array();   //筛选id
+var idxFilter = 0;      // 选择的筛选索引
+var selectCategoryId = new Array();     // 选择的筛选id
+var selectContent = new Array();     // 选择的筛选id的对应内容
+var dataByCondition = new Array();      // 按条件选择商品
+dataByCondition.categoryId = "";
+dataByCondition.tagId = "";
 
 // 浏览加载需重置的参数
 var bShowNextPage = true;       // 是否显示下一页。。当没有更多内容时，设置为false
@@ -154,7 +381,7 @@ function getGoodListUrlSuccess(dataJson){
         }
         if(bRefreshProlist){
             $("#goodsList").remove();
-            $("#scroller ul a").empty();
+            $("#scroller ul a").remove();
         }
         for(var i= 0; i<dataJson.length; i++){
             var goodSample = $tempList.clone();
@@ -194,6 +421,10 @@ function getGoodListUrlSuccess(dataJson){
         }
     }else if(dataJson.length == 0){
         bShowNextPage = false;
+        if(goods.page == 1){
+            $("#scroller ul a").hide();
+            showGlobalMessageDialog("该分类商品正在联盟中。。。");
+        }
     }
 
     addFavClicked = function(index){
@@ -337,7 +568,7 @@ var pullActionDetect = {
                 }
                 beforeScrollY = myScroll.y;
             }
-            if (myScroll.y <= (myScroll.maxScrollY + 2000) && pullUpEl && !pullUpEl.className.match('loading') && bShowNextPage) {
+            if (myScroll.y <= (myScroll.maxScrollY + 600) && pullUpEl && !pullUpEl.className.match('loading') && bShowNextPage) {
                 $('.pullUp').addClass('loading').html('<span class="pullUpIcon">&nbsp;</span><span class="pullUpLabel">加载中...</span>');
                 pullUpAction();
             } else if (pullActionDetect.count < pullActionDetect.limit) {

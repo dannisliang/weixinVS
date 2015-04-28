@@ -43,6 +43,7 @@
     <script type="text/javascript" charset="utf-8" src="scripts/panel/regSuccess.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/panel/mine.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/panel/address.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/home.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/panel/proview.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/model/goodsInfo.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/utils/sqlHelper.js"></script>
@@ -61,7 +62,7 @@
             line-height: 20px;
         }
     </style>
-    <script type="text/javascript" src="scripts/js.js"></script>
+    <script type="text/javascript" src="scripts/touchSlideApply.js"></script>
     <script type="text/javascript" src="scripts/jsonp.js"></script>
     <script type="text/javascript" src="scripts/utils/TouchSlide.1.1.source.js"></script>
 
@@ -77,16 +78,14 @@
         var leftScroll;
         $.afui.autoLaunch = true; //默认情况下，它被设置为true，并且你的应用程序将立即运行。我们将其设置为false，以显示一个启动画面
 
-
+        $.afui.ready(function(){
+            console.log('afui is ready');
+            getDataByURL(pageSettingUrl, ongetPageSetting, "companyId=" + goods.companyId,true);
+        });
         /* This function runs when the body is loaded.  当body加载完再加载这个函数 */
         var init = function ()
         {
-            getDataByURL(pageSettingUrl, ongetPageSetting, "companyId=" + goods.companyId);
-            window.setTimeout(function ()
-            {
-                // $.afui.launch();
-                loadindex();
-            }, 500);// 我们等待1.5秒调用$。ui.launch DOMContentLoaded火灾后（在DOM元素加载完之后？）
+
         };
         document.addEventListener("DOMContentLoaded", init, false);
 
@@ -107,114 +106,12 @@
 <body>
     <div class="view" id="mainview">
             <div class="pages">
-            <div class="panel" id="home" data-selected="true">
-                <div id="slideNav" class="slideNav">
-                    <div class="bd">
-                        <ul>
-                            <li>
-                                <div class="grid">
-                                    <div class="col4"><a href="#"><img class="colimage" src="images/temp/topad.jpg" alt="" /></a></div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="grid">
-                                    <div class="col4"><a href="#"><img class="colimage" src="images/temp/topad.jpg" alt="" /></a></div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="grid">
-                                    <div class="col4"><a href="#"><img class="colimage" src="images/temp/topad.jpg" alt="" /></a></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="hd">
-                        <ul></ul>
-                    </div>
-                </div>
-                <div class="user_own">
-                    <ul>
-                        <li>
-                            <a href="#"><img src="images/ic_my_evaluation.png"><span class="af-badge">3</span></a>
-                            <p>飓风行动</p>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/jf.png"></a>
-                            <p>户外</p>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/my_attention.png"></a>
-                            <p>积分</p>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/bottom_cart_c.png"></a>
-                            <p>购物车</p>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/my_order.png"></a>
-                            <p>我的订单</p>
-                        </li>
-                    </ul>
-                    <div class="claer"></div>
-                </div>
-                <div class="eatplustitle" id="eatplustitle">
-                    吃货plus
-                </div>
-                <div class="eatplus" id="eatplus">
-                    <div class="plusleft">
-                        <a href="#"><img src="images/14.jpg"></a>
-                    </div>
-                    <div class="plusright">
-                        <a href="#"><img src="images/18.jpg"></a>
-                    </div>
-                    <div class="plusright">
-                        <a href="#"><img src="images/temp/19.jpg"></a>
-                    </div>
-                </div>
-                <div class="eatplustitle" id="festvialtile">
-                    情人节你打算送什么？
-                </div>
-                <div id="picScroll" class="picScroll">
-
-                    <div class="bd">
-                        <ul>
-                            <li>
-                                <div class="grid">
-                                    <div class="col4">
-                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
-                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
-                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
-                                    </div>                                  
-                                </div>
-                            </li>
-                        </ul>
-
-                        <ul>
-                            <li>
-                                <div class="grid">
-                                    <div class="col4">
-                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
-                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
-                                        <a href="#"><img  src="images/book.jpg" alt="" /></a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="hd">
-                        <ul></ul>
-                    </div>
-                </div>
-                <div id="textSelHotBrowse">
-                    <a href="javascript:void(0)" onclick="temp()">商品</a>
-                    <a href="#">价格</a>
-                    <a href="#">特惠</a>
-                </div>
+            <div class="panel" id="home" data-include="html/home.html">
             </div>
             <div class="panel" id="prolistPanel" data-include="html/prolist.html">
             </div> 
 
-            <div class="panel" id="school" data-include="html/chooseschool.html">
+            <div class="panel" id="schoolPanel" data-include="html/chooseschool.html">
             </div>
             <div class="panel" id="searchPanel" data-include="html/search.html">
             </div>
@@ -258,7 +155,7 @@
                     <a class="backButton back">换回得到</a>
                     <h1 id="h1PanlHeader">商品详情</h1>
                 </header>
-                <div id="slideNav" class="slideNav">
+                <div id="slideNav_0" class="slideNav_0">
                     <div class="bd">
                         <ul>
                             <li>

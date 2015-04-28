@@ -1,5 +1,5 @@
 
-<header class="yicallHeader" id="headProview">
+<header class="yicallHeader">
     <a class="icon icon-previous"></a>
     <h1>商品详情</h1>
 </header>
@@ -21,25 +21,25 @@
             </div>
         </div>
         <div class="fav text-center">
-            <i class="icon icon-addfav"></i>
+            <i class="icon icon-addfav" id="proviewcollect" onclick="onClickProviewCollect()"></i>
         </div>
     </div>
     <div>
         <div class="caption">
             <div class="protitle  fontsize-l ellipsis" id="captiontitle"></div>
             <div class="intro fontsize-xn">碳酸饮料 可口 低糖低热量 韩国原装进口饮料</div>
-            <div class="Ladder-price row">
-                <div class="col-xs-4 Ladder1">
-                    <span>单件</span>
+            <div class="Ladder-price row" id="ladderpriceid">
+                <div class="col-xs-4 Ladder1" id="ladderpriceid_0">
+                    <span class="unit">单件</span>
                     <span class="nowprice  fontsize-xl ">$5.2</span>
                     <span class="oldprice">$6.2</span>
                 </div>
-                <div class="col-xs-4 Ladder2">
-                    <span>2~4件</span>
+                <div class="col-xs-4 Ladder2" id="ladderpriceid_1">
+                    <span class="unit">2~4件</span>
                     <span class="price ">$5.2</span>
                 </div>
-                <div class="col-xs-4 Ladder3">
-                    <span>>5件 </span>
+                <div class="col-xs-4 Ladder3" id="ladderpriceid_2">
+                    <span class="unit">>5件 </span>
                     <span class="price">$5.2</span>
                 </div>
             </div>
@@ -55,6 +55,17 @@
 
             </div>
         </div>
+    </div>
+    <div class="divider">更多选择</div>
+    <div class="morepros clearfix">
+
+        <ul class="clearfix" id="clearfixlist">
+            <li id="clearfixlistli">
+                <img src=""/>
+                <span class="title" ></span>
+                <span class="price" ></span>
+            </li>
+        </ul>
     </div>
     <div class="recommendpros">
         <div class="viewmore">

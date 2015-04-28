@@ -1,4 +1,4 @@
-﻿var DBPATH =  "/data/data/com.narwell.yicall.buyer/appdatabase.db3";
+﻿﻿var DBPATH =  "/data/data/com.narwell.yicall.buyer/appdatabase.db3";
 //发布地址 http://server.1calljifa.com:82
 //本地地址 http://192.168.2.2:8080
 //var rootUrl = "http://server.1calljifa.com:86";
@@ -87,8 +87,6 @@ var getAreaListUrl = rootUrl + "/service/rest/emallapp.nologin.logistic.logistic
 var getAreaAddressUrl  = rootUrl + "/service/rest/emallapp.nologin.logistic.logisticService/collection/getAreaAddressByAreaId";
 //搜索
 var searchGoodUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/searchKeyword";
-//筛选
-var screenGoodUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getCategoryProperties";
 //提交验证码
 var  getVerifyCodeUrl    =   rootUrl +"/service/rest/emallapp.nologin.member.buyerService/collection/sendVerifyCode";
 //获取快速下单表
@@ -107,9 +105,17 @@ var  addShopCartByGoodsIds  =   rootUrl + "/service/rest/emallapp.login.order.or
 var getNextCategoryUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getNextCategory";
 //得到筛选区的标签参数
 var getTagUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getTag";
-//得到筛选区的标签参数
+//根据筛选区过滤商品
 var getCategoryGoodsByConditionUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getCategoryGoodsByCondition";
 //得到特惠专区商品列表接口
 var getSpecialOfferUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getSpecialOffer";
 //得到特惠专区的商品分类
 var getSpecialOfferCategoryUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getSpecialOfferCategory";
+//根据非末级分类获得商品
+var getGoodsByNonLastCategoryUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getGoodsByNonLastCategory";
+//特惠专区根据分类得到商品
+var getSpecialOfferGoodsByCategoryIdUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getSpecialOfferGoodsByCategoryId";
+//提交订单v2
+var postOrdelV2Url = rootUrl + "/service/rest/emallapp.login.order.orderService/collection/createOrderForV2";
+//得到同一品名的商品
+var getVarietyGoods = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getVarietyGoods";

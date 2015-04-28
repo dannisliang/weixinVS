@@ -221,7 +221,7 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 .Ladder-price .Ladder1{ background:#b0ca43}
 .Ladder-price .Ladder2{ background:#9fc22a}
 .Ladder-price .Ladder3{ background:#64912a}
-
+.Ladder-price .LadderChose{ background:#9800FF}
 
 /*注册*/
 #reg{padding-top:10px;}
@@ -322,3 +322,14 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 #placeorder  a{color:#ff6000;}
 #placeorder .imagesuccess{width:50%;max-width:400px;margin:10px auto 10px auto;}
 #placeorder .imagesuccess img{width:100%;} 
+
+/*选项卡*/
+ul,li{ list-style:none;}
+#tab{ margin:50px 10px;}
+#title{ height:40px; line-height:40px; overflow:hidden;border:1px solid #ff6000;
+    -moz-border-radius: 5px;      /* Gecko browsers */
+    -webkit-border-radius: 5px;   /* Webkit browsers */
+    border-radius:5px; }
+#title li{text-align:center; display:block; background:#fff; cursor:pointer;}
+#title .active{ background:#ff6000; color:#fff;}
+#tabcont{ width:100%; border:1px solid #ccc; height:300px;}

@@ -5,47 +5,43 @@
     <span class="headspan pull-right leftborder"><a class=" icon icon-search" href="#searchPanel" data-transition="invoke"></a></span>
 </header>
 
-<div id="pro-sort" class="pages">
-    <div class="pull-left sort-left  header-margin-top">
-        <ul class="sort-list fontsize-n ">
-            <li><a href="####">特惠专区</a></li>
-        </ul>
-    </div>
+<!--选项卡测试-->
+
+
+ 
+<script>
+function tab(Nav,Num){
+      if(Nav.className=="active")return;
+      var thisNav=Nav.parentNode.id;
+      var navName=Nav.nodeName.toLowerCase();
+      var navList=document.getElementById(thisNav).getElementsByTagName(navName);
+      for(var i=0;i<navList.length;i++){
+              if(i==Num){
+                      Nav.className="active";
+                      document.getElementById("cont"+i).style.display="block";
+              }else{
+                      navList[i].className="";
+                      document.getElementById("cont"+i).style.display="none";
+              }
+      }
+}
+</script>
+</head>
+<body>
+<div id="tab">
+  <ul id="title" class="row">
+           <li onclick="tab(this,0)" class="col-xs-6 active pull-lefe">经常购买的</li>
+           <li onclick="tab(this,1)" class="col-xs-6 pull-lefe">收藏的</li>
+  </ul>
+  <div id="tabcont">
+           <div id="cont0">
+           
+           
+           
+
+<div id="pro-sort" class="pages">   
     <div class="sort-pro-list  header-margin-top">
-        <div class="topad">
-            <img src="./images/temp/ad-temp.png" />
-        </div>
-        <ul class="list-mod clearfix" id="sortAll">
-            <li>
-                <span>全部分类：</span>
-                <div class="textSelDiv clearfix" id="sortProlist">
-                    <a href="javascript:void(0)" style="display: none" onclick="nextCategoryClicked()">香烟</a>
-                </div>
-            </li>
-            <li>
-                <span>标签：</span>
-                <div class="textSelDiv clearfix" id="tagProlist">
-                    <a href="javascript:void(0)" style="display: none" onclick="tagProlistClicked()">特惠</a>
-                </div>
-            </li>
-            <li style="display: none">
-                <span>全部分类：</span>
-                <div class="textSelDiv clearfix" id="firstAttrSort">
-                    <a href="javascript:void(0)" style="display: none" onclick="firstAttrSortClicked()">香烟</a>
-                </div>
-            </li>
-            <li style="display: none">
-                <span>全部分类：</span>
-                <div class="textSelDiv clearfix" id="secondAttrSort">
-                    <a href="javascript:void(0)" style="display: none" onclick="secondAttrSortClicked()">香烟</a>
-                </div>
-            </li>
-        </ul>
-        <div id="sortsProlist" class="sorts">
-            <a href="#" class="current" onclick="sortsClicked(0)">人气</a>
-            <a href="#" onclick="sortsClicked(1)">价格</a>
-        </div>
-        <div class="pros" id="wrapper" class="clearfix">
+       <div class="pros" id="wrapper" class="clearfix">
             <div class="row pro-list" id="scroller">
                 <div class="pullDown">
                     <span class="pullDownIcon">&nbsp;</span>
@@ -80,3 +76,15 @@
         </div>
     </div>
 </div>
+
+           
+           
+           </div>
+           <div id="cont1" style="display:none;">2</div>
+  </div>
+</div>
+
+
+
+<!--选项卡测试-->
+

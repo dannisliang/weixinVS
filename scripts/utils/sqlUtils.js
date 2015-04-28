@@ -130,9 +130,10 @@ function createTable(tableName, fields, constraint) {
  * @param setFields 要更新的字段数组 
  * @param setParams 要更新的字段对应的参数数组 
  * @param whereStr  where语句，如果没有可不传，不包含where关键字，参数用?代替，如：id=? and name=? 
- * @param wherParams    where语句用到的参数数组,如['111','2222'] 
+ * @param wherParams    where语句用到的参数数组,如['111','2222']
+ * @param callback 回到
  */
-function updateTable(tableName, setFields, setParams, whereStr, wherParams) {
+function updateTable(tableName, setFields, setParams, whereStr, wherParams,callback) {
     var sql = "update " + tableName + " set ";
     for (i in setFields) {
         sql += setFields[i] + "=?,";
@@ -143,16 +144,17 @@ function updateTable(tableName, setFields, setParams, whereStr, wherParams) {
         sql += " where " + whereStr;
         setParams = setParams.concat(wherParams);
     }
-    execSql(sql, setParams);
+    execSql(sql, setParams,callback);
 }
 
 /** 
  * 插入数据 
  * @param tableName 
  * @param insertFields 
- * @param insertParams 
+ * @param insertParams
+ * @param callback 回调
  */
-function insertTable(tableName, insertFields, insertParams) {
+function insertTable(tableName, insertFields, insertParams,callback) {
     var sql = "insert into " + tableName + " (";
     var sql2 = " values(";
     for (i in insertFields) {
@@ -163,7 +165,7 @@ function insertTable(tableName, insertFields, insertParams) {
     sql2 = sql2.substr(0, sql2.length - 1);
     sql += ")";
     sql2 += ")";
-    execSql(sql + sql2, insertParams);
+    execSql(sql + sql2, insertParams,callback);
 }
 
 /** 
@@ -172,13 +174,13 @@ function insertTable(tableName, insertFields, insertParams) {
  * @param whereStr 
  * @param wherParams 
  */
-function deleteRow(tableName, whereStr, wherParams) {
+function deleteRow(tableName, whereStr, wherParams,callback) {
     var sql = "delete from " + tableName;
     if (typeof (whereStr) != "undefined" && typeof (wherParams) != "undefined"
         && whereStr != "") {
         sql += " where " + whereStr;
     }
-    execSql(sql, wherParams);
+    execSql(sql, wherParams,callback);
 }
 
 /** 
@@ -243,21 +245,22 @@ function selectSumSql(tableName, selectFields, whereStr, wherParams, callback) {
  * @param insertFields 
  * @param insertParams 
  * @param key           根据该key来判断是否有数据 
- * @param keyVal         
+ * @param keyVal
+ * @param callback 回调
  */
-function saveOrUpdate(tableName, insertFields, insertParams, key, keyVal) {
+function saveOrUpdate(tableName, insertFields, insertParams, key, keyVal,callback) {
     if (typeof (key) != "undefined" && typeof (keyVal) != "undefined"
         && key != "") {
         select(tableName, insertFields[0], key + "=?", [keyVal], function (rows) {
             if (rows) {
-                updateTable(tableName, insertFields, insertParams, key + "=?", [keyVal]);
+                updateTable(tableName, insertFields, insertParams, key + "=?", [keyVal],callback);
             } else {
                 insertFields.push(key);
                 insertParams.push(keyVal);
-                insertTable(tableName, insertFields, insertParams);
+                insertTable(tableName, insertFields, insertParams,callback);
             }
         })
     } else {
-        insertTable(tableName, insertFields, insertParams);
+        insertTable(tableName, insertFields, insertParams,callback);
     }
 }

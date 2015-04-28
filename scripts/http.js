@@ -23,16 +23,17 @@ function getDataAjax(url, okcall, data, bCache, time) {
         type: 'post',
         url: url,
         data: data,
-        //timeout: 8000,
+        timeout: 8000,
         success: function (object) {
             hideWaitingDialog();
+            var tempString
             if (object != null) {
                 if (object.code == 0) {
                     if (bCache) {
                         saveOrUpdate(tableUrl, ['data', 'time'], [object.data, dicUrlTime.get(url, time)], 'url', url +data);
                     }
                     if (object.data != null) {
-                        var tempString = object.data;
+                        tempString = object.data;
                         if(tempString.indexOf("{") != -1 || tempString.indexOf("[") != -1)
                         {
                             var dataJson = $.parseJSON(object.data);
@@ -48,10 +49,15 @@ function getDataAjax(url, okcall, data, bCache, time) {
                     }
                 }
                 else {
-                    if($.parseJSON(object).message != null){
-                        showGlobalMessageDialog($.parseJSON(object).message);
-                    }
-                    else{
+                    if(typeof(object) == "string")
+                    {
+                        if($.parseJSON(object) && $.parseJSON(object).message != null){
+                            showGlobalMessageDialog($.parseJSON(object).message);
+                        }
+                    }else  if(typeof(object) == "object"){
+                        //showGlobalMessageDialog(object.message);
+                    }else
+                    {
                         showGlobalMessageDialog("获取数据失败");
                     }
                 }
@@ -242,38 +248,8 @@ function btnAdddddicked(id) {
     window.location.href = "#goodgood";
 }
 
-function getProductDes()
-{
-    //var id = "411911104eab42c9941bf729bb888bef";
-    //document.getElementById("infohtml").src = "http://server.1calljifa.com:86/emall/goodsDescript.jsp?id=411911104eab42c9941bf729bb888bef";
-    document.getElementById("infohtml").src = getGoodsDescriptUrl + "?id=" + currentInfoID;
-    //document.getElementById('infohtml').style.visibility = "visible";
-}
-
 function onInfoBack()
 {
     photoSwipe.unsetActivateInstance(instance);
     photoSwipe.activeInstances = [];
-}
-function ongetPageSetting(dataJson)
-{
-    for(var i= 0 ; i < dataJson.length ; i++)
-    {
-        mainPageData[i] = new Object();
-        mainPageData[i]["label"] = dataJson[i].label;
-        mainPageData[i]["pageId"] = dataJson[i].pageId;
-        mainPageData[i]["pageType"] = dataJson[i].pageType;
-        mainPageData[i]["size"] = dataJson[i].size;
-        mainPageData[i]["typeSetting"] = dataJson[i].typeSetting;
-        mainPageData[i]["pageItem"] = new Array();
-        for(j = 0 ; j <dataJson[i].pageItem.length;j++)
-        {
-            mainPageData[i]["pageItem"][j] = new Object();
-            mainPageData[i]["pageItem"][j]["fileId"] = dataJson[i].pageItem[j].fileId;
-            mainPageData[i]["pageItem"][j]["gotoType"] = dataJson[i].pageItem[j].gotoType;
-            mainPageData[i]["pageItem"][j]["gotoValue"] = dataJson[i].pageItem[j].gotoValue;
-            mainPageData[i]["pageItem"][j]["pageItemId"] = dataJson[i].pageItem[j].pageItemId;
-        }
-    }
-
 }

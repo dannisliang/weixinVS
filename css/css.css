@@ -63,18 +63,18 @@ img{ max-width:100%;}
 
 div.col4{ width:100%;  float:left;}
 
-#slideNav .col4 a{ font-size:1.4em; color:#666666;}
+.slideNav_0 .col4 a{ font-size:1.4em; color:#666666;}
 
-.slideNav{ position:relative;left:0; top:0;overflow:hidden; margin:0 auto 1px auto; background:#f6f6f6; border-top:1px solid #e6e8ea; border-bottom:1px solid #e6e8ea; width:100%;/* 设置焦点图最大宽度 */  }
-.slideNav .hd{ position:absolute; width:100%; height:5px; line-height:2px; font-size:2px; bottom:5px; right:0; z-index:1; }
-.slideNav .hd ul{ width:100%; text-align:center;}
-.slideNav .hd li{ display:inline-block; width:5px; height:5px; margin:0px 5px; background:#69696a; text-indent:-9999px; overflow:hidden; border-radius:5px;  }
-.slideNav .hd li.on{ background:#cf342f;  }
+.slideNav_0{ position:relative;left:0; top:0;overflow:hidden; margin:0 auto 1px auto; background:#f6f6f6; border-top:1px solid #e6e8ea; border-bottom:1px solid #e6e8ea; width:100%;/* 设置焦点图最大宽度 */  }
+.slideNav_0 .hd{ position:absolute; width:100%; height:5px; line-height:2px; font-size:2px; bottom:5px; right:0; z-index:1; }
+.slideNav_0 .hd ul{ width:100%; text-align:center;}
+.slideNav_0 .hd li{ display:inline-block; width:5px; height:5px; margin:0px 5px; background:#69696a; text-indent:-9999px; overflow:hidden; border-radius:5px;  }
+.slideNav_0 .hd li.on{ background:#cf342f;  }
 
-.slideNav .bd{ position:relative; z-index:0; }
-.slideNav .bd li{ position:relative; text-align:center;  }
-.slideNav .bd li img{  vertical-align:top; width:100%;  }
-.slideNav .bd li a{ -webkit-tap-highlight-color:rgba(0,0,0,0);  }  /* 去掉链接触摸高亮 */
+.slideNav_0 .bd{ position:relative; z-index:0; }
+.slideNav_0 .bd li{ position:relative; text-align:center;  }
+.slideNav_0 .bd li img{  vertical-align:top; width:100%;  }
+.slideNav_0 .bd li a{ -webkit-tap-highlight-color:rgba(0,0,0,0);  }  /* 去掉链接触摸高亮 */
 
 
 

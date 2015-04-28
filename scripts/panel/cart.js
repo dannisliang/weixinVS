@@ -3,6 +3,8 @@ var carGoodsItem;
 var goodsList;
 var idList;
 var countList;
+var delIDList;
+var delCount;
 //购物车
 $(document).on("panelbeforeload", '#cartPanel', function (e)
 {
@@ -74,7 +76,9 @@ function onGetCartListUrl(dataJson)
         carGoodsList[i].serialVersionUID = dataJson[i].serialVersionUID;
         carGoodsList[i].specificationList = dataJson[i].specificationList;
         carGoodsList[i].unit = dataJson[i].unit;
+        carGoodsList[i].choose = true;
 
+        setCountByID(carGoodsList[i].goodsId,carGoodsList[i].count);
         totalCount += carGoodsList[i].count;
         totlaCost += (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100;
         var tempItem = carGoodsItem.clone();
@@ -89,7 +93,9 @@ function onGetCartListUrl(dataJson)
             parentNode.find("> div >img").attr("src", "images/default_pic.9.png");
         }
 
-
+        parentNode.find("> button").attr("id","button_"+carGoodsList[i].goodsId);
+        parentNode.find("> input").attr("id","check_"+i);
+        parentNode.find("> label").attr("for","check_"+i);
         parentNode.find(".title,fontsize-l,ellipsis").text(carGoodsList[i].goodsTitle);
         parentNode.find(".nowprice,fontsize-xl").text("￥" + carGoodsList[i].price);
         if (carGoodsList[i].priceList.length == 1)
@@ -100,12 +106,12 @@ function onGetCartListUrl(dataJson)
         }
 
         parentNode.find(".total").text("总价:" + (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100);
-        parentNode.find(".reduce,pull-left,text-center").attr("id", "l_" + carGoodsList[i].goodsId);
+        parentNode.find(".reduce,pull-left,text-center").attr("id", "l_" + i);
         parentNode.find(".reduce,pull-left,text-center").attr("onclick", "onCartClick(this)");
-        parentNode.find(".add,pull-left,text-center").attr("id", "r_" + carGoodsList[i].goodsId);
+        parentNode.find(".add,pull-left,text-center").attr("id", "r_" + i);
         parentNode.find(".add,pull-left,text-center").attr("onclick", "onCartClick(this)");
-        parentNode.find(".count,pull-left,text-center").attr("id", "c_"+ carGoodsList[i].goodsId);
-        parentNode.find("#c_"+ carGoodsList[i].goodsId).get(0).value = carGoodsList[i].count;
+        parentNode.find(".count,pull-left,text-center").attr("id", "c_"+ i);
+        parentNode.find("#c_"+ i).get(0).value = carGoodsList[i].count;
         // $("#c_"+ carGoodsList[i].goodsId).get(0).value = carGoodsList[i].count;
     }
     //$(".detailed,list,inset .price .red").text("￥" + totlaCost);
@@ -128,14 +134,49 @@ function onAddresListClick(target)
 function onOrderOk()
 {
     console.log("商品总数 " + getGoodsTotalCount());
-    if(defaulAddressData.areaAddressId  == null)
-    {
+    if(defaulAddressData.areaAddressId  == null ||  carGoodsList.length == 0) {
         return;
     }
-    getDataByURL(postOrdelUrl, onPostOrdel,"receiverId="+defaulAddressData.id);
-    //$.afui.loadContent("#placeorderPanel", false, false, "slide");
+
+    var chooseIDList= "";
+    var chooseCountList = "";
+    delIDList = new Array();
+    delCount = 0;
+    for(var i = 0 ; i < carGoodsList.length ; i++)
+    {
+        if(carGoodsList[i].choose)
+        {
+            chooseIDList += carGoodsList[i].goodsId +",";
+            chooseCountList += carGoodsList[i].count +",";
+            delIDList.push(carGoodsList[i].goodsId);
+            delCount += carGoodsList[i].count;
+        }
+    }
+    if(delIDList.length == 0)
+        return;
+    var data = "";
+    data += "receiverId="+defaulAddressData.id;
+    data += "&remark="+"冰可乐";
+    data += "&points=" + 0;
+    data += "&goodsId=" +chooseIDList;
+    data += "&count=" + chooseCountList;
+    //getDataByURL(postOrdelUrl, onPostOrdel,"receiverId="+defaulAddressData.id);
+    getDataByURL(postOrdelV2Url, onPostV2Ordel,data);
+
 }
-function onPostOrdel(dataJson)
+function onPostV2Ordel(dataJson)
+{
+    if(delIDList && delIDList.length )
+    {
+        for (var i = 0 ;i  < delIDList.length ;i++)
+        {
+            setCountByID(delIDList[i],0);
+        }
+    }
+    //changeNumGoodsCart(delCount,false);
+    $.afui.loadContent("#placeorderPanel", false, false, "transitionYC");
+}
+function getChooseList()
 {
 
 }
@@ -193,27 +234,37 @@ function onCartClick(target)
     var targetID = target.getAttribute("id");
 
     var type = targetID.substr(0,1);
-    var id  = targetID.substr(2);
+    var index  = targetID.substr(2);
+    var id = carGoodsList[index].goodsId;
     switch (type)
     {
         case "l":
-            if(($("#c_"+id).get(0).value) > 0)
+            if(($("#c_"+index).get(0).value) > 0)
             {
-                ($("#c_"+id).get(0).value) --;
-                if(($("#c_"+id).get(0).value) == 0)
+                ($("#c_"+index).get(0).value) --;
+                if(($("#c_"+index).get(0).value) == 0)
+                {
+                    $("#check_" +index).attr("checked",false);
+                    carGoodsList[index].choose = false;
                     deleteGoodsToCart(id);
+                }
             }
             break;
         case "r":
-            if(($("#c_"+id).get(0).value) < 100)
-                ($("#c_"+id).get(0).value) ++;
+            if(($("#c_"+index).get(0).value) < 100)
+                ($("#c_"+index).get(0).value) ++;
             break;
         default :
             break;
     }
-    if(($("#c_"+id).get(0).value) > 0)
+    carGoodsList[index].count = $("#c_"+index).get(0).value;
+
+
+    if(($("#c_"+index).get(0).value) > 0)
     {
-        addGoodsToCart(id,($("#c_"+id).get(0).value));
+        $("#check_" +index).attr("checked",true);
+        addGoodsToCart(id,($("#c_"+index).get(0).value));
+        carGoodsList[index].choose = true;
     }
 }
 //添加商品到购物车
@@ -230,10 +281,24 @@ function onAddCartList(dataJson)
 function deleteGoodsToCart(goodsID)
 {
     var data = "ids="+goodsID;
-    getDataByURL(delCartListUrl, onDelCartList,data);
     setCountByID(goodsID,0);
+    getDataByURL(delCartListUrl, onDelCartList,data);
+
 }
 function onDelCartList(dataJson)
 {
+
+}
+function onLisitCheckClick(target)
+{
+    var id = target.id;
+    var index = String(id).substr(id.indexOf("_") + 1);
+    carGoodsList[index].choose = target.checked;
+    console.log(target.checked +"  " + index) ;
+}
+
+function addCartToFavClicked(target)
+{
+    var id = target.getAttribute("id");
 
 }

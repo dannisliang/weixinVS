@@ -1,5 +1,5 @@
 ﻿//选择学校
-$(document).on("panelload", '#school', function (e)
+$(document).on("panelload", '#schoolPanel', function (e)
 {
     $.afui.showMask();
     $("#schoollist").empty();
@@ -16,7 +16,7 @@ function onItemClick(target)
     }
     target.setAttribute("class", "selbox selbox-current col-xs-6 col-md-4");
     oldItem = target;
-
+    myCompanyId = target.getAttribute("id");
 }
 function onGetCompany(dataJson)
 {
