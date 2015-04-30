@@ -1,4 +1,4 @@
-﻿﻿var DBPATH =  "/data/data/com.narwell.yicall.buyer/appdatabase.db3";
+﻿//﻿var DBPATH =  "/data/data/com.narwell.yicall.buyer/appdatabase.db3";
 //发布地址 http://server.1calljifa.com:82
 //本地地址 http://192.168.2.2:8080
 //var rootUrl = "http://server.1calljifa.com:86";
@@ -119,3 +119,5 @@ var getSpecialOfferGoodsByCategoryIdUrl =  rootUrl+ "/service/rest/emallapp.nolo
 var postOrdelV2Url = rootUrl + "/service/rest/emallapp.login.order.orderService/collection/createOrderForV2";
 //得到同一品名的商品
 var getVarietyGoods = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getVarietyGoods";
+//得到后台设置的热门关键字
+var getHotKeywordUrl = rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getHotKeyword";

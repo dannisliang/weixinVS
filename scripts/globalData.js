@@ -36,6 +36,7 @@ charVec.userInfoLo = "userInfoLo";      // 用户密码
 charVec.headimgurlLo = "headimgurlLo";  // 用户图像
 charVec.openIDLo = "openIDLo";      // 微信openid Lo
 charVec.bindingPhoneCo = "bindingPhoneCo";      // 是否为绑定手机
+charVec.bGetPasswordCo = "bGetPasswordCo";      // 是否为取回密码
 charVec.numGoodsCartLo = "numGoodsCartLo";      // 购物车商品数量
 charVec.goodHeadTittleSe = "goodHeadTittleSe";      // 商品详细页标题
 

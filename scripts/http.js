@@ -40,7 +40,11 @@ function getDataAjax(url, okcall, data, bCache, time) {
                             okcall.apply(this, [dataJson]);
                         }else
                         {
-                            okcall.apply(this, [0]);
+                            if(tempString == 0){
+                                okcall.apply(this, [0]);
+                            }else{
+                                okcall.apply(this, [object.data]);
+                            }
                         }
 
                     } else {
@@ -55,7 +59,7 @@ function getDataAjax(url, okcall, data, bCache, time) {
                             showGlobalMessageDialog($.parseJSON(object).message);
                         }
                     }else  if(typeof(object) == "object"){
-                        //showGlobalMessageDialog(object.message);
+                        showGlobalMessageDialog(object.message);
                     }else
                     {
                         showGlobalMessageDialog("获取数据失败");

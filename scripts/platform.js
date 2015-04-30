@@ -43,7 +43,7 @@ function getMyInfo() {
                     var data = "";
                     data += "url=";
                     // 微信回调网路连接
-                    var rootWeixinUrlCal = "http://o.narwell.com/weixin/indexmine.html";
+                    var rootWeixinUrlCal = "http://test.narwell.cn:89/weixin/indexmine.html";
                     data += rootWeixinUrlCal;
                     //alert(data);
                     getDataByURL(getUserInfoInitWXUrl, getUserInfoInitWXUrlSuc, data);

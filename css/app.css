@@ -224,20 +224,20 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 .Ladder-price .LadderChose{ background:#9800FF}
 
 /*注册*/
-#reg{padding-top:10px;}
-#reg.panel,#regsuccess.panel {display: block !important;}
-#reg .form-group,#reg  p,#reg .row{margin-top:10px;}
-#reg .getcode{width:100px;float:right;margin-top:10px;}
+#reg,#regSuccess{padding-top:10px;}
+#reg.panel,#regSuccess.panel {display: block !important;}
+#reg .form-group,#reg  p,#reg .row, #regSuccess .form-group,#regSuccess  p,#regSuccess .row{margin-top:10px;}
+#reg .getcode, #regSuccess .getcode{width:100px;float:right;margin-top:10px;}
 .code-input{margin-right:105px;}
-#reg .button{background:#ff6000}
-#reg .button.regnow{  width: 100%;}
-#reg p{color:#666666;background:#fff;padding:5px;}
-#reg  a{color:#ff6000;}
+#reg .button, #regSuccess .button{background:#ff6000}
+#reg .button.regnow, #regSuccess .button.regnow{  width: 100%;}
+#reg p, #regSuccess p{color:#666666;background:#fff;padding:5px;}
+#reg  a, #regSuccess  a{color:#ff6000;}
 
-#reg .imagesuccess{width:50%;max-width:400px;margin:10px auto 10px auto;}
-#reg .imagesuccess img{width:100%;}
-#reg .separates{width:100%;background:#fff;border-color:#ccc;color:#303030}
-#reg .complete{width:100%;background:#fff;border-color:#ccc;color:#303030}
+#reg .imagesuccess, #regSuccess .imagesuccess{width:50%;max-width:400px;margin:10px auto 10px auto;}
+#reg .imagesuccess img, #regSuccess .imagesuccess img{width:100%;}
+#reg .separates, #regSuccess .separates{width:100%;background:#fff;border-color:#ccc;color:#303030}
+#reg .complete, #regSuccess .complete{width:100%;background:#fff;border-color:#ccc;color:#303030}
 
 /*个人中心*/
 #mine{margin-bottom:44px; pading-bottom:60px;}

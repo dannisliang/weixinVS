@@ -1,13 +1,16 @@
-﻿function getEmailCodeClicked() {
-    //showCountTime($("#getEmailCodeID"));
-    //var number = $("#phoneNumberReg").get(0).value;
-    //if (number.length != 11) {
-    //    showGlobalMessageDialog("请输入正确的手机号码！！！");
-    //    return;
-    //} else {
-    //    showCountTime($("#getEmailCodeID"));
-    //    //var data = "mobile=" + $("#phoneNumberReg").get(0).value;
-    //    //data += "&codeCase=注册";
-    //    getDataByURL(getVerifyCodeUrl, codeSuccess, data);
-    //}
-}
+﻿$(document).on("panelbeforeload", '#regSucPanel', function (e) {
+    if(getSession(charVec.bindingPhoneCo)){
+        $("#regSuccess .complete").text("绑定成功");
+        $("#regSucHead h1").text("绑定手机号");
+        setSession(charVec.bindingPhoneCo, false);
+    }else if(getSession(charVec.bGetPasswordCo)){
+        $("#regSucHead h1").text("取回密码成功");
+        $("#regSuccess .complete").text("取回密码成功");
+        setSession(charVec.bGetPasswordCo, false);
+    }
+    else
+    {
+        $("#regSucHead h1").text("注册成功");
+        $("#regSuccess .complete").text("注册成功");
+    }
+});

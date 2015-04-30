@@ -1,4 +1,19 @@
-﻿$(document).on("panelload", '#prolistPanel', function (e) {
+﻿$(document).on("panelbeforeload", '#prolistPanel', function (e) {
+    noRegularlyListInit = function (){
+        $("#pro-sort .sort-pro-list").show();
+        $("#pro-sort .sort-left").show();
+        $("#pro-sort .sort-pro-list .topad img").show();
+        $("#pro-sort .sort-pro-list .list-mod").show();
+        $("#pro-sort .sort-pro-list .sorts").show();
+        $("#pro-sort .sort-pro-list").css({
+            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
+            "width":"", "margin-left":"",
+        });
+    }
+});
+
+$(document).on("panelload", '#prolistPanel', function (e) {
     function resetUrlData(){
         goods.page = 1;
     }
@@ -293,6 +308,7 @@
             - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
     });
 
+    noRegularlyListInit();
     //$("#splitLeft").css({
     //    "width": (widthSortLeft - 8 + "px"),
     //    "display": "block",
@@ -300,6 +316,7 @@
     //fitSortRight();
     getDataByURL(getCategoryByLeftUrl, onSortLeftSuccess, "", true);
     //getDataByURL(getCategoryByRightUrl, onSortRightSuccess, "id=613f3f8d6b134ca3b290e33a04610a92", true);
+    bRefreshProlist = true;
     getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
     $("#pro-sort .sort-pro-list .topad img").hide();
     $("#tagProlist").parent().hide();
@@ -386,7 +403,7 @@ function getGoodListUrlSuccess(dataJson){
         for(var i= 0; i<dataJson.length; i++){
             var goodSample = $tempList.clone();
             goodSample.show();
-            dataJson[i].price = (dataJson[i].price).toFixed(1);
+            dataJson[i].price = (parseFloat(dataJson[i].price)).toFixed(1);
             var index = (goods.page -1) *goods.rows +i;
             goodsPageId[index] = dataJson[i].id;
             goodSample.attr("id", "goodsList" +index);
@@ -397,14 +414,25 @@ function getGoodListUrlSuccess(dataJson){
                 goodSample.find(".item .img img").attr("src", "images/temp/pro.png");
             }
             goodSample.find(".title.fontsize-n.ellipsis").text(dataJson[i].name);
+            if(dataJson[i].subTitle != null){
+                goodSample.find(".intro").show();
+                goodSample.find(".intro").text(dataJson[i].subTitle);
+            }
             goodsHeadTittle[index] = dataJson[i].name;
             goodSample.find(".nowprice").text("￥ " +dataJson[i].price);
+            if(dataJson[i].price < dataJson[i].costPrice){
+                goodSample.find(".nowprice").show();
+                goodSample.find(".nowprice").text("￥ " +dataJson[i].costPrice);
+            }
             goodSample.find(".addfav").attr("onclick" ,"addFavClicked(" +index +")");
             bAddFavArr[index] = dataJson[i].isCollect;
             if(dataJson[i].isCollect){
                 goodSample.find(".addfav").text("已收藏");
             }else{
                 goodSample.find(".addfav").text("收藏");
+            }
+            if(dataJson[i].isPriceList){
+                goodSample.find("#moreDiscountProlist").show();
             }
             goodSample.find(".setcount .reduce").attr("onclick" ,"reduceButtonProlistClicked(" +index +")");
             goodSample.find(".setcount .add").attr("onclick" ,"addButtonProlistClicked(" +index +")");
@@ -452,7 +480,6 @@ function getGoodListUrlSuccess(dataJson){
                 $("#goodsList" +index).find(".setcount .reduce").hide();
             }
             setCountByID(goodsPageId[index], $("#goodCountProlist" +index).get(0).value);
-            changeNumGoodsCart(1, false);
         }
     }
 
@@ -461,7 +488,6 @@ function getGoodListUrlSuccess(dataJson){
         $("#goodsList" +index).find(".setcount .reduce").show();
         $("#goodCountProlist" +index).get(0).value++;
         setCountByID(goodsPageId[index], $("#goodCountProlist" +index).get(0).value);
-        changeNumGoodsCart(1, true);
     }
 
     prolistRightClicked = function(index){

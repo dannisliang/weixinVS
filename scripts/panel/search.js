@@ -1,6 +1,14 @@
 ﻿// 搜索页面
 var searchSuggest;
 var historySearch = new Array();
+$(document).on("panelbeforeload", '#searchPanel', function (e) {
+    $("#pro-sort .sort-pro-list .topad img").hide();
+    $("#pro-sort .sort-pro-list .list-mod").hide();
+    $("#sortsProlist").hide();
+    $("#pro-sort .sort-pro-list").hide();
+    $("#pro-sort .sort-left").hide();
+});
+
 
 $(document).on("panelload", '#searchPanel', function (e) {
     $(document).ready(function () {
@@ -18,42 +26,193 @@ $(document).on("panelload", '#searchPanel', function (e) {
         console.log($("#searchId").get(0).value);
     });
 
+    // 获取热门搜索关键字成功
+    getHotKeywordUrlSuccess = function(dataJson){
+        commonATextSearch(dataJson.split(","), $("#hotSearch"), getHotKeywordCal);
+    }
+
+    getHotKeywordCal = function(index, $div){
+        $div.attr("onclick", "getSearchGoodByKeyword(\"1" +index +"\")");
+    }
+
+    getSearchGoodByKeyword = function(index){
+        if(parseInt(index/10) == 1){
+            getSearchGoodUrl($("#hotSearch").find("a:eq(" +index%10 +")").text());
+        }else{
+            bHistoryClicked = true;
+            getSearchGoodUrl($("#historySearch").find("a:eq(" +index%10 +")").text());
+        }
+    }
+
+    //设置热门关键字
+    commonATextSearch = function (arrText, div, callback){
+        for(var i=0;i<arrText.length;i++){
+            var $child = div.find("a").first().clone();
+            if(i == 0){
+                div.find("a").remove();
+            }
+            $child.text(arrText[i]);
+            getHotKeywordCal(i, $child);
+            $child.show();
+            div.append($child);
+        }
+    }
+
+    // 获取历史搜索关键字
+    getHistoryKeyword = function(){
+        for(var i = 0; i< numHistory;i++){
+            if(getLocal("historySearch" +i) != ""){
+                var $tempDiv =  $("#historySearch").find("a").first().clone();
+                if(i == 0){
+                    $("#historySearch").find("a").remove();
+                }
+                $("#historySearch").append($tempDiv );
+                $tempDiv.show();
+                $tempDiv.text(getLocal("historySearch" +i));
+                $tempDiv.attr("onclick", "getSearchGoodByKeyword(\"0" +i +"\")");
+            }else{
+                break;
+            }
+            $("#historySearch").find("a:hidden").remove();
+        }
+    }
+
+    getDataByURL(getHotKeywordUrl, getHotKeywordUrlSuccess, true);
+    getHistoryKeyword();
+    // 页面加载初始化
+    goods.page = 1;
+
     //实例化输入提示的JS,参数为进行查询操作时要调用的函数名  
     searchSuggest = new oSearchSuggest(sendKeyWordToBack);
 
-    // scroll
-    if( ! bLoadRightSearch){
-        loadContentSearch();
-        bLoadRightSearch = true;
+    var firstIdSearch = new Object();   // 一级分类中有商品的分类id
+    var successJson = new Object();
+    searchGoodUrlSuccess = function(dataJson){
+        if(dataJson.length != 0){
+            successJson = dataJson;
+            $("#pro-sort .sort-pro-list").show();
+            $("#pro-sort .sort-left").show();
+            // 统计一级分类商品数量
+            $("#pro-sort .sort-left .sort-list li").first().removeClass("current");
+            var $div = $("#pro-sort .sort-left .sort-list li").first().clone();
+            $("#pro-sort .sort-left .sort-list li").remove();
+            $div.find("a").attr("onclick", "sortLeftSearchClicked(0, this)");
+            $div.find("a").text("搜索结果(" +dataJson.length +")");
+            $("#pro-sort .sort-left .sort-list").prepend($div);
+            getDataByURL(getCategoryByLeftUrl, function(dataSortJson){
+                firstIdSearch.clear;
+                for(var i=0;i<dataSortJson.length;i++){
+                    $div = $("#pro-sort .sort-left .sort-list li").first().clone();
+                    $div.find("a").attr("onclick", "sortLeftSearchClicked(" +i +", this)");
+                    var bExist = false;
+                    var numGoods = 0;
+                    for(var j = 0;j< dataJson.length;j++){
+                        if(dataJson[j].parentCategoryId == dataSortJson[i].id){
+                            numGoods++;
+                            $div.find("a").text(dataSortJson[i].text +"(" +numGoods +")");
+                            bExist = true;
+                            firstIdSearch["sortLeftSearch" +i] = dataSortJson[i].id;
+                        }
+                    }
+                    if(bExist){
+                        $("#pro-sort .sort-left .sort-list").append($div);
+                    }
+                }
+                $("#pro-sort .sort-left .sort-list").find("li:eq(0)").addClass("current");
+            }, "", true);
+            getGoodListUrlSuccess(dataJson);
+        }else{
+            showGlobalMessageDialog("您搜索的商品还在月球上。。。");
+        }
+    }
+
+    sortLeftSearchClicked = function(index, $div){
+        if($div.parentElement.className == "current"){
+            return;
+        }
+        $("#pro-sort .sort-left .sort-list li").each(function(idx, elm){
+            if($(elm)[0] == $div.parentElement){
+                $(elm).addClass("current");
+            }else{
+                $(elm).removeClass("current");
+            }
+        })
+        if(index == 0){
+            getGoodListUrlSuccess(successJson);
+        }else{
+            var selectId = firstIdSearch["sortLeftSearch" +index];
+            var tempJson = new Array();
+            for(var i= 0,j=0;i<successJson.length;i++){
+                if(successJson[i].parentCategoryId == selectId){
+                    tempJson[j] = successJson[i];
+                    j++;
+                    tempJson.length = j;
+                }
+            }
+            bRefreshProlist = true;
+            getGoodListUrlSuccess(tempJson);
+        }
     }
 });
 
-var bCheckHistory = false;  // 是否检测完本地存储历史搜索
+var bHistoryClicked = false;  // 是否检测完本地存储历史搜索
+var numHistory = 10;    // 历史搜索数量
 function getSearchGoodUrl(value) {
     if (value == null) {
         value = $("#searchId").get(0).value;
     }
-    console.log(value);
-    if( ! bCheckHistory){
-        var $tempDiv =  $("#historySearch").first().clone();
-        for(var i = 0; ;i++){
-            if(getLocal("historySearch" +i) != ""){
-                $("#historySearch").append($tempDiv );
-                $tempDiv.text(getLocal("historySearch" +i));
-                $tempDiv.attr("onclick", "getSearchGoodUrl(" +getLocal("historySearch" +i) +")");
-            }else{
+    if(value != ""){
+        var i=0;
+        var bExist = false;
+        var tempValue;
+        for(; i<numHistory;i++){
+            if(getLocal("historySearch" +i) == ""){
+                break;
+            }else if(getLocal("historySearch" +i) != "" && getLocal("historySearch" +i) == value){
+                // 当前点击的历史搜索置顶
+                tempValue = getLocal("historySearch" +0);
+                var $firstdiv = $("#historySearch").find("a:eq(0)");
+                $firstdiv.text(value);
+                setLocal("historySearch" +0, value);
+                var $changeDiv = $("#historySearch").find("a:eq(" +i +")");
+                $changeDiv.text(tempValue);
+                setLocal("historySearch" +i, tempValue);
+                bExist = true;
                 break;
             }
         }
-    }
-    if(value != ""){
-        setLocal("historySearch" +historySearch.length, value);
+        if( ! bExist && ! bHistoryClicked){
+            if(i<10){
+                var $child = $("#historySearch").find("a").first().clone();
+                $("#historySearch").find("a:hidden").remove();
+                $child.attr("onclick", "getSearchGoodByKeyword(\"0" +i +"\")");
+                $child.show();
+                $("#historySearch").append($child);
+            }else{
+                //$("#historySearch").find("a:eq(" +numHistory-1 +")").remove();
+            }
+            for(var j=i;j> -1; j--){
+                if(j != 0){
+                    setLocal("historySearch" +j, getLocal("historySearch" +(j-1)));
+                    $("#historySearch").find("a:eq(" +j +")").text(getLocal("historySearch" +(j-1)));
+                }else{
+                    var $firstdiv = $("#historySearch").find("a:eq(0)");
+                    $firstdiv.text(value);
+                    setLocal("historySearch" +0, value);
+                }
+            }
+        }
+        bHistoryClicked = false;
+        var data = "buyerId=" +userInfo.id;
+        data += "&keyword=" +value;
+        data += "&page=" +goods.page;
+        getDataByURL(searchGoodUrl, searchGoodUrlSuccess, data, true);
     }else{
         showGlobalMessageDialog("请输入搜索内容！");
     }
 }
 
-//实现搜索输入框的输入提示js类  
+// 实现搜索输入框的输入提示js类
 function oSearchSuggest(searchFuc) {
     var input = $('#searchId');
     var suggestWrap = $('#gov_search_suggest');
@@ -181,299 +340,4 @@ function sendKeyWordToBack(keyword) {
     aData.push(keyword + '2012是假的');
     //将返回的数据传递给实现搜索输入框的输入提示js类  
     searchSuggest.dataDisplay(aData);
-}
-
-var bRefreshSearch = false;
-var bLoadRightSearch = false;
-var goodsHeadTittleSearch = new Array();  // 商品详细页标题
-var bAddFavArrSearch = new Array();   // 是否已收藏
-var goodsPageId = new Array();  // 商品页Id
-
-// 浏览加载需重置的参数
-var bShowNextPageSearch = true;       // 是否显示下一页。。当没有更多内容时，设置为false
-var searchScroll;
-
-function loadGoodsListSearch(bRefresh){
-    if(bShowNextPage){
-        bRefreshSearch = bRefresh;
-        var data = "";
-        data += "companyId=" +goods.companyId;
-        data += "&categoryId=" +goods.categoryId;
-        data += "&rows=" + goods.rows;
-        data += "&sort=" + goods.sort;
-        data += "&order=" + goods.order;
-        data += "&page=" + goods.page;
-        data += "&buyerId=" +userInfo.id;
-        getDataByURL(getGoodListUrl, getGoodListUrlSuccessSearch, data, true);
-    }
-}
-
-function getGoodListUrlSuccessSearch(dataJson){
-    var bLoadContent = true;    // 是否加载商品详细页
-
-    if( dataJson.length >= 1){
-        var $tempList = $("#goodsListSearch");
-        if($("#goodsListSearch").length == 0){
-            $tempList = $("#goodsListSearch0");
-        }else{
-            //$("#goodsList").show();
-        }
-        if(bRefreshSearch){
-            $("#goodsListSearch").remove();
-            $("#scrollerSearch ul a").empty();
-        }
-        for(var i= 0; i<dataJson.length; i++){
-            var goodSample = $tempList.clone();
-            goodSample.show();
-            dataJson[i].price = (dataJson[i].price).toFixed(1);
-            var index = (goods.page -1) *goods.rows +i;
-            goodsPageId[index] = dataJson[i].id;
-            goodSample.attr("id", "goodsListSearch" +index);
-            goodSample.attr("onclick", "rightClickedSearch(" +index +")");
-            if (dataJson[i].pictureId != ""){
-                goodSample.find(".item .img img").attr("src", getImageUrl + dataJson[i].pictureId + "?thumb=73x73");
-            }else{
-                goodSample.find(".item .img img").attr("src", "images/temp/pro.png");
-            }
-            goodSample.find(".title.fontsize-n.ellipsis").text(dataJson[i].name);
-            goodsHeadTittleSearch[index] = dataJson[i].name;
-            goodSample.find(".nowprice").text("￥ " +dataJson[i].price);
-            goodSample.find(".addfav").attr("onclick" ,"addFavClickedSearch(" +index +")");
-            bAddFavArrSearch[index] = dataJson[i].isCollect;
-            if(dataJson[i].isCollect){
-                goodSample.find(".addfav").text("已收藏");
-            }else{
-                goodSample.find(".addfav").text("收藏");
-            }
-            goodSample.find(".setcount .reduce").attr("onclick" ,"reduceButtonClickedSearch(" +index +")");
-            goodSample.find(".setcount .add").attr("onclick" ,"addButtonClickedSearch(" +index +")");
-            goodSample.find(".setcount .count").attr("id" ,"goodCountSearch" +index);
-            getGoodsCountByID(goodsPageId[index], function setGoodCount(count, index){
-                if($("#goodCountSearch" +index).get(0) != null){
-                    $("#goodCountSearch" +index).get(0).value = count;
-                    if($("#goodCountSearch" +index).get(0).value == 0){
-                        $("#goodsListSearch" +index).find(".setcount .reduce").hide();
-                    }
-                }
-            }, index);
-            $("#scrollerSearch ul").append(goodSample);
-        }
-    }else if(dataJson.length == 0){
-        bShowNextPage = false;
-    }
-
-    addFavClickedSearch = function(index){
-        bLoadContent = false;
-        var data = "id=" +goodsPageId[index];
-        if(bAddFavArrSearch[index]){
-            getDataByURL(delCollectionUrl, function(dataJson){
-                $("#goodsListSearch" +index).find(".addfav").text("收藏");
-                bAddFavArrSearch[index] = false;
-            }, data);
-        }else{
-            getDataByURL(addCollectionUrl, function(dataJson){
-                $("#goodsListSearch" +index).find(".addfav").text("已收藏");
-                bAddFavArrSearch[index] = true;
-            }, data);
-        }
-    }
-
-    reduceButtonClickedSearch = function (index){
-        bLoadContent = false;
-        if($("#goodCountSearch" +index).get(0).value != 0){
-            $("#goodCountSearch" +index).get(0).value--;
-            if($("#goodCountSearch" +index).get(0).value == 0){
-                $("#goodsListSearch" +index).find(".setcount .reduce").hide();
-            }
-            setCountByID(goodsPageId[index], $("#goodCountSearch" +index).get(0).value);
-            changeNumGoodsCart(1, false);
-        }
-    }
-
-    addButtonClickedSearch = function (index){
-        bLoadContent = false;
-        $("#goodsListSearch" +index).find(".setcount .reduce").show();
-        $("#goodCountSearch" +index).get(0).value++;
-        setCountByID(goodsPageId[index], $("#goodCountSearch" +index).get(0).value);
-        changeNumGoodsCart(1, true);
-    }
-
-    rightClickedSearch = function(index){
-        if(bLoadContent){
-            setSession(charVec.goodHeadTittleSe, goodsHeadTittleSearch[index]);
-            $.afui.loadContent("#proviewPanel", false, false, transitionYC);
-        }
-        bLoadContent = true;
-    }
-}
-
-loadContentSearch = function (refresh, next_page) {
-    // This is a DEMO function which generates DEMO content into the scrollerSearch.
-    // Here you should place your AJAX request to fetch the relevant content (e.g. $.post(...))
-    console.log(refresh, next_page);
-    setTimeout(function () { // This immitates the CALLBACK of your AJAX function
-        if (!refresh) {
-            // Loading the initial content
-            loadGoodsListSearch(true);
-        } else if (refresh && !next_page) {
-            // Refreshing the content
-            //loadGoodsList();
-        } else if (refresh && next_page) {
-            // Loading the next-page content and refreshing
-            goods.page++;
-            loadGoodsListSearch(false);
-        }
-        if (refresh) {
-            searchScroll.refresh();
-            pullActionCallbackSearch();
-
-        } else {
-            if (searchScroll) {
-                searchScroll.destroy();
-                $(searchScroll.scroller).attr('style', ''); // Required since the styles applied by IScroll might conflict with transitions of parent layers.
-                searchScroll = null;
-            }
-            trigger_searchScrollSearch();
-        }
-    }, 0);
-};
-function pullDownActionSearch() {
-    //loadContentSearch('refresh');
-    //$('#wrapperSearch > #scrollerSearch > ul').data('page', 1);
-    //// Since "topOffset" is not supported with iscroll-5
-    //$('#wrapperSearch > .scrollerSearch').css({ top: 0 });
-}
-function pullUpActionSearch(callback) {
-    if ($('#wrapperSearch > #scrollerSearch > ul').data('page')) {
-        var next_page = parseInt($('#wrapperSearch > #scrollerSearch > ul').data('page'), 10) + 1;
-    } else {
-        var next_page = 2;
-    }
-    loadContentSearch('refresh', next_page);
-    $('#wrapperSearch > #scrollerSearch > ul').data('page', next_page);
-    if (callback) {
-        callback();
-    }
-}
-function pullActionCallbackSearch() {
-    if (pullDownEl && pullDownEl.className.match('loading')) {
-        pullDownEl.className = 'pullDown';
-        pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉加载...';
-        searchScroll.scrollTo(0, parseInt(pullUpOffset) * (-1), 60);
-    } else if (pullUpEl && pullUpEl.className.match('loading')) {
-        $('.pullUp').removeClass('loading').html('');
-    }
-}
-
-var pullActionDetectSearch = {
-    count: 0,
-    limit: 10,
-    check: function (count) {
-        if (count) {
-            pullActionDetectSearch.count = 0;
-        }
-        // Detects whether the momentum has stopped, and if it has reached the end - 200px of the scroller - it trigger the pullUpAction
-        setTimeout(function () {
-            if(beforeScrollY == 0){
-                beforeScrollY = searchScroll.y;
-                $("#pro-sort .sort-pro-list .topad img").hide();
-                $("#pro-sort .sort-pro-list .list-mod").hide();
-            }else{
-                if(searchScroll.y <= beforeScrollY){
-                    $("#pro-sort .sort-pro-list .list-mod").hide();
-                }else{
-                    $("#pro-sort .sort-pro-list .list-mod").show();
-                }
-                beforeScrollY = searchScroll.y;
-            }
-            if (searchScroll.y <= (searchScroll.maxScrollY + 2000) && pullUpEl && !pullUpEl.className.match('loading') && bShowNextPage) {
-                $('.pullUp').addClass('loading').html('<span class="pullUpIcon">&nbsp;</span><span class="pullUpLabel">加载中...</span>');
-                pullUpActionSearch();
-            } else if (pullActionDetectSearch.count < pullActionDetectSearch.limit) {
-                pullActionDetectSearch.check();
-                pullActionDetectSearch.count++;
-            } else if( ! bShowNextPage && searchScroll.y <= searchScroll.maxScrollY +30){
-                showGlobalMessageDialog("已经是最后一页了。。。");
-            }else if(searchScroll.y >= 0){
-                $("#pro-sort .sort-pro-list .list-mod").show();
-                $("#pro-sort .sort-pro-list .topad img").show();
-            }
-        }, 200);
-    }
-}
-
-function trigger_searchScrollSearch(offset) {
-    pullDownEl = document.querySelector('#wrapperSearch .pullDown');
-    if (pullDownEl) {
-        pullDownOffset = pullDownEl.offsetHeight;
-    } else {
-        pullDownOffset = 0;
-    }
-    pullUpEl = document.querySelector('#wrapperSearch .pullUp');
-    if (pullUpEl) {
-        pullUpOffset = pullUpEl.offsetHeight;
-    } else {
-        pullUpOffset = 0;
-    }
-
-    if ($('#wrapperSearch ul > li').length < items_per_page) {
-        // If we have only 1 page of result - we hide the pullup and pulldown indicators.
-        $('#wrapperSearch .pullDown').hide();
-        $('#wrapperSearch .pullUp span').hide();
-        offset = 0;
-    } else if (!offset) {
-        // If we have more than 1 page of results and offset is not manually defined - we set it to be the pullUpOffset.
-        offset = pullUpOffset;
-    }
-
-    searchScroll = new IScroll('#wrapperSearch', {
-        probeType: 1, tap: true, click: false, preventDefaultException: { tagName: /.*/ }, mouseWheel: true, scrollbars: true, fadeScrollbars: true, interactiveScrollbars: false, keyBindings: false,
-        deceleration: 0.0002,
-        startY: (parseInt(offset) * (-1))
-    });
-
-    searchScroll.on('scrollStart', function () {
-        scroll_in_progress = true;
-    });
-    searchScroll.on('scroll', function () {
-
-        scroll_in_progress = true;
-
-        if ($('#wrapperSearch ul > li').length >= items_per_page) {
-            if (this.y >= 5 && pullDownEl && !pullDownEl.className.match('flip')) {
-                pullDownEl.className = 'pullDown flip';
-                pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始加载...';
-                this.minScrollY = 0;
-            } else if (this.y <= 5 && pullDownEl && pullDownEl.className.match('flip')) {
-                pullDownEl.className = 'pullDown';
-                pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉加载...';
-                this.minScrollY = -pullDownOffset;
-            }
-
-            console.log(this.y);
-            pullActionDetectSearch.check(0);
-
-        }
-    });
-    searchScroll.on('scrollEnd', function () {
-        //console.log('scroll ended');
-        setTimeout(function () {
-            scroll_in_progress = false;
-        }, 100);
-        if ($('#wrapperSearch ul > li').length >= items_per_page || $('#wrapperSearch ul > li').length == numLiNorefresh) {
-            if (pullDownEl && pullDownEl.className.match('flip')) {
-                pullDownEl.className = 'pullDown loading';
-                pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';
-                pullDownActionSearch();
-            }
-            // We let the momentum scroll finish, and if reached the end - loading the next page
-            pullActionDetectSearch.check(0);
-        }
-    });
-
-    // In order to prevent seeing the "pull down to refresh" before the iScoll is trigger - the wrapperSearch is located at left:-9999px and returned to left:0 after the iScoll is initiated
-    setTimeout(function () {
-        $('#wrapperSearch').css({
-        });
-    }, 100);
 }

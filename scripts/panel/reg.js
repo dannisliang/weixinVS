@@ -5,12 +5,24 @@
         $("#regNowBtn").text("立即绑定");
         $("#hintLoginReg").hide();
         setSession(charVec.bindingPhoneCo, false);
-    }else{
+        chooseSelectReg = 1;
+    }else if(getSession(charVec.bGetPasswordCo)){
+        $("#headReg h1").text("取回密码");
+        $("#regNowBtn").text("取回密码");
+        $("#hintLoginReg").hide();
+        setSession(charVec.bGetPasswordCo, false);
+        chooseSelectReg = 2;
+    }
+    else
+    {
         $("#headReg h1").text("注册");
         $("#regNowBtn").text("立即注册");
         $("#hintLoginReg").show();
+        chooseSelectReg = 0;
     }
 });
+
+var chooseSelectReg = 0;   // 0 为注册，1为绑定手机，2为取回密码
 
 function getcodeRegClicked() {
     var number = $("#phoneNumberReg").get(0).value;
@@ -18,17 +30,27 @@ function getcodeRegClicked() {
         showGlobalMessageDialog("请输入正确的手机号码！！！");
         return;
     } else {
-        $("#messHit").text("已经向" + $("#phoneNumberReg").get(0).value + "的手机发送了验证码，如果没有收到验证码请在1分钟后重新获取。");
-        $("#messHit").show();
-        showCountTime($("#getcodeReg"));
-        var data = "mobile=" +$("#phoneNumberReg").get(0).value;
-        data += "&codeCase=注册";
-        getDataByURL(getVerifyCodeUrl, codeSuccess, data);
+        switch (chooseSelectReg){
+            case 0:
+                var data = "mobile=" +$("#phoneNumberReg").get(0).value;
+                data += "&codeCase=注册";
+                getDataByURL(getVerifyCodeUrl, codeSuccess, data);
+                break;
+            case 1:
+                getDataByURL(getVerifyCodeUrl, codeSuccess, data);
+                break;
+            case 2:
+                var data = "contactPhone=" +$("#phoneNumberReg").get(0).value;
+                getDataByURL(resetPasswordStep1, codeSuccess, data);
+                break;
+        }
     }
 }
 
 function codeSuccess(dataJson) {
-
+    $("#messHit").text("已经向" + $("#phoneNumberReg").get(0).value + "的手机发送了验证码，如果没有收到验证码请在1分钟后重新获取。");
+    $("#messHit").show();
+    showCountTime($("#getcodeReg"));
 }
 
 function regNow() {
@@ -45,18 +67,43 @@ function regNow() {
         return;
     }
     var data = "";
-    data += "password=" + $("#passwordReg").get(0).value;
-    data += "&phone=" + $("#phoneNumberReg").get(0).value;
-    data += "&code=" + $("#codeReg").get(0).value;
-    data += "&referrer=";
-    if(isWeixin || $.os.chrome){
-        data += "&openId=" +getLocal(charVec.openIDLo);
-        getDataByURL(bindingPhoneByOpenIdUrl, regSuccess, data);
-    }else{
-        getDataByURL(registerUrl, regSuccess, data);
+    switch (chooseSelectReg){
+        case 0:
+            data += "password=" + $("#passwordReg").get(0).value;
+            data += "&phone=" + $("#phoneNumberReg").get(0).value;
+            data += "&code=" + $("#codeReg").get(0).value;
+            data += "&referrer=";
+            getDataByURL(registerUrl, regSuccess, data);
+            break;
+        case 1:
+            if(isWeixin || $.os.chrome){
+                data += "password=" + $("#passwordReg").get(0).value;
+                data += "&phone=" + $("#phoneNumberReg").get(0).value;
+                data += "&code=" + $("#codeReg").get(0).value;
+                data += "&referrer=";
+                data += "&openId=" +getLocal(charVec.openIDLo);
+                getDataByURL(bindingPhoneByOpenIdUrl, regSuccess, data);
+            }
+            break;
+        case 2:
+            data += "password=" + $.md5($("#passwordReg").get(0).value);
+            data += "&contactPhone=" + $("#phoneNumberReg").get(0).value;
+            data += "&smsCode=" + $("#codeReg").get(0).value;
+            getDataByURL(resetPasswordStep2, regSuccess, data);
+            break;
     }
 }
 
 function regSuccess(dataJson) {
+    switch (chooseSelectReg){
+        case 0:
+            break;
+        case 1:
+            setSession(charVec.bindingPhoneCo, true);
+            break;
+        case 2:
+            setSession(charVec.bGetPasswordCo, true);
+            break;
+    }
     $.afui.loadContent("#regSucPanel", false, false, transitionYC);
 }
