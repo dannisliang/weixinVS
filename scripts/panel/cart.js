@@ -76,13 +76,12 @@ function onGetDefualtAddressUrl(dataJson)
             $("#defaultadd").text("");
             document.getElementById("defaultaddressradio_1").style.visibility ="hidden";
         }
-
-    }
-    if(defaulAddressData.id  && userInfo.id)
-    {
-        var data = "areaAddressId=" + defaulAddressData.id;
-        data += "&buyerId=" + userInfo.id;
-        getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
+        if(defaulAddressData.id  && userInfo.id)
+        {
+            var data = "areaAddressId=" + defaulAddressData.id;
+            data += "&buyerId=" + userInfo.id;
+            getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
+        }
     }
 }
 //购物车商品列表
@@ -118,9 +117,9 @@ function onGetCartListUrl(dataJson)
 
         setCountByID(carGoodsList[i].goodsId,carGoodsList[i].count);
         var tempItem = carGoodsItem.clone();
-        tempItem.attr("id", i);
+        tempItem.attr("id", "cart_" + i);
         $("#cargoodslist").append(tempItem);
-        var parentNode = $("#cargoodslist #" + i);
+        var parentNode = $("#cargoodslist #" + ("cart_" + i));
         if (carGoodsList[i].img != "")
         {
             parentNode.find("> div >img").attr("src", getImageUrl + carGoodsList[i].img + "?thumb=80x80");
@@ -155,8 +154,15 @@ function onGetCartListUrl(dataJson)
         parentNode.find(".add,pull-left,text-center").attr("id", "r_" + i);
         parentNode.find(".add,pull-left,text-center").attr("onclick", "onCartClick(this)");
         parentNode.find(".count,pull-left,text-center").attr("id", "c_"+ i);
-        parentNode.find("#c_"+ i).get(0).value = carGoodsList[i].count;
-        // $("#c_"+ carGoodsList[i].goodsId).get(0).value = carGoodsList[i].count;
+        parentNode.find(".carstock").attr("id", "stock_"+ i);
+        $("#c_"+ i).get(0).value = carGoodsList[i].count;
+
+        if(defaulAddressData.id  && userInfo.id)
+        {
+            var data = "areaAddressId=" + defaulAddressData.id;
+            data += "&buyerId=" + userInfo.id;
+            getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
+        }
     }
     getChooseList();
 }
@@ -190,6 +196,7 @@ function onOrderOk()
     data += "&points=" + ($("#points").get(0).value ? $("#points").get(0).value :0) ;
     data += "&goodsId=" +chooseIDList;
     data += "&count=" + chooseCountList;
+    orderPoints = ($("#points").get(0).value ? $("#points").get(0).value :0);
     //getDataByURL(postOrdelUrl, onPostOrdel,"receiverId="+defaulAddressData.id);
     getDataByURL(postOrdelV2Url, onPostV2Ordel,data);
 
@@ -292,25 +299,32 @@ function onCartClick(target)
                     document.getElementById("check_" + index).checked  = false;
                     carGoodsList[index].choose = false;
                     deleteGoodsToCart(id);
+                }else{
+                    if(Number(($("#c_"+index).get(0).value)) > 0)
+                    {
+                        document.getElementById("check_" + index).checked  = true;
+                        addGoodsToCart(id,($("#c_"+index).get(0).value));
+                        carGoodsList[index].choose = true;
+                    }
                 }
             }
             break;
         case "r":
-            if(($("#c_"+index).get(0).value) < 100)
+            if(Number(($("#c_"+index).get(0).value)) < Number($("#c_"+index).get(0).max))
+            {
                 ($("#c_"+index).get(0).value) ++;
+                if((Number($("#c_"+index).get(0).value)) > 0)
+                {
+                    document.getElementById("check_" + index).checked  = true;
+                    addGoodsToCart(id,($("#c_"+index).get(0).value));
+                    carGoodsList[index].choose = true;
+                }
+            }
             break;
         default :
             break;
     }
     carGoodsList[index].count = $("#c_"+index).get(0).value;
-
-
-    if(($("#c_"+index).get(0).value) > 0)
-    {
-        document.getElementById("check_" + index).checked  = true;
-        addGoodsToCart(id,($("#c_"+index).get(0).value));
-        carGoodsList[index].choose = true;
-    }
     getChooseList();
 }
 //添加商品到购物车
@@ -351,22 +365,22 @@ function addCartToFavClicked(target)
     if(carGoodsList[index].isCollection){
 
         addItemToCollect(carGoodsList[index].goodsId,function(data){
-         alert(data);
+            alert(data);
         })
         /*data = "goodsIds=" + carGoodsList[index].goodsId;
-        getDataByURL(delCollectionByGoodsIds, function(dataJson){
-            //$("#cargoodslist #" + i).find(".addfav").text("收藏");
-            carGoodsList[index].isCollection = false;
-        }, data);*/
+         getDataByURL(delCollectionByGoodsIds, function(dataJson){
+         //$("#cargoodslist #" + i).find(".addfav").text("收藏");
+         carGoodsList[index].isCollection = false;
+         }, data);*/
     }else{
         delItemToCollect(carGoodsList[index].goodsId,function(data){
 
         })
         /*data = "id=" + carGoodsList[index].goodsId;
-        getDataByURL(addCollectionUrl, function(dataJson){
-           // $("#cargoodslist #" + i).find(".addfav").text("已收藏");
-            carGoodsList[index].isCollection = true;
-        }, data);*/
+         getDataByURL(addCollectionUrl, function(dataJson){
+         // $("#cargoodslist #" + i).find(".addfav").text("已收藏");
+         carGoodsList[index].isCollection = true;
+         }, data);*/
     }
 
 }
@@ -389,8 +403,15 @@ function onGetGoodsInfoByAreaAddressId(dataJson)
         {
             carGoodsList[index].isSelect = dataJson[i].isSelect;
             carGoodsList[index].stockCount = dataJson[i].stockCount;
-            $("#cargoodslist #" + index).find("#c_" +index).attr("oninput","onCartCountChange(this)");
-            $("#cargoodslist #" + index).find("#c_" +index).attr("max",carGoodsList[index].stockCount);
+            if( $("#cargoodslist #cart_" + index))
+            {
+                $("#cargoodslist #cart_" + index) .find("#c_" +index).attr("oninput","onCartCountChange(this)");
+                $("#cargoodslist #cart_" + index) .find("#c_" +index).attr("max",carGoodsList[index].stockCount);
+                $("#cargoodslist #cart_" + index) .find("#stock_" +index).text("当前最大库存为:"+ carGoodsList[index].stockCount);
+
+            }else{
+                break;
+            }
         }
     }
 }
@@ -414,5 +435,16 @@ function getIndexByID(id)
 
 function onCartCountChange(target)
 {
-
+    var count = Number(target.value);
+    var min = Number(target.min);
+    var max = Number(target.max);
+    if(count > max)
+    {
+        target.value  = max;
+    }
+    if(count < min )
+    {
+        target.value  = min;
+    }
+    console.log("etest")
 }

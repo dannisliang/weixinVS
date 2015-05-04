@@ -1,17 +1,4 @@
 ﻿$(document).on("panelbeforeload", '#prolistPanel', function (e) {
-    noRegularlyListInit = function (){
-        $("#pro-sort .sort-pro-list").show();
-        $("#pro-sort .sort-left").show();
-        $("#pro-sort .sort-pro-list .topad img").show();
-        $("#pro-sort .sort-pro-list .list-mod").show();
-        $("#pro-sort .sort-pro-list .sorts").show();
-        $("#pro-sort .sort-pro-list").css({
-            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
-            "width":"", "margin-left":"",
-        });
-    }
-    $("#commonDivProlist").load("html/common.html");
 });
 
 $(document).on("panelload", '#prolistPanel', function (e) {
@@ -32,9 +19,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     // 标签获取成功
     getTagUrlSuccess = function(dataJson){
         if(dataJson.length != 0){
+            $("#tagProlist").parent().show();
             commonATextSel(dataJson, $("#tagProlist"), tagProlistFunc);
-        }else{
-            $("#pro-sort .sort-pro-list .list-mod").hide();
         }
     }
 
@@ -193,6 +179,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     prolistRight = function (index) {
         if ($("#pro-sort .sort-left .sort-list li")[index].className == 'current')
             return;
+        $("#pro-sort .sort-pro-list").show();
         $("#pro-sort .sort-left .sort-list li").removeClass("current");
         $("#pro-sort .sort-left .sort-list li")[index].className = 'current';
         $("#sortsProlist").show();
@@ -210,7 +197,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         if (index != 0 && prolistLeftID[index] != index) {
             $("#pro-sort .sort-pro-list .topad img").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
-            $("#tagProlist").parent().show();
+            $("#pro-sort .sort-pro-list .sorts").show();
+            $("#tagProlist").parent().hide();
             goods.categoryId = prolistLeftID[index];
             bSpecialPanel = false;
             bLeftSortClick = true;
@@ -244,6 +232,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                     }
                 }, data);
             }else{
+                $("#pro-sort .sort-pro-list").hide();
                 showGlobalMessageDialog("您还没有浏览商品。。。");
             }
         }else { // 特惠专区
@@ -263,6 +252,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     }
 
     onSortLeftSuccess = function (dataJson) {
+        var gotoIndex = null;
         for (var j = 1, i =0; i < dataJson.length +2; i++){
             var $div = $("#pro-sort .sort-left .sort-list").find("li").first().clone();
             $div.show();
@@ -272,6 +262,11 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                     prolistLeftID[j] = dataJson[i-1].id;
                     $div.find("a").text(dataJson[i-1].text);
                     $("#pro-sort .sort-left .sort-list").append($div);
+                    if(bGotoDriect){
+                        if(prolistLeftID[j] == firstDriectId){
+                            gotoIndex = j;
+                        }
+                    }
                     j++;
                 }
             }else if(i == dataJson.length +1){
@@ -286,44 +281,55 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 $("#pro-sort .sort-left .sort-list").append($div);
             }
         }
-        if($("#pro-sort .sort-left .sort-list li")[0] != null){
-            $("#pro-sort .sort-left .sort-list li")[0].className = 'current';
+        if(bGotoDriect && gotoIndex != null){
+            prolistRight(gotoIndex);
+        }else{
+            if($("#pro-sort .sort-left .sort-list li")[0] != null){
+                $("#pro-sort .sort-left .sort-list li")[0].className = 'current';
+            }
         }
     }
 
     //downloadFile("http://pic.dofay.com/2013/07/20120329211931359.jpg", "dfdfo");
     //$("#wrapper").hide();
     //$.afui.drawer.show('#left', 'left', 'cover');
-    if( ! bLoadRightProlist){
+    if($("#commonDivProlist").find("a").length == 0){
+        $("#commonDivProlist").load("html/common.html", function(){
+            $("#pro-sort .sort-pro-list").show();
+            $("#pro-sort .sort-left").show();
+            $("#pro-sort .sort-pro-list .list-mod").show();
+            $("#pro-sort .sort-pro-list .sorts").show();
+            $("#pro-sort .sort-pro-list .topad img").hide();
+            $("#tagProlist").parent().hide();
+            $("#pro-sort .sort-pro-list").css({
+                "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+                - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
+                "width":"", "margin-left":"",
+            });
+        });
+        bLoadRightProlist = false;
+    }
+
+    if( ! bLoadRightProlist || bGotoDriect){
         bSpecialPanel = true;
         load_content();
         bLoadRightProlist = true;
         hideFilterDiv();
+        getDataByURL(getCategoryByLeftUrl, onSortLeftSuccess, "", true);
+        bRefreshProlist = true;
+        getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
     }
-    loadGoodsList(true, true)
-    //leftScroll = new IScroll('#wrapperLeft');
-    $("#pro-sort .sort-left").css({
-        "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() +20 + "px",
-    });
-    $("#pro-sort .sort-pro-list").css({
-        "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
-    });
-
-    noRegularlyListInit();
-    //$("#splitLeft").css({
-    //    "width": (widthSortLeft - 8 + "px"),
-    //    "display": "block",
-    //});
-    //fitSortRight();
-    getDataByURL(getCategoryByLeftUrl, onSortLeftSuccess, "", true);
-    //getDataByURL(getCategoryByRightUrl, onSortRightSuccess, "id=613f3f8d6b134ca3b290e33a04610a92", true);
-    bRefreshProlist = true;
-    getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
-    $("#pro-sort .sort-pro-list .topad img").hide();
-    $("#tagProlist").parent().hide();
 });
+
+var bGotoDriect = false;    // 是否是点击图片跳转进浏览界面
+var firstDriectId;
+function goToProlistById(firstId){
+    bGotoDriect = true;
+    firstDriectId = firstId;
+    if(isNotNullValue(firstId)){
+        $.afui.loadContent("#prolistPanel", false, false, transitionYC);
+    }
+}
 
 function commonATextSel(dataJson, div, callback){
     for(var i=0;i<dataJson.length;i++){
@@ -363,7 +369,6 @@ loadGoodsListByCondition = function (bRefresh, bReset, bSpecial, index){
         var data = "";
         data += "buyerId=" +userInfo.id;
         data += "&page=" + goods.page;
-        data += "&categoryId=" +dataByCondition.categoryId;
         if(index != null){
             if(index == 0){
                 goods.sort = "saleCount";
@@ -373,6 +378,11 @@ loadGoodsListByCondition = function (bRefresh, bReset, bSpecial, index){
                 data += "&sort=salePrice";
             }
             data += "&order=asc";
+            if( bSpecial == false || ! bSpecialPanel){
+                data += "&categoryId=" +dataByCondition.categoryId;
+            }
+        }else{
+            data += "&categoryId=" +dataByCondition.categoryId;
         }
         if(bSpecial == null && ! bSpecialPanel){
             data += "&tagId=" +dataByCondition.tagId;
@@ -484,6 +494,8 @@ function getGoodListUrlSuccess(dataJson){
                     $("#goodCountProlist" +index).get(0).value = count;
                     if($("#goodCountProlist" +index).get(0).value == 0){
                         $("#goodsList" +index).find(".setcount .reduce").hide();
+                    }else{
+                        $("#goodsList" +index).find(".setcount .reduce").show();
                     }
                 }
             }, index);

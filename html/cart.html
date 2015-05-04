@@ -1,6 +1,6 @@
 
 <header class="yicallHeader">
-    <a class="icon icon-position"></a>
+    <a class="backButton back"></a>
     <h1>购物车</h1>
 </header>
 
@@ -51,37 +51,40 @@
                     <div class="setcount">
                         <div class=" fontsize-xl">
                             <a class="reduce pull-left text-center " id ="lid" onclick="onCartClick(this)"></a>
-                            <input type="text" class="count pull-left text-center"  id="cid" placeholder="0">
+                            <input type="number" class="count pull-left text-center"  id="cid" placeholder="0" min="0">
                             <a class="add pull-left text-center" id="rid" onclick="onCartClick(this)"></a>
                         </div>
-                    </li>
-                    <!-- 单个商品 end-->
-                </ul>
-            </li>
-        </ul>
-        <li class="divider"></li>         
+                        <div class="carstock">当前库存为</div>
+                     </div>
+
+                </li>
+                <!-- 单个商品 end-->
+            </ul>
+        </li>
+    </ul>
+    <li class="divider"></li>
 
     <ul class="list cartinfo">
         <li>
             <div class="price col1">选中金额 ：<span class="red" id="totalmoney">￥2.0</span></div>
             <div class="count col1"> 选中数量：<span class="red" id="totalcount">3</span></div>
-          </li>
-          <li>
+        </li>
+        <li>
             <div class="points col1"> 当前积分：<span class="red" id="totalpoints">3</span></div>
             <div class="points col1"> 积分抵现：<span class="red" id="costpoints"></span></div>
-           </li>
-           <li>
+        </li>
+        <li>
             <input type="number" id="points" placeholder="">
             <div class="points"> 购买备注：</div>
             <input type="text" id="remarks" placeholder="">
-          </li>
+        </li>
     </ul>
 
-	 
-	  </div>
-    <div class="confirm" >
-        <div>应付金额:<span class="red" id="totalpay">￥2.0</span></div>
-        <a href="#prolistPanel"><div class="pull-right" >继续选购 </div></a>
-        <button type="button" class="button btn-green  btn-lg btn-block" onclick="onOrderOk()">确定下单 </button>
-    </div>
+
+</div>
+<div class="confirm" >
+    <div>应付金额:<span class="red" id="totalpay">￥2.0</span></div>
+    <a href="#prolistPanel"><div class="pull-right" >继续选购 </div></a>
+    <button type="button" class="button btn-green  btn-lg btn-block" onclick="onOrderOk()">确定下单 </button>
+</div>
 </div>

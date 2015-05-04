@@ -30,7 +30,9 @@ function getDataAjax(url, okcall, data, bCache, time) {
             if (object != null) {
                 if (object.code == 0) {
                     if (bCache) {
-                        saveOrUpdate(tableUrl, ['data', 'time'], [object.data, dicUrlTime.get(url, time)], 'url', url +data);
+                        if(object.data != "[]"){
+                            saveOrUpdate(tableUrl, ['data', 'time'], [object.data, dicUrlTime.get(url, time)], 'url', url +data);
+                        }
                     }
                     if (object.data != null) {
                         tempString = object.data;

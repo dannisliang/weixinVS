@@ -1,12 +1,21 @@
 ﻿// 搜索页面
 var searchSuggest;
 var historySearch = new Array();
+var firstIdSearch = new Object();   // 一级分类中有商品的分类id
+var successGoodsJson = new Object();     // 缓存获取右边商品列表成功数据
 $(document).on("panelbeforeload", '#searchPanel', function (e) {
-    $("#pro-sort .sort-pro-list .topad img").hide();
-    $("#pro-sort .sort-pro-list .list-mod").hide();
-    $("#sortsProlist").hide();
-    $("#pro-sort .sort-pro-list").hide();
-    $("#pro-sort .sort-left").hide();
+    $("#commonDivProlist").children().remove();
+    $("#commonDivSearch").load("html/common.html", function(){
+        $("#pro-sort .sort-pro-list .topad img").hide();
+        $("#pro-sort .sort-pro-list .list-mod").hide();
+        $("#pro-sort .sort-pro-list").hide();
+        $("#pro-sort .sort-left").hide();
+        $("#pro-sort .sort-pro-list").css({
+            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
+            "width":"", "margin-left":"",
+        });
+    });
 
     $("#searchId").focus().autocomplete(goodHintKey);
     $("#searchId").result(function(event, data, formatted) {
@@ -15,7 +24,6 @@ $(document).on("panelbeforeload", '#searchPanel', function (e) {
             getSearchGoodUrl(data[0]);
         }
     });
-    $("#commonDivSearch").load("html/common.html");
 });
 
 
@@ -82,16 +90,9 @@ $(document).on("panelload", '#searchPanel', function (e) {
         }
     }
 
-    getDataByURL(getHotKeywordUrl, getHotKeywordUrlSuccess, true);
-    getHistoryKeyword();
-    // 页面加载初始化
-    goods.page = 1;
-
-    var firstIdSearch = new Object();   // 一级分类中有商品的分类id
-    var successJson = new Object();
     searchGoodUrlSuccess = function(dataJson){
         if(dataJson.length != 0){
-            successJson = dataJson;
+            successGoodsJson = dataJson;
             $("#pro-sort .sort-pro-list").show();
             $("#pro-sort .sort-left").show();
             // 统计一级分类商品数量
@@ -141,13 +142,13 @@ $(document).on("panelload", '#searchPanel', function (e) {
             }
         })
         if(index == "all"){
-            getGoodListUrlSuccess(successJson);
+            getGoodListUrlSuccess(successGoodsJson);
         }else{
             var selectId = firstIdSearch["sortLeftSearch" +index];
             var tempJson = new Array();
-            for(var i= 0,j=0;i<successJson.length;i++){
-                if(successJson[i].parentCategoryId == selectId){
-                    tempJson[j] = successJson[i];
+            for(var i= 0,j=0;i<successGoodsJson.length;i++){
+                if(successGoodsJson[i].parentCategoryId == selectId){
+                    tempJson[j] = successGoodsJson[i];
                     j++;
                     tempJson.length = j;
                 }
@@ -155,6 +156,17 @@ $(document).on("panelload", '#searchPanel', function (e) {
             bRefreshProlist = true;
             getGoodListUrlSuccess(tempJson);
         }
+    }
+
+    getDataByURL(getHotKeywordUrl, getHotKeywordUrlSuccess, true);
+    getHistoryKeyword();
+    // 页面加载初始化
+    goods.page = 1;
+    bSpecialPanel = false;
+
+    if(bGotoSearchDriect){
+        getSearchGoodUrl(valueGotoSearch);
+        bGotoSearchDriect = false;
     }
 });
 
@@ -216,5 +228,15 @@ function getSearchGoodUrl(value) {
         getDataByURL(searchGoodUrl, searchGoodUrlSuccess, data, true);
     }else{
         showGlobalMessageDialog("请输入搜索内容！");
+    }
+}
+
+var bGotoSearchDriect = false;    // 是否是点击图片跳转进搜索界面
+var valueGotoSearch;
+function goToSearchByValue(value){
+    bGotoSearchDriect = true;
+    valueGotoSearch = value;
+    if(isNotNullValue(value)){
+        $.afui.loadContent("#searchPanel", false, false, transitionYC);
     }
 }

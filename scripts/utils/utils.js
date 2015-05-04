@@ -392,3 +392,11 @@ function addToHistory(value, stringName,numToSave){
         }
     }
 }
+
+function isNotNullValue(value){
+    if(value != null && value != ""){
+        return true;
+    }else{
+        return false;
+    }
+}

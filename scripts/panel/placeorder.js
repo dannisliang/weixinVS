@@ -4,6 +4,8 @@
 var orderList;
 var initOrder = false;
 var orderGoodsItem;
+var orderPoints;
+var orderTotalCost;
 $(document).on("panelbeforeload", '#placeorderPanel', function (e)
 {
 
@@ -25,6 +27,7 @@ function  initOrderData()
 {
     if(!orderList)
         return;
+    orderTotalCost = 0;
     for(var i = 0 ; i  < orderList.length ;i ++)
     {
         var tempItem = orderGoodsItem.clone();
@@ -36,5 +39,9 @@ function  initOrderData()
         parentNode.find(">td").eq(0).html(carGoodsList[index].price);
         parentNode.find(">td").eq(1).html(carGoodsList[index].count);
         parentNode.find(">td").eq(2).html((carGoodsList[index].count * (100 * carGoodsList[index].price)) / 100);
+        orderTotalCost += (carGoodsList[index].count * (100 * carGoodsList[index].price)) / 100;
     }
+    $("#ordertotal").text(orderTotalCost);
+    $("#orderpoints").text(orderPoints);
+    $("#orderneedcost").text(orderTotalCost - (orderPoints / 100));
 }

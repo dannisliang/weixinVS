@@ -15,18 +15,6 @@
         }
     }
 
-    regularlyListInit = function (){
-        $("#pro-sort .sort-left").hide();
-        $("#pro-sort .sort-pro-list .topad img").hide();
-        $("#pro-sort .sort-pro-list .list-mod").hide();
-        $("#pro-sort .sort-pro-list .sorts").hide();
-        $("#pro-sort .sort-pro-list").css({"width":"100%", "margin-left":0});
-        $("#pro-sort .sort-pro-list").css({
-            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
-        });
-    }
-
     getCollectionUrlSuccess = function(dataJson){
         if(dataJson.length != 0){
             bRefreshProlist = true;
@@ -82,7 +70,21 @@
 });
 
 $(document).on("panelload", '#regularlyPanel', function (e) {
-    regularlyListInit();
+    if($("#commonDivRegularly").find("a").length == 0){
+        $("#commonDivProlist").children().remove();
+        $("#commonDivSearch").children().remove();
+        $("#commonDivRegularly").load("html/common.html", function(){
+            $("#pro-sort .sort-left").hide();
+            $("#pro-sort .sort-pro-list .topad img").hide();
+            $("#pro-sort .sort-pro-list .list-mod").hide();
+            $("#pro-sort .sort-pro-list .sorts").hide();
+            $("#pro-sort .sort-pro-list").css({"width":"100%", "margin-left":0});
+            $("#pro-sort .sort-pro-list").css({
+                "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+                - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
+            });
+        });
+    }
     checkUserBuyList();
 });
 
