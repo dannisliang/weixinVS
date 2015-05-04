@@ -21,7 +21,7 @@ function onItemClick(target)
 function onGetCompany(dataJson)
 {
     var content = "";
-    for (i = 0; i < dataJson.length; i++)
+    for (var i = 0; i < dataJson.length; i++)
     {
         schoolData[i] = new Object();
         schoolData[i].id = dataJson[i].id;
@@ -31,7 +31,6 @@ function onGetCompany(dataJson)
         content += "</a></li>"
     }
     $("#schoollist").prepend(content);
-    $.afui.hideMask();
 }
 function onGetCompanyByLocation(dataJson)
 {

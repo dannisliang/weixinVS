@@ -1,5 +1,4 @@
-﻿//﻿var DBPATH =  "/data/data/com.narwell.yicall.buyer/appdatabase.db3";
-//发布地址 http://server.1calljifa.com:82
+﻿//发布地址 http://server.1calljifa.com:82
 //本地地址 http://192.168.2.2:8080
 //var rootUrl = "http://server.1calljifa.com:86";
 //var rootUrl = "http://o.narwell.com/yicalljifa";
@@ -17,6 +16,8 @@ var getCategoryByLeftUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goods
 var getCategoryByRightUrl =  rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getCategoryByRight";
 //根据分类查询商品
 var getGoodListUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getCategoryGoodsByCondition";
+//根据商品ids获取商品的详细信息
+var getGoodsByIdUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getGoodsByGoodsIds";
 //获取商品详情
 var getGoodUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getGoodsById";
 //获得文件
@@ -34,11 +35,11 @@ else{
 //首页焦点图栏位ID
 //var buyerHomeID = "c9c488db1f594a92aff54ec356c4d3c7";
 //获取收货地址
-var getAddressUrl =  rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/getDeliveryAddress";
+var getAddressUrl =  rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/getDeliveryAddressV2";
 //删除收货地址
 var deleteAddressUrl =  rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/delDeliveryAddress";
 //获取默认收货地址
-var  getDefualtAddressUrl    =   rootUrl +   "/service/rest/emallapp.login.order.buyerService/collection/getDefaultaddress";
+var  getDefualtAddressUrl    =   rootUrl +   "/service/rest/emallapp.login.order.buyerService/collection/getDefaultaddressV2";
 //新增收货地址
 var addAddressUrl =  rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/addAddress";
 //修改收货地址
@@ -121,3 +122,7 @@ var postOrdelV2Url = rootUrl + "/service/rest/emallapp.login.order.orderService/
 var getVarietyGoods = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getVarietyGoods";
 //得到后台设置的热门关键字
 var getHotKeywordUrl = rootUrl+ "/service/rest/emallapp.nologin.goods.goodsService/collection/getHotKeyword";
+//根据收货地址获取购物车信息
+var getGoodsInfoByAreaAddressId = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getGoodsInfoByAreaAddressId";
+//获取买家积分
+var getCurrentPoints = rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/getCurrentPoints";

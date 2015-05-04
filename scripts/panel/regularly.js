@@ -1,17 +1,17 @@
 ﻿$(document).on("panelbeforeload", '#regularlyPanel', function (e) {
-    tabRegular = function(Nav,Num){
-        if(Nav.className=="active")return;
-        var thisNav=Nav.parentNode.id;
-        var navName=Nav.nodeName.toLowerCase();
-        var navList=document.getElementById(thisNav).getElementsByTagName(navName);
-        for(var i=0;i<navList.length;i++){
-            if(i==Num){
-                Nav.className="active";
-                document.getElementById("cont"+i).style.display="block";
+    tabRegular = function(target,Num){
+        if($(target).hasClass("active"))return;
+        $(target.parentNode).find("li").each(function(index, elm){
+            if(elm != target){
+                $(elm).removeClass("active");
             }else{
-                navList[i].className="";
-                document.getElementById("cont"+i).style.display="none";
+                $(elm).addClass("active");
             }
+        })
+        if(Num == 1){
+            getCollectionGoods();
+        }else{
+            checkUserBuyList();
         }
     }
 
@@ -28,17 +28,56 @@
     }
 
     getCollectionUrlSuccess = function(dataJson){
-        bRefreshProlist = true;
-        $("#goodsList").show();
-        getGoodListUrlSuccess(dataJson);
+        if(dataJson.length != 0){
+            bRefreshProlist = true;
+            $("#pro-sort .sort-pro-list").show();
+            getGoodListUrlSuccess(dataJson);
+        }else{
+            $("#pro-sort .sort-pro-list").hide();
+            showGlobalMessageDialog("兄弟，肯定要有几个最爱的。。。");
+        }
+    }
+
+    // 收藏商品获取
+    getCollectionGoods = function(){
+        goods.page = 1;
+        var data = "page=" +goods.page;
+        data += "&rows=" +goods.rows;
+        getDataByURL(getCollectionUrl, getCollectionUrlSuccess, data);
+    }
+
+    var bExist = false;
+    checkUserBuyList = function(){
+        var data = "buyerId=" +userInfo.id;
+        data += "&goodsIds=";
+        for(var i = 0;i<20;i++){
+            if(getLocal("userBuyList" +i) != ""){
+                bExist = true;
+                data += getLocal("userBuyList" +i) +",";
+            }else{
+                break;
+            }
+        }
+        if(bExist){
+            data = data.substr(0, data.length -1);
+            getDataByURL(getGoodsByIdUrl, function(dataJson){
+                if(dataJson.length != 0){
+                    bRefreshProlist = true;
+                    $("#pro-sort .sort-pro-list").show();
+                    getGoodListUrlSuccess(dataJson);
+                }else{
+                    $("#pro-sort .sort-pro-list").hide();
+                }
+            }, data, true);
+        }else{
+            showGlobalMessageDialog("兄弟你买的商品正从火星派送中。。。");
+            tabRegular($("#titleRegularly li").get(1), 1);
+        }
     }
 });
 
 $(document).on("panelload", '#regularlyPanel', function (e) {
     regularlyListInit();
-    goods.page = 1;
-    var data = "page=" +goods.page;
-    data += "&rows=" +goods.rows;
-    getDataByURL(getCollectionUrl, getCollectionUrlSuccess, data);
+    checkUserBuyList();
 });
 

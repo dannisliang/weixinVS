@@ -39,6 +39,7 @@ charVec.bindingPhoneCo = "bindingPhoneCo";      // 是否为绑定手机
 charVec.bGetPasswordCo = "bGetPasswordCo";      // 是否为取回密码
 charVec.numGoodsCartLo = "numGoodsCartLo";      // 购物车商品数量
 charVec.goodHeadTittleSe = "goodHeadTittleSe";      // 商品详细页标题
+charVec.userBuyList = "userBuyList";      // 购买记录
 
 var textVec = new Object();
 textVec.prolistFirst = "特惠专区";
@@ -64,3 +65,6 @@ var addressData = new Array();
 var carGoodsList = new Array();
 //买家下单前选中的商品
 var buyChooseList = new Array();
+
+//当前编辑地址
+var currentEditData;

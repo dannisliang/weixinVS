@@ -5,6 +5,11 @@ var idList;
 var countList;
 var delIDList;
 var delCount;
+var chooseIDList;
+var chooseCountList;
+var totalCount;//订单商品个数
+var totalCost;//订单总价格
+var totalPoints;//买家积分
 //购物车
 $(document).on("panelbeforeload", '#cartPanel', function (e)
 {
@@ -21,30 +26,64 @@ $(document).on("panelload", '#cartPanel', function (e)
         initcart = true;
     }
     $("#cargoodslist").empty();
+    $("#totalmoney").text("");
+    $("#totalcount").text("");
+    $("#totalpay").text("");
+    $("#points").get(0).value = "";
+    $("#remarks").get(0).value = "";
+    document.getElementById("defaultaddressradio_1").checked = false;
+    document.getElementById("defaultaddressradio_1").style.visibility ="hidden";
     getGooodsDataFromSQL();
+    getDataByURL(getCurrentPoints, onGetCurrentPoints,"buyerId="+userInfo.id);
+    $("#points").on('input',function(e){
+        var min = Math.min(totalCost * 100,totalPoints);
+        if(Number(e.target.value) > min)
+            $("#points").get(0).value = min;
+        if(Number(e.target.value) <0 )
+            $("#points").get(0).value = "0";
+        $("#totalpay").text("￥" + (totalCost - Number($("#points").get(0).value)/100));
+    });
 });
 function onGetDefualtAddressUrl(dataJson)
 {
-    if (dataJson != null && dataJson.length> 0)
+    defaulAddressData = new Object();
+    if (dataJson != null)
     {
         var content = "";
-        defaulAddressData.address = dataJson[0].address;
-        defaulAddressData.areaAddressId = dataJson[0].areaAddressId;
-        defaulAddressData.areaAddressName = dataJson[0].areaAddressName;
-        defaulAddressData.areaId = dataJson[0].areaAddressId;
-        defaulAddressData.areaName = dataJson[0].areaName;
-        defaulAddressData.companyId = dataJson[0].companyId;
-        defaulAddressData.companyName = dataJson[0].companyName;
-        defaulAddressData.firstName = dataJson[0].firstName;
-        defaulAddressData.id = dataJson[0].id;
-        defaulAddressData.isDefault = dataJson[0].isDefault;
-        defaulAddressData.phone = dataJson[0].phone;
-        $("#defaultname").text(defaulAddressData.firstName);
-        $("#defaulttel").text(defaulAddressData.phone);
-        var adddress = defaulAddressData.companyName + defaulAddressData.areaName + defaulAddressData.areaAddressName;
-        $("#defaultadd").text(adddress);
+        defaulAddressData.address = dataJson.address;
+        defaulAddressData.areaAddressId = dataJson.areaAddressId;
+        defaulAddressData.areaAddressName = dataJson.areaAddressName;
+        defaulAddressData.areaId = dataJson.areaAddressId;
+        defaulAddressData.areaName = dataJson.areaName;
+        defaulAddressData.companyId = dataJson.companyId;
+        defaulAddressData.companyName = dataJson.companyName;
+        defaulAddressData.firstName = dataJson.firstName;
+        defaulAddressData.id = dataJson.id;
+        defaulAddressData.isDefault = dataJson.isDefault;
+        defaulAddressData.phone = dataJson.phone;
+        if(dataJson.firstName)
+        {
+            $("#defaultname").text(defaulAddressData.firstName);
+            $("#defaulttel").text(defaulAddressData.phone);
+
+            var adddress = defaulAddressData.companyName + defaulAddressData.areaName + defaulAddressData.areaAddressName;
+            $("#defaultadd").text(adddress);
+            document.getElementById("defaultaddressradio_1").style.visibility ="visible";
+        }else
+        {
+            $("#defaultname").text("请选择收货地址");
+            $("#defaulttel").text("");
+            $("#defaultadd").text("");
+            document.getElementById("defaultaddressradio_1").style.visibility ="hidden";
+        }
+
     }
-    hideWaitingDialog();
+    if(defaulAddressData.id  && userInfo.id)
+    {
+        var data = "areaAddressId=" + defaulAddressData.id;
+        data += "&buyerId=" + userInfo.id;
+        getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
+    }
 }
 //购物车商品列表
 function onGetCartListUrl(dataJson)
@@ -52,8 +91,7 @@ function onGetCartListUrl(dataJson)
     var content = "";
     $("#cargoodslist .grayline").attr("id", 0);
     var temp = $("#cargoodslist #" + 0).clone();
-    var totalCount = 0;
-    var totlaCost = 0;
+    carGoodsList = new Array();
     for(var i = 0 ;i < dataJson.length ;i++)
     {
         carGoodsList[i] = new Object();
@@ -76,11 +114,9 @@ function onGetCartListUrl(dataJson)
         carGoodsList[i].serialVersionUID = dataJson[i].serialVersionUID;
         carGoodsList[i].specificationList = dataJson[i].specificationList;
         carGoodsList[i].unit = dataJson[i].unit;
-        carGoodsList[i].choose = true;
+        carGoodsList[i].choose = carGoodsList[i].isChecked;
 
         setCountByID(carGoodsList[i].goodsId,carGoodsList[i].count);
-        totalCount += carGoodsList[i].count;
-        totlaCost += (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100;
         var tempItem = carGoodsItem.clone();
         tempItem.attr("id", i);
         $("#cargoodslist").append(tempItem);
@@ -92,12 +128,20 @@ function onGetCartListUrl(dataJson)
         {
             parentNode.find("> div >img").attr("src", "images/default_pic.9.png");
         }
-
-        parentNode.find("> button").attr("id","button_"+carGoodsList[i].goodsId);
+        if(carGoodsList[i].isCollection)
+        {
+            parentNode.find(".addfav").text("已收藏");
+        }else
+        {
+            parentNode.find(".addfav").text("收藏");
+        }
+        parentNode.find(".addfav").attr("id","add_"+i);
+        parentNode.find(".del").attr("id","del_"+ i);
         parentNode.find("> input").attr("id","check_"+i);
         parentNode.find("> label").attr("for","check_"+i);
+        document.getElementById("check_" + i).checked = carGoodsList[i].isChecked;
         parentNode.find(".title,fontsize-l,ellipsis").text(carGoodsList[i].goodsTitle);
-        parentNode.find(".nowprice,fontsize-xl").text("￥" + carGoodsList[i].price);
+        parentNode.find(".nowprice,fontsize-xl").text("￥" + carGoodsList[i].price +"/" + carGoodsList[i].unit);
         if (carGoodsList[i].priceList.length == 1)
         {
             parentNode.find(".Ladder-price").hide();
@@ -114,55 +158,66 @@ function onGetCartListUrl(dataJson)
         parentNode.find("#c_"+ i).get(0).value = carGoodsList[i].count;
         // $("#c_"+ carGoodsList[i].goodsId).get(0).value = carGoodsList[i].count;
     }
-    //$(".detailed,list,inset .price .red").text("￥" + totlaCost);
-    $("#totalmoney").text("￥" + totlaCost);
-    $("#totalcount").text(totalCount);
-    $("#totalpay").text("￥" + totlaCost);
+    getChooseList();
 }
 function onRadioClick(target)
 {
 
 }
-
-function onAddresListClick(target)
-{
-    var id = target.getAttribute("id");
-    userChooseAddress = addressData[id];
-}
 //window.location.href = "#pageGoods";
 
 function onOrderOk()
 {
-    console.log("商品总数 " + getGoodsTotalCount());
-    if(defaulAddressData.areaAddressId  == null ||  carGoodsList.length == 0) {
+    var hasAddress = document.getElementById("defaultaddressradio_1").checked;
+    if(defaulAddressData.areaAddressId  == null) {
+        showGlobalMessageDialog("收货地址为空");
         return;
     }
-
-    var chooseIDList= "";
-    var chooseCountList = "";
-    delIDList = new Array();
-    delCount = 0;
-    for(var i = 0 ; i < carGoodsList.length ; i++)
-    {
-        if(carGoodsList[i].choose)
-        {
-            chooseIDList += carGoodsList[i].goodsId +",";
-            chooseCountList += carGoodsList[i].count +",";
-            delIDList.push(carGoodsList[i].goodsId);
-            delCount += carGoodsList[i].count;
-        }
+    if(carGoodsList.length == 0) {
+        showGlobalMessageDialog("购物车为空");
+        return;
     }
+    if(!hasAddress) {
+        showGlobalMessageDialog("请选择收货地址");
+        return;
+    }
+    getChooseList();
     if(delIDList.length == 0)
         return;
     var data = "";
     data += "receiverId="+defaulAddressData.id;
-    data += "&remark="+"冰可乐";
-    data += "&points=" + 0;
+    data += "&remark="+ ($("#remarks").get(0).value ? $("#remarks").get(0).value :"") ;
+    data += "&points=" + ($("#points").get(0).value ? $("#points").get(0).value :0) ;
     data += "&goodsId=" +chooseIDList;
     data += "&count=" + chooseCountList;
     //getDataByURL(postOrdelUrl, onPostOrdel,"receiverId="+defaulAddressData.id);
     getDataByURL(postOrdelV2Url, onPostV2Ordel,data);
 
+}
+function getChooseList()
+{
+    delIDList = new Array();
+    delCount = 0;
+    chooseIDList = "";
+    chooseCountList = "";
+    totalCount = 0;
+    totalCost = 0;
+    for(var i = 0 ; i < carGoodsList.length ; i++)
+    {
+        if(carGoodsList[i].choose)
+        {
+            chooseIDList += carGoodsList[i].goodsId +",";
+            setLocal(charVec.userBuyList + i, carGoodsList[i].goodsId);
+            chooseCountList += carGoodsList[i].count +",";
+            delIDList.push(carGoodsList[i].goodsId);
+            delCount += carGoodsList[i].count;
+            totalCount += Number(carGoodsList[i].count);
+            totalCost += (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100;
+        }
+    }
+    $("#totalmoney").text("￥" + totalCost);
+    $("#totalcount").text(totalCount);
+    $("#totalpay").text("￥" + (totalCost - Number($("#points").get(0).value)));
 }
 function onPostV2Ordel(dataJson)
 {
@@ -175,20 +230,6 @@ function onPostV2Ordel(dataJson)
     }
     //changeNumGoodsCart(delCount,false);
     $.afui.loadContent("#placeorderPanel", false, false, "transitionYC");
-}
-function getChooseList()
-{
-
-}
-function getGoodsTotalCount()
-{
-    var sum = 0;
-
-    for(var i in carGoodsList)
-    {
-        sum += carGoodsList[i].count;
-    }
-    return sum;
 }
 function getGooodsDataFromSQL()
 {
@@ -220,10 +261,12 @@ function onAddShopCartByGoodsIds()
 {
     if (userChooseAddress == null)
     {
-        getDataByURL(getDefualtAddressUrl, onGetDefualtAddressUrl);
+        getDataByURL(getDefualtAddressUrl, onGetDefualtAddressUrl,"companyId="+ myCompanyId);
+        userChooseAddress = null;
     }else
     {
-        onGetDefualtAddressUrl([userChooseAddress]);
+        onGetDefualtAddressUrl(userChooseAddress);
+        userChooseAddress = null;
     }
 
     getDataByURL(getCartListUrl, onGetCartListUrl);
@@ -244,7 +287,7 @@ function onCartClick(target)
                 ($("#c_"+index).get(0).value) --;
                 if(($("#c_"+index).get(0).value) == 0)
                 {
-                    $("#check_" +index).attr("checked",false);
+                    document.getElementById("check_" + index).checked  = false;
                     carGoodsList[index].choose = false;
                     deleteGoodsToCart(id);
                 }
@@ -262,10 +305,11 @@ function onCartClick(target)
 
     if(($("#c_"+index).get(0).value) > 0)
     {
-        $("#check_" +index).attr("checked",true);
+        document.getElementById("check_" + index).checked  = true;
         addGoodsToCart(id,($("#c_"+index).get(0).value));
         carGoodsList[index].choose = true;
     }
+    getChooseList();
 }
 //添加商品到购物车
 function addGoodsToCart(goodsID,count)
@@ -299,6 +343,60 @@ function onLisitCheckClick(target)
 
 function addCartToFavClicked(target)
 {
-    var id = target.getAttribute("id");
+    var targetId = target.getAttribute("id");
+    var index = targetId.substr(targetId.indexOf("_") + 1);
+    var data;
+    if(carGoodsList[index].isCollection){
+        data = "goodsIds=" + carGoodsList[index].goodsId;
+        getDataByURL(delCollectionByGoodsIds, function(dataJson){
+            $("#cargoodslist #" + i).find(".addfav").text("收藏");
+            carGoodsList[index].isCollection = false;
+        }, data);
+    }else{
+        data = "id=" + carGoodsList[index].goodsId;
+        getDataByURL(addCollectionUrl, function(dataJson){
+            $("#cargoodslist #" + i).find(".addfav").text("已收藏");
+            carGoodsList[index].isCollection = true;
+        }, data);
+    }
 
+}
+function delItemFromCarClicked(target)
+{
+    var targetID = target.getAttribute("id");
+    var index = targetID.substr(targetID.indexOf("_") + 1);
+    deleteGoodsToCart(carGoodsList[index].goodsId);
+    $("#" + targetID).parent().remove();
+}
+
+function onGetGoodsInfoByAreaAddressId(dataJson)
+{
+    var index;
+    for(var i = 0 ;i < dataJson.length ;i++)
+    {
+        index = getIndexByID(dataJson[i].goodsId);
+
+        if(carGoodsList && carGoodsList[index])
+        {
+            carGoodsList[index].isSelect = dataJson[i].isSelect;
+            carGoodsList[index].stockCount = dataJson[i].stockCount;
+        }
+    }
+}
+function onGetCurrentPoints(dataJson)
+{
+    totalPoints = Number(dataJson);
+    $("#totalpoints").text(totalPoints);
+}
+function getIndexByID(id)
+{
+    for(var i = 0 ;i < carGoodsList.length ; i ++)
+    {
+        if(carGoodsList[i].goodsId == id)
+        {
+            return i;
+            break;
+        }
+    }
+    return -1;
 }

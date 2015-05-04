@@ -1,12 +1,12 @@
 
 <header class="yicallHeader">
 	<a class="backButton back">后退</a>
-	<input type="search" class="input_search_key" placeholder=" 输入搜索内容" id="searchId">
+	<input type="search" class="input_search_key" placeholder=" 输入搜索内容" id="suggest1">
 	<input type="submit" class="button" style="right:0;position:absolute" value="搜索" onclick="getSearchGoodUrl()"/>
 </header>
 <ul class="list-mod clearfix" style="margin-top:44px">
 	<ul class="list" id="searchList">
-		<li><a href="#" onclick="searchListIndex()">豆腐豆腐</a></li>
+		<li><a href="#" onclick="searchByHint(this)">豆腐豆腐</a></li>
 	</ul>
 	<li>
 		<span>历史搜索：

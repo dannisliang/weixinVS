@@ -9,7 +9,7 @@ $(document).on("panelload", '#addressPanel', function (e) {
     }
 
     $("#addresslist").empty();
-    getDataByURL(getAddressUrl, onGetAddressUrl,null,true);
+    getDataByURL(getAddressUrl, onGetAddressUrl,"companyId="+ myCompanyId);
 });
 
 //获得收货地址
@@ -38,11 +38,22 @@ function onGetAddressUrl(dataJson)
 
         var parentNode = $("#addresslist #" + i);
 
-        parentNode.find(".reciver").attr("id",i);
-        parentNode.find(".reciver").attr("onclick","onAddresListClick(this)");
+        parentNode.find(">img").attr("id",i);
+        parentNode.find("> a").attr("id",i);
         parentNode.find(".name").text(addressData[i].firstName);
         parentNode.find(".tel").text(addressData[i].phone);
         parentNode.find(".address").text(adddress);
     }
     hideWaitingDialog();
+}
+
+function onEditButtonClick(target)
+{
+    currentEditData = addressData[Number(target.getAttribute("id"))];
+    $.afui.loadContent("#editAddressPanel", false, false, transitionYC);
+}
+function onAddresListClick(target)
+{
+    var id = target.getAttribute("id");
+    userChooseAddress = addressData[id];
 }

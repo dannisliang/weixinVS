@@ -1,0 +1,33 @@
+
+<header class="yicallHeader">
+    <a class="backButton back">Back</a>
+    <h1>新增地址</h1>
+</header>
+
+<div id="reg" class="panel  header-margin-top">
+    <p>收件人:</p>
+    <input type="text" id="newAddressName" placeholder="请输入您的收货地址">
+    <p>手机号码:</p>
+    <input type="number" id="newAddressPhone" placeholder="请输入您的手机">
+    <p>学校:</p>
+    <select id="sel_selectschool" onchange="newAddressChange(this.value)">
+
+    </select>
+    <p>区域:</p>
+    <select id="sel_selectqu" onchange="newAdreaChange(this.value)">
+    </select>
+    <p>建筑:</p>
+    <select id="sel_selectbuild">
+    </select>
+    <p>详细地址:</p>
+    <input type="text" id="newAddressDes" placeholder="请输入您的详细地址">
+    <p>设为默认</p>
+    <input id="newaddresstoggle2" type="checkbox" name="toggle2" value="1" class="toggle">
+    <label for="newaddresstoggle2" data-on="Yes" data-off="No">
+        <span></span>
+    </label>
+
+    <button type="submit" class="button btn-orange regnow" onclick="newAddressClicked()">保存</button>
+
+
+</div>

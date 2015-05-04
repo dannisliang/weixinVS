@@ -1,19 +1,20 @@
 
 <header class="yicallHeader">
-    <a class="icon icon-position"></a>
+    <a class="backButton back">Back</a>
     <h1>地址管理</h1>
-    <a>新增</a>
+    <span class="headspan pull-right leftborder"><a href="#newAddressPanel" class="icon icon-addaddress"></a></span>
 </header>
 
 <div id="addresshtml" class="panel header-margin-top">
 
     <ul class="list" id="addresslist">
         <li class="reciver" id="">
-            <a href="#cartPanel">
+            <a href="#cartPanel" onclick="onAddresListClick(this)">
                 <div class="name" id="defaultname">请选择收货地址</div>
                 <div class="tel" id="defaulttel"></div>
                 <div class="address" id="defaultadd"></div>
             </a>
+            <img onclick="onEditButtonClick(this)" src="images/icons/icon-mysugest.png">
         </li>
     </ul>
     

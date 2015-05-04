@@ -69,7 +69,7 @@
   font-weight: normal;
 }
 .yicallTheme .list li {
-  margin-left: 10px;
+  /*margin-left: 10px;*/
 }
 .yicallTheme .list > li > a:after {
   color: #d9d9d9;

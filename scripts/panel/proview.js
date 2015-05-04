@@ -23,8 +23,11 @@ $(document).on("panelload", '#proviewPanel', function (e)
     }
     $("#clearfixlist").empty();
     $("#proviewScroll .colimage").attr("src","");
-    document.getElementById("proviewScroll").style.visibility = "visible";
-    TouchSlide({ slideCell: "#proviewScroll", titCell: ".hd ul", mainCell: ".bd ul", effect: "left", autoPage: true, autoPlay: true });
+    if(document.getElementById("proviewScroll"))
+    {
+        document.getElementById("proviewScroll").style.visibility = "visible";
+        TouchSlide({ slideCell: "#proviewScroll", titCell: ".hd ul", mainCell: ".bd ul", effect: "left", autoPage: true, autoPlay: true });
+    }
     if(currentProviewID)
     {
         getProductInfo(currentProviewID);
@@ -138,7 +141,7 @@ function onGetGoodsPicinfo()
 {
     $("#productpicdes").show();
 
-    $("#infohtml").append(tempGoodData.description);
+    $("#productpicdes").append(tempGoodData.description);
 }
 
 function onProviewClick(target)

@@ -298,6 +298,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         bLoadRightProlist = true;
         hideFilterDiv();
     }
+    loadGoodsList(true, true)
     //leftScroll = new IScroll('#wrapperLeft');
     $("#pro-sort .sort-left").css({
         "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
