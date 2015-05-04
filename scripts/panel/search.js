@@ -7,13 +7,15 @@ $(document).on("panelbeforeload", '#searchPanel', function (e) {
     $("#sortsProlist").hide();
     $("#pro-sort .sort-pro-list").hide();
     $("#pro-sort .sort-left").hide();
-    $("#suggest1").focus().autocomplete(cities);
 
-    // 按提示搜索
-    searchByHint = function (target){
-        $("#searchId").get(0).value = $(target).text();
-        getSearchGoodUrl();
-    }
+    $("#searchId").focus().autocomplete(goodHintKey);
+    $("#searchId").result(function(event, data, formatted) {
+        if (data){
+            $("#searchId").get(0).value = data[0];
+            getSearchGoodUrl(data[0]);
+        }
+    });
+    $("#commonDivSearch").load("html/common.html");
 });
 
 
@@ -96,8 +98,9 @@ $(document).on("panelload", '#searchPanel', function (e) {
             $("#pro-sort .sort-left .sort-list li").first().removeClass("current");
             var $div = $("#pro-sort .sort-left .sort-list li").first().clone();
             $("#pro-sort .sort-left .sort-list li").remove();
-            $div.find("a").attr("onclick", "sortLeftSearchClicked(0, this)");
+            $div.find("a").attr("onclick", "sortLeftSearchClicked(\"all\", this)");
             $div.find("a").text("搜索结果(" +dataJson.length +")");
+            $div.show();
             $("#pro-sort .sort-left .sort-list").prepend($div);
             getDataByURL(getCategoryByLeftUrl, function(dataSortJson){
                 firstIdSearch.clear;
@@ -137,7 +140,7 @@ $(document).on("panelload", '#searchPanel', function (e) {
                 $(elm).removeClass("current");
             }
         })
-        if(index == 0){
+        if(index == "all"){
             getGoodListUrlSuccess(successJson);
         }else{
             var selectId = firstIdSearch["sortLeftSearch" +index];
@@ -159,7 +162,11 @@ var bHistoryClicked = false;  // 是否检测完本地存储历史搜索
 var numHistory = 10;    // 历史搜索数量
 function getSearchGoodUrl(value) {
     if (value == null) {
-        value = $("#searchId").get(0).value;
+        if($("#searchId").get(0) != null){
+            value = $("#searchId").get(0).value;
+        }else{
+            value = "";
+        }
     }
     if(value != ""){
         var i=0;

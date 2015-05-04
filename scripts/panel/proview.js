@@ -202,18 +202,20 @@ function onGetVarietyGoods(dataJson)
 function onClickProviewCollect()
 {
     var data = "id=" +tempGoodData.id;
+
     if(tempGoodData.isCollect)
     {
-        getDataByURL(delCollectionUrl, function(dataJson){
+
+        delItemToCollect(tempGoodData.id,function(data){
+
             $("#proviewcollect").attr("class","icon icon-addfav");
             tempGoodData.isCollect = false;
-        }, data);
-
+        })
     }else{
-        getDataByURL(addCollectionUrl, function(dataJson){
+        addItemToCollect(tempGoodData.id,function(data){
+
             $("#proviewcollect").attr("class","icon icon-hadfav");
             tempGoodData.isCollect = true;
-        }, data);
-
+        })
     }
 }

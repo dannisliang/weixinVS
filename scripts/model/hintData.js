@@ -1,4 +1,4 @@
-var cities = [
+var goodHintKey = [
     "Aberdeen", "Ada", "Adamsville", "Addyston", "Adelphi", "Adena", "Adrian", "Akron",
     "Albany", "Alexandria", "Alger", "Alledonia", "Alliance", "Alpha", "Alvada",
     "Alvordton", "Amanda", "Amelia", "Amesville", "Amherst", "Amlin", "Amsden",

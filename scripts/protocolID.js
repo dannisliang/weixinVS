@@ -24,7 +24,7 @@ var getGoodUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/co
 var getImageUrl;
 //商品详情的展示页
 var getGoodsDescriptUrl;
-if(debug) {
+if(false) {
     getImageUrl = "http://server.1calljifa.com:86" + "/service/rest/tk.File/";
     getGoodsDescriptUrl = "http://server.1calljifa.com:86" + "/emall/goodsDescript.jsp";
 }
@@ -50,6 +50,7 @@ var getCollectionUrl = rootUrl + "/service/rest/emallapp.login.member.collection
 var addCollectionUrl = rootUrl + "/service/rest/emallapp.login.member.collectionService/collection/addCollection";
 //取消收藏
 var  delCollectionUrl = rootUrl + "/service/rest/emallapp.login.member.collectionService/collection/delCollectionByIds";
+var  delCollectionByGoodsIds = rootUrl + "/service/rest/emallapp.login.member.collectionService/collection/delCollectionByGoodsIds";
 //获取购物车列表
 var getCartListUrl = rootUrl + "/service/rest/emallapp.login.order.orderService/collection/getShopCart";
 //删除购物车商品

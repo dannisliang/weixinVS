@@ -357,3 +357,38 @@ function getRequestParas(paras) {
         return returnValue;
     }
 }
+/**
+ *value: 存入的值
+ *stringName：存入的key
+ * numToSave：存入的最大数量
+ * */
+function addToHistory(value, stringName,numToSave){
+    if(numToSave == null){
+        numToSave = 20;
+    }
+    if(value != ""){
+        var i=0;
+        var bExist = false;
+        var tempValue;
+        for(; i<numToSave -1;i++){
+            if(getLocal(stringName +i) == ""){
+                break;
+            }else if(getLocal(stringName +i) != "" && getLocal(stringName +i) == value){
+                tempValue = getLocal(stringName +0);
+                setLocal(stringName +0, value);
+                setLocal(stringName +i, tempValue);
+                bExist = true;
+                break;
+            }
+        }
+        if( ! bExist){
+            for(var j=i;j> -1; j--){
+                if(j != 0){
+                    setLocal(stringName +j, getLocal(stringName +(j-1)));
+                }else{
+                    setLocal(stringName +0, value);
+                }
+            }
+        }
+    }
+}

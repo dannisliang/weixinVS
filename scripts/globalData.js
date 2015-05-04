@@ -10,7 +10,7 @@ var numGoods = 0;
 var versionYC = "0.0.1";
 var transitionYC="invoke";    // 页面切换动作
 //学校id
-var myCompanyId ="";
+var myCompanyId ="7411bcb2c9c34675ab02043920d2fb8e";
 // 屏幕适配
 var deviceWidth = $(window).width();
 var deviceHeight = $(window).height();

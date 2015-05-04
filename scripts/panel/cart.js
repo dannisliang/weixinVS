@@ -130,10 +130,10 @@ function onGetCartListUrl(dataJson)
         }
         if(carGoodsList[i].isCollection)
         {
-            parentNode.find(".addfav").text("已收藏");
+            //parentNode.find(".addfav").text("已收藏");
         }else
         {
-            parentNode.find(".addfav").text("收藏");
+            //parentNode.find(".addfav").text("收藏");
         }
         parentNode.find(".addfav").attr("id","add_"+i);
         parentNode.find(".del").attr("id","del_"+ i);
@@ -202,6 +202,7 @@ function getChooseList()
     chooseCountList = "";
     totalCount = 0;
     totalCost = 0;
+    orderList = new Array();
     for(var i = 0 ; i < carGoodsList.length ; i++)
     {
         if(carGoodsList[i].choose)
@@ -213,6 +214,7 @@ function getChooseList()
             delCount += carGoodsList[i].count;
             totalCount += Number(carGoodsList[i].count);
             totalCost += (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100;
+            orderList.push(carGoodsList[i].goodsId);
         }
     }
     $("#totalmoney").text("￥" + totalCost);
@@ -347,17 +349,24 @@ function addCartToFavClicked(target)
     var index = targetId.substr(targetId.indexOf("_") + 1);
     var data;
     if(carGoodsList[index].isCollection){
-        data = "goodsIds=" + carGoodsList[index].goodsId;
+
+        addItemToCollect(carGoodsList[index].goodsId,function(data){
+         alert(data);
+        })
+        /*data = "goodsIds=" + carGoodsList[index].goodsId;
         getDataByURL(delCollectionByGoodsIds, function(dataJson){
-            $("#cargoodslist #" + i).find(".addfav").text("收藏");
+            //$("#cargoodslist #" + i).find(".addfav").text("收藏");
             carGoodsList[index].isCollection = false;
-        }, data);
+        }, data);*/
     }else{
-        data = "id=" + carGoodsList[index].goodsId;
+        delItemToCollect(carGoodsList[index].goodsId,function(data){
+
+        })
+        /*data = "id=" + carGoodsList[index].goodsId;
         getDataByURL(addCollectionUrl, function(dataJson){
-            $("#cargoodslist #" + i).find(".addfav").text("已收藏");
+           // $("#cargoodslist #" + i).find(".addfav").text("已收藏");
             carGoodsList[index].isCollection = true;
-        }, data);
+        }, data);*/
     }
 
 }
@@ -380,6 +389,8 @@ function onGetGoodsInfoByAreaAddressId(dataJson)
         {
             carGoodsList[index].isSelect = dataJson[i].isSelect;
             carGoodsList[index].stockCount = dataJson[i].stockCount;
+            $("#cargoodslist #" + index).find("#c_" +index).attr("oninput","onCartCountChange(this)");
+            $("#cargoodslist #" + index).find("#c_" +index).attr("max",carGoodsList[index].stockCount);
         }
     }
 }
@@ -399,4 +410,9 @@ function getIndexByID(id)
         }
     }
     return -1;
+}
+
+function onCartCountChange(target)
+{
+
 }

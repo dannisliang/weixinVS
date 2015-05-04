@@ -11,6 +11,7 @@
             "width":"", "margin-left":"",
         });
     }
+    $("#commonDivProlist").load("html/common.html");
 });
 
 $(document).on("panelload", '#prolistPanel', function (e) {
@@ -30,7 +31,11 @@ $(document).on("panelload", '#prolistPanel', function (e) {
 
     // 标签获取成功
     getTagUrlSuccess = function(dataJson){
-        commonATextSel(dataJson, $("#tagProlist"), tagProlistFunc);
+        if(dataJson.length != 0){
+            commonATextSel(dataJson, $("#tagProlist"), tagProlistFunc);
+        }else{
+            $("#pro-sort .sort-pro-list .list-mod").hide();
+        }
     }
 
     // 二级分类被点击
@@ -58,42 +63,6 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             dataByCondition.categoryId = dataJson[0].id;
         }
         commonATextSel(dataJson, $("#sortProlist"), nextCategoryFunc);
-    }
-
-    // 按照右边分类筛选商品
-    function loadGoodsListByCondition(bRefresh, bReset, bSpecial, index){
-        if(bShowNextPage || bReset){
-            bRefreshProlist = bRefresh;
-            var data = "";
-            data += "buyerId=" +userInfo.id;
-            data += "&page=" + goods.page;
-            data += "&categoryId=" +dataByCondition.categoryId;
-            if(index != null){
-                if(index == 0){
-                    goods.sort = "saleCount";
-                    data += "&sort=saleCount";
-                }else{
-                    goods.sort = "salePrice";
-                    data += "&sort=salePrice";
-                }
-                data += "&order=asc";
-            }
-            if(bSpecial == null && ! bSpecialPanel){
-                data += "&tagId=" +dataByCondition.tagId;
-                data+= "&filterStr=";
-                for(var i = 0; i<idxFilter; i++){
-                    if(i==0){
-                        data += selectCategoryId[i] +":" +selectContent[i];
-                    }else{
-                        data += "#" +selectCategoryId[i] +":" +selectContent[i];
-                    }
-                }
-                getDataByURL(getCategoryGoodsByConditionUrl, getGoodListUrlSuccess, data, true);
-            }else{
-                data += "&companyId=" +goods.companyId;
-                getDataByURL(getSpecialOfferGoodsByCategoryIdUrl, getGoodListUrlSuccess, data, true);
-            }
-        }
     }
 
     attrSortClicked = function(index){
@@ -226,6 +195,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             return;
         $("#pro-sort .sort-left .sort-list li").removeClass("current");
         $("#pro-sort .sort-left .sort-list li")[index].className = 'current';
+        $("#sortsProlist").show();
         goods.page = 1;
         goods.sort = "saleCount";
         myScroll.scrollTo(0);
@@ -237,7 +207,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 $(elm).addClass("current");
             }
         })
-        if (index != 0) {
+        if (index != 0 && prolistLeftID[index] != index) {
             $("#pro-sort .sort-pro-list .topad img").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#tagProlist").parent().show();
@@ -250,7 +220,33 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             getDataByURL(getTagUrl, getTagUrlSuccess, "", true);    //标签
             data += "&companyId=" +goods.companyId;
             getDataByURL(pageSettingUrl, pageSettingUrlSuccess, data, true);    //动态图
-        } else {
+        } else if (prolistLeftID[index] == index) { // 最近浏览
+            var bExist = false;
+            var data = "buyerId=" +userInfo.id;
+            data += "&goodsIds=";
+            for(var i = 0;i<20;i++){
+                if(getLocal("historyProlist" +i) != ""){
+                    bExist = true;
+                    data += getLocal("historyProlist" +i) +",";
+                }else{
+                    break;
+                }
+            }
+            $("#pro-sort .sort-pro-list .topad img").hide();
+            $("#pro-sort .sort-pro-list .list-mod").hide();
+            $("#sortsProlist").hide();
+            if(bExist){
+                data = data.substr(0, data.length -1);
+                getDataByURL(getGoodsByIdUrl, function(dataJson){
+                    if(dataJson.length != 0){
+                        bRefreshProlist = true;
+                        getGoodListUrlSuccess(dataJson);
+                    }
+                }, data);
+            }else{
+                showGlobalMessageDialog("您还没有浏览商品。。。");
+            }
+        }else { // 特惠专区
             $("#pro-sort .sort-pro-list .topad img").hide();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#tagProlist").parent().hide();
@@ -267,23 +263,29 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     }
 
     onSortLeftSuccess = function (dataJson) {
-        $("#pro-sort .sort-left .sort-list").empty();
-        var content = "";
-        for (i = 0; i < dataJson.length+2; i++) {
-            content += "<li><a href=\"javascript:void(0)\" onclick=\"prolistRight(" + i + ")\">";
-            if (i == 0) {
-                prolistLeftID[i] = 21;
-                content += textVec.prolistFirst;
-            } else if (i < dataJson.length + 1) {
-                prolistLeftID[i] = dataJson[i-1].id;
-                content += dataJson[i-1].text;
-            } else {
-                prolistLeftID[i] = 22;
-                content += textVec.prolistLast;
+        for (var j = 1, i =0; i < dataJson.length +2; i++){
+            var $div = $("#pro-sort .sort-left .sort-list").find("li").first().clone();
+            $div.show();
+            if( i != dataJson.length+1 && i != 0){
+                if(! dataJson[i-1].isHide == true){
+                    $div.find("a").attr("onclick", "prolistRight(" + j + ")");
+                    prolistLeftID[j] = dataJson[i-1].id;
+                    $div.find("a").text(dataJson[i-1].text);
+                    $("#pro-sort .sort-left .sort-list").append($div);
+                    j++;
+                }
+            }else if(i == dataJson.length +1){
+                $div.find("a").attr("onclick", "prolistRight(" + j + ")");
+                $div.find("a").text(textVec.prolistLast);
+                prolistLeftID[j] = j;
+                $("#pro-sort .sort-left .sort-list").append($div);
+            }else if( i== 0){
+                $("#pro-sort .sort-left .sort-list").find("li").remove();
+                $div.find("a").attr("onclick", "prolistRight(" + 0 + ")");
+                $div.find("a").text(textVec.prolistFirst);
+                $("#pro-sort .sort-left .sort-list").append($div);
             }
-            content += "</a></li>"
         }
-        $("#pro-sort .sort-left .sort-list").prepend(content);
         if($("#pro-sort .sort-left .sort-list li")[0] != null){
             $("#pro-sort .sort-left .sort-list li")[0].className = 'current';
         }
@@ -321,23 +323,11 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
     $("#pro-sort .sort-pro-list .topad img").hide();
     $("#tagProlist").parent().hide();
-
-    // 人气价格排序
-    sortsClicked = function (index){
-        $("#sortsProlist a").each(function(id, elm){
-            if(id != index){
-                $(elm).removeClass("current");
-            }else{
-                $(elm).addClass("current");
-            }
-        })
-        loadGoodsListByCondition(true, true, null, index);
-    }
 });
 
 function commonATextSel(dataJson, div, callback){
     for(var i=0;i<dataJson.length;i++){
-        if(dataJson[i].isHide == null){
+        if(! dataJson[i].isHide == true){
             var $child = div.find("a").first().clone();
             if(i == 0){
                 div.find("a").remove();
@@ -364,6 +354,57 @@ function loadGoodsList(bRefresh, bSpecial){
             getDataByURL(getSpecialOfferUrl, getGoodListUrlSuccess, data, true);
         }
     }
+}
+
+// 按照右边分类筛选商品
+loadGoodsListByCondition = function (bRefresh, bReset, bSpecial, index){
+    if(bShowNextPage || bReset){
+        bRefreshProlist = bRefresh;
+        var data = "";
+        data += "buyerId=" +userInfo.id;
+        data += "&page=" + goods.page;
+        data += "&categoryId=" +dataByCondition.categoryId;
+        if(index != null){
+            if(index == 0){
+                goods.sort = "saleCount";
+                data += "&sort=saleCount";
+            }else{
+                goods.sort = "salePrice";
+                data += "&sort=salePrice";
+            }
+            data += "&order=asc";
+        }
+        if(bSpecial == null && ! bSpecialPanel){
+            data += "&tagId=" +dataByCondition.tagId;
+            data+= "&filterStr=";
+            for(var i = 0; i<idxFilter; i++){
+                if(i==0){
+                    data += selectCategoryId[i] +":" +selectContent[i];
+                }else{
+                    data += "#" +selectCategoryId[i] +":" +selectContent[i];
+                }
+            }
+            getDataByURL(getCategoryGoodsByConditionUrl, getGoodListUrlSuccess, data, true);
+        }else{
+            data += "&companyId=" +goods.companyId;
+            getDataByURL(getSpecialOfferGoodsByCategoryIdUrl, getGoodListUrlSuccess, data, true);
+        }
+    }
+}
+
+// 人气价格排序
+sortsClicked = function (index){
+    if($("#sortsProlist").find("a:eq(" +index +")").hasClass("current")){
+        return;
+    }
+    $("#sortsProlist a").each(function(id, elm){
+        if(id != index){
+            $(elm).removeClass("current");
+        }else{
+            $(elm).addClass("current");
+        }
+    })
+    loadGoodsListByCondition(true, true, null, index);
 }
 
 var bLeftSortClick = false; // 是否是点击的左边分类
@@ -494,6 +535,8 @@ function getGoodListUrlSuccess(dataJson){
     prolistRightClicked = function(index){
         if(bLoadContent){
             setSession(charVec.goodHeadTittleSe, goodsHeadTittle[index]);
+            currentProviewID =  goodsPageId[index];
+            addToHistory(goodsPageId[index], "historyProlist");
             $.afui.loadContent("#proviewPanel", false, false, transitionYC);
         }
         bLoadContent = true;

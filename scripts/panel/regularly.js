@@ -48,6 +48,11 @@
 
     var bExist = false;
     checkUserBuyList = function(){
+        if(userInfo.id =="" || userInfo.id == null){
+            showGlobalMessageDialog("正在自动登录。。。");
+            $.afui.loadContent("#minePanel", false, false, transitionYC);
+            return;
+        }
         var data = "buyerId=" +userInfo.id;
         data += "&goodsIds=";
         for(var i = 0;i<20;i++){
