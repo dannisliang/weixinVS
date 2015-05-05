@@ -4,7 +4,7 @@
             <li style="display: none"><a href="javascript:void(0)" onclick="prolistRight(0)">特惠专区</a></li>
         </ul>
     </div>
-    <div class="sort-pro-list  header-margin-top">
+    <div class="sort-pro-list  header-margin-top" id="scrollRightCommon">
         <ul class="commonBxslider">
             <li>
                 <img onclick="changeToUrlClicked()" src="images/temp/ad-temp.png" />
@@ -40,40 +40,29 @@
             <a href="#" class="current" onclick="sortsClicked(0)">人气</a>
             <a href="#" onclick="sortsClicked(1)">价格</a>
         </div>
-        <div class="pros" id="wrapper" class="clearfix">
-            <div class="row pro-list" id="scroller">
-                <div class="pullDown">
-                    <span class="pullDownIcon">&nbsp;</span>
-                    <span class="pullDownLabel">下拉加载...</span>
+        <a href="javascript:void(0)" onclick="prolistRightClicked(0)" id="goodsList" style="display: none" class="easyToHideCommon">
+            <!-- item start -->
+            <div class="item grayline-bottom col-xs-12 col-md-4">
+                <div class="img">
+                    <img data-src="holder.js/100%x200" alt="100%x200" src="images/temp/pro.png" data-holder-rendered="true" display block;">
+                    <span class="label hot"></span>
                 </div>
-                <ul>
-                    <a href="javascript:void(0)" onclick="prolistRightClicked(0)" id="goodsList" style="display: none">
-                        <!-- item start -->
-                        <div class="item grayline-bottom col-xs-12 col-md-4">
-                            <div class="img">
-                                <img data-src="holder.js/100%x200" alt="100%x200" src="images/temp/pro.png" data-holder-rendered="true" display block;">
-                                <span class="label hot"></span>
-                            </div>
-                            <div class="caption">
-                                <div class="title  fontsize-n ellipsis" name="headTittleProlist">胖哥槟榔 糊涂味 fans7放肆吃</div>
-                                <div class="intro" style="display: none">筋道可口，美味不停歇</div>
-                                <p class="nowprice">$5.2</p>
-                                <p class="oldprice" style="display: none">$6.2</p>
-                                <button class="addfav" onclick="addFavClicked()">收藏</button>
-                                <div class="discount" style="display: none;" id="moreDiscountProlist">量大更优惠</div>
+                <div class="caption">
+                    <div class="title  fontsize-n ellipsis" name="headTittleProlist">胖哥槟榔 糊涂味 fans7放肆吃</div>
+                    <div class="intro" style="display: none">筋道可口，美味不停歇</div>
+                    <p class="nowprice">$5.2</p>
+                    <p class="oldprice" style="display: none">$6.2</p>
+                    <button class="addfav" onclick="addFavClicked()">收藏</button>
+                    <div class="discount" style="display: none;" id="moreDiscountProlist">量大更优惠</div>
 
-                                <div class="setcount">
-                                    <button class="reduce" onclick="reduceButtonProlistClicked(0)"></button>
-                                    <input class="count" placeholder="0" id="goodCountProlist"/>
-                                    <button class="add" onclick="addButtonProlistClicked(0)"></button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- item end -->
-                    </a>
-                </ul>
-                <div class="pullUp"></div>
+                    <div class="setcount">
+                        <button class="reduce" onclick="reduceButtonProlistClicked(0)"></button>
+                        <input class="count" placeholder="0" id="goodCountProlist"/>
+                        <button class="add" onclick="addButtonProlistClicked(0)"></button>
+                    </div>
+                </div>
             </div>
-        </div>
+            <!-- item end -->
+        </a>
     </div>
 </div>

@@ -48,6 +48,7 @@ textVec.prolistLast = "最近浏览";
 
 //首页数据
 var mainPageData = new Array();
+var bShowWaitingDialog = true;  // 是否显示等待框
 
 //获取所有学校列表
 var schoolData = new Array();

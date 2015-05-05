@@ -18,7 +18,10 @@ function getDataByURL(url, okcall, data, bCache, time) {
 }
 
 function getDataAjax(url, okcall, data, bCache, time) {
-    showWaitingDialog();
+    if(bShowWaitingDialog){
+        showWaitingDialog();
+        bShowWaitingDialog  = true;
+    }
     $.ajax({
         type: 'post',
         url: url,
