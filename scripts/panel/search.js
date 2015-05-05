@@ -6,7 +6,7 @@ var successGoodsJson = new Object();     // 缓存获取右边商品列表成功
 $(document).on("panelbeforeload", '#searchPanel', function (e) {
     $("#commonDivProlist").children().remove();
     $("#commonDivSearch").load("html/common.html", function(){
-        $("sssssssssssssssssssssssss").hide();
+        $(".commonBxslider").hide();
         $("#pro-sort .sort-pro-list .list-mod").hide();
         $("#pro-sort .sort-pro-list").hide();
         $("#pro-sort .sort-left").hide();

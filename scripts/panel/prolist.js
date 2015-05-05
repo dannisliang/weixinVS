@@ -195,7 +195,6 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             }
         })
         if (index != 0 && prolistLeftID[index] != index) {
-            $("sssssssssssssssssssssssss").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#pro-sort .sort-pro-list .sorts").show();
             $("#tagProlist").parent().hide();
@@ -220,7 +219,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                     break;
                 }
             }
-            $("sssssssssssssssssssssssss").hide();
+            $(".bx-wrapper").hide();
             $("#pro-sort .sort-pro-list .list-mod").hide();
             $("#sortsProlist").hide();
             if(bExist){
@@ -236,7 +235,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 showGlobalMessageDialog("您还没有浏览商品。。。");
             }
         }else { // 特惠专区
-            $("sssssssssssssssssssssssss").hide();
+            $(".bx-wrapper").hide();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#tagProlist").parent().hide();
             hideFilterDiv();
@@ -247,9 +246,30 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         load_content("refresh", false);
     }
 
+    // 创建轮播图片控件
+    reloadBxsliderProlist = function(toAddDiv){
+        if(bxSliderProlist.reloadSlider == null){
+            $('.bx-wrapper').remove();
+            $("#pro-sort .sort-pro-list").prepend('<ul class="commonBxslider"> </ul>');
+            if($('.commonBxslider').length > 1){
+                $('.commonBxslider').last().remove();
+                bxSliderProlist = $('.commonBxslider').bxSlider({
+                    auto: true,
+                    pause: 2000,
+                });
+            }
+        }
+        if(toAddDiv != null){
+            $('.commonBxslider').append(toAddDiv);
+            bxSliderProlist.reloadSlider();
+        }
+    }
+
+    // 轮播图片获取成功
     pageSettingUrlSuccess = function (dataJson){
+        bChangePic = false;
         if(dataJson.length == 0){
-            $("sssssssssssssssssssssssss").hide();
+            $(".bx-wrapper").hide();
             return;
         }
         $(".commonBxslider").show();
@@ -258,6 +278,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             width: width,
             height:parseFloat(width/3).toFixed(2)
         });
+        var toAddDiv = "";
         for(var i= 0 ; i < 1 ; i++){
             var sliderPageDataProlist = new Object();
             sliderPageDataProlist.label = dataJson[i].label;
@@ -275,7 +296,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 switch (sliderPageDataProlist.typeSetting)
                 {
                     case "One"://；轮播
-                        var $div = $(".commonBxslider li:eq(1)").clone();
+                        bChangePic = true;
+                        var $div = $(".commonBxslider li:eq(0)").clone();
                         if(j == 0){
                             $(".commonBxslider li").each(function(index, elm){
                                 if($(elm).index() != 0 && $(elm) != $(".commonBxslider li").last()){
@@ -284,8 +306,10 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                             })
                         }
                         $div.show();
+                        $div.removeClass("bx-clone");
                         $div.find("img").attr("src", getImageUrl + sliderPageDataProlist.pageItem[j].fileId +"?thumb=" +parseInt(width) +"x");
-                        $(".commonBxslider").append('<li>' +$div.html() +'</li>');
+                        $div.find("img").attr("onclick", 'changeToUrlClicked("' +sliderPageDataProlist.pageItem[j].gotoType +'", "' +sliderPageDataProlist.pageItem[j].gotoValue +'")');
+                        toAddDiv += '<li>' +$div.html() +'</li>';
                         break;
                     case "Two":
                         $("#slideNav_0").remove();
@@ -321,9 +345,9 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                         break;
                 }
             }
-            if(sliderPageDataProlist.typeSetting == 'one'){
-                bxSliderProlist.reloadSlider();
-            }
+        }
+        if(bChangePic){
+            reloadBxsliderProlist(toAddDiv);
         }
     }
 
@@ -375,7 +399,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             $("#pro-sort .sort-left").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#pro-sort .sort-pro-list .sorts").show();
-            $("sssssssssssssssssssssssss").hide();
+            $(".commonBxslider").show();
             $("#tagProlist").parent().hide();
             $("#pro-sort .sort-pro-list").css({
                 "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
@@ -385,9 +409,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             bxSliderProlist = $('.commonBxslider').bxSlider({
                 auto: true,
                 pause: 2000,
-                //slideWidth: $("#pro-sort .sort-pro-list").css("width"),
-                //captions: true
             });
+            $(".bx-wrapper").hide();
         });
         bLoadRightProlist = false;
     }
@@ -402,13 +425,42 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
     }
     if(bxSliderProlist != null){
-        bxSliderProlist.reloadSlider();
+        reloadBxsliderProlist();
     }
 });
 
+// 轮播图片点击事件
+function changeToUrlClicked(type, value){
+    switch (type){
+        case 'Url':{
+            window.location = value;
+            break;
+        }
+        case 'Category':{
+            goToProlistById(value);
+            break;
+        }
+        case 'Goods':{
+            currentProviewID =  value;
+            addToHistory(value, "historyProlist");
+            $.afui.loadContent("#proviewPanel", false, false, transitionYC);
+            break;
+        }
+        case 'Keywords':{
+            goToSearchByValue(value);
+            break;
+        }
+        default :
+            break;
+    }
+}
+
+var bChangePic = false; // 轮播控件是否显示
 var bxSliderProlist = null;
 var bGotoDriect = false;    // 是否是点击图片跳转进浏览界面
 var firstDriectId;
+
+// 跳转到一级分类页
 function goToProlistById(firstId){
     bGotoDriect = true;
     firstDriectId = firstId;
@@ -726,7 +778,7 @@ var pullActionDetect = {
         setTimeout(function () {
             if(beforeScrollY == 0){
                 beforeScrollY = myScroll.y;
-                $("sssssssssssssssssssssssss").hide();
+                $(".bx-wrapper").hide();
                 $("#pro-sort .sort-pro-list .list-mod").hide();
             }else{
                 if(myScroll.y <= beforeScrollY){
@@ -746,7 +798,9 @@ var pullActionDetect = {
                 showGlobalMessageDialog("已经是最后一页了。。。");
             }else if(myScroll.y >= 0){
                 $("#pro-sort .sort-pro-list .list-mod").show();
-                $("sssssssssssssssssssssssss").show();
+                if(bChangePic){
+                    $(".bx-wrapper").show();
+                }
             }
         }, 200);
     }

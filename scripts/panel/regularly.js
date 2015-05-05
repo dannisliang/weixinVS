@@ -81,7 +81,7 @@ $(document).on("panelload", '#regularlyPanel', function (e) {
     $("#commonDivSearch").children().remove();
     $("#commonDivRegularly").load("html/common.html", function(){
         $("#pro-sort .sort-left").hide();
-        $("sssssssssssssssssssssssss").hide();
+        $(".commonBxslider").hide();
         $("#pro-sort .sort-pro-list .list-mod").hide();
         $("#pro-sort .sort-pro-list .sorts").hide();
         $("#pro-sort .sort-pro-list").css({"width":"100%", "margin-left":0});
