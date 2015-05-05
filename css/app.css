@@ -180,7 +180,7 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 
 /*首页*/
 /**/
-.eatplustitle{height:40px; line-height:40px; border-left:5px solid #e17209; font-size:18px;color:#6f6f6f; text-indent:10px; border-top:1px solid #ededef; border-bottom:1px solid #ededef;}
+.eatplustitle{height:40px; line-height:40px; border-left:5px solid #e17209; font-size:14px;color:#6f6f6f; text-indent:10px; border-top:1px solid #ededef; border-bottom:1px solid #ededef;}
 .eatplus .plusleft{padding:5px;}
 .eatplus .plusright{padding:5px;}
 
@@ -402,3 +402,19 @@ ul,li{ list-style:none;}
 
 .cartinfo{ font-size:14px;}
 .cartinfo .col1,.cartinfo .col2{ float:left; width:160px;}
+/*搜索页面 */
+#searchPanel .yicallHeader .icon-search{right:10px;top:0px; position:absolute; cursor:pointer; z-index:999;}
+#searchPanel .list-mod li{border-radius:5px;border:1px solid #e9e9e9; background:#fff; margin:10px; padding:10px;}
+#searchPanel .list-mod a{ display:inline-block; text-align:center; padding:4px 10px 4px 10px;border-right:1px dashed #e9e9e9; margin:5px;height:32px; line-height:32px;}
+/*我的消息 */
+#mymessage input[type="checkbox"] + label{
+  position: absolute;
+  top:5px;
+  left:50px;
+}
+#mymessage .list li{height:60px;}
+#mymessage .list li p{ margin-left:60px;overflow: hidden; margin-top:5px;
+white-space: nowrap;
+text-overflow: ellipsis;color:#9a9a9a}
+#mymessage .list li .date{ position:absolute;right:10px;top:5px;color:#cdcdcd}
+.divider .dellall{ position:absolute;right:20px;top:23px; font-size:14px;}

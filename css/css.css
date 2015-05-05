@@ -267,10 +267,10 @@ padding-bottom: 60%;
 overflow: hidden;}
 
 .user_own{padding: 4.0% 0%;margin-bottom:10px;position:relative; background:#f8f8fa;height:90px;}
-.user_own ul li{float: left; width: 20%; text-align: center; font-size: 16px; font-family:"微软雅黑";}
+.user_own ul li{text-align: center; font-size: 16px; font-family:"微软雅黑";}
 .user_own ul li a{display: block;}
 .user_own ul li p{margin-top: 5px; color: #676767;}
-.user_own ul li a img{max-width: 60%;}
+.user_own ul li a img{width:48px;max-width: 59px;}
 
 .plusleft{
     float:left;

@@ -36,6 +36,7 @@ function goodsDataProcess(dataJson)
     tempInfo.priceList = dataJson.priceList;
     tempInfo.title = dataJson.title;
     tempInfo.unit = dataJson.unit;
+    tempInfo.subtile = dataJson.subTitle;
     return tempInfo;
 }
 //同名商品数据

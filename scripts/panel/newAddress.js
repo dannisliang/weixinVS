@@ -30,6 +30,8 @@ function onGetNewAddressCompany(dataJson)
     }
 
     $("#sel_selectschool").prepend(content);
+
+    myCompanyId = getLocal("schoolid");
     if(myCompanyId)
     {
         $("#sel_selectschool option[value="+myCompanyId+"]").attr("selected", true);

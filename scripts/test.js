@@ -1,7 +1,7 @@
 /**
  * Created by admin on 2015/4/25.
  */
-var  debug = true;
+var  debug = false;
 //‘∂≥Ã£∫ vm3399.narwell.cn:3399  administrator 89975033
 //∑√Œ £∫http://test.narwell.cn:89
 //var myURL = "http://server.1calljifa.com:86";

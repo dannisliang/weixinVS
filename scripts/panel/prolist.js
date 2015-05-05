@@ -222,6 +222,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             $(".bx-wrapper").hide();
             $("#pro-sort .sort-pro-list .list-mod").hide();
             $("#sortsProlist").hide();
+            $("#pro-sort .sort-pro-list").show();
             if(bExist){
                 data = data.substr(0, data.length -1);
                 getDataByURL(getGoodsByIdUrl, function(dataJson){
@@ -236,8 +237,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             }
         }else { // 特惠专区
             $(".bx-wrapper").hide();
-            $("#pro-sort .sort-pro-list .list-mod").show();
             $("#tagProlist").parent().hide();
+            $("#pro-sort .sort-pro-list .list-mod").show();
             hideFilterDiv();
             bSpecialPanel = true;
             getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
@@ -311,37 +312,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                         $div.find("img").attr("onclick", 'changeToUrlClicked("' +sliderPageDataProlist.pageItem[j].gotoType +'", "' +sliderPageDataProlist.pageItem[j].gotoValue +'")');
                         toAddDiv += '<li>' +$div.html() +'</li>';
                         break;
-                    case "Two":
-                        $("#slideNav_0").remove();
-                        $("#eatplusone_1").remove();
-                        $("#eatplusone_2").remove();
-                        $("#up0_" + j).attr("src", getImageUrl + data.fileId );
-                        if(data.gotoType == "Category")
-                            $("#up0_" + j).parent().attr("href" ,"#prolistPanel");
-                        else if(data.gotoType == "Url")
-                            $("#up0_" + j).parent().attr("href" ,"#");
-                        break;
-                    case "Three":
-                        $("#eatplusone_0").remove();
-                        $("#slideNav_0").remove();
-                        $("#eatplusone_2").remove();
-                        $("#up1_" + j).attr("src", getImageUrl + data.fileId );
-                        if(data.gotoType == "Category")
-                            $("#up1_" + j).parent().attr("href" ,"#prolistPanel");
-                        else if(data.gotoType == "Url")
-                            $("#up1_" + j).parent().attr("href" ,"#");
-                        break;
-                    case "Four":
-                        $("#eatplusone_0").remove();
-                        $("#slideNav_0").remove();
-                        $("#eatplusone_1").remove();
-                        $("#up2_" + j).attr("src", getImageUrl + data.fileId );
-                        if(data.gotoType == "Category")
-                            $("#up2_" + j).parent().attr("href" ,"#prolistPanel");
-                        else if(data.gotoType == "Url")
-                            $("#up2_" + j).parent().attr("href" ,"#");
-                        break;
                     default:
+                        $(".bx-wrapper").hide();
                         break;
                 }
             }
@@ -576,6 +548,14 @@ dataByCondition.tagId = "";
 var bShowNextPage = true;       // 是否显示下一页。。当没有更多内容时，设置为false
 var beforeScrollY = 0;
 
+// 隐藏右边分类的全部
+function hideAllTop(){
+    $("#pro-sort .sort-pro-list .list-mod").hide();
+    $("#scroller ul a").hide();
+    $(".bx-wrapper").hide();
+    $("#sortsProlist").hide();
+}
+
 function getGoodListUrlSuccess(dataJson){
     var bLoadContent = true;    // 是否加载商品详细页
 
@@ -642,7 +622,7 @@ function getGoodListUrlSuccess(dataJson){
     }else if(dataJson.length == 0){
         bShowNextPage = false;
         if(goods.page == 1){
-            $("#scroller ul a").hide();
+            hideAllTop();
             showGlobalMessageDialog("该分类商品正在联盟中。。。");
         }
     }

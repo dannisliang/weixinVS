@@ -24,7 +24,7 @@ var getGoodUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/co
 var getImageUrl;
 //商品详情的展示页
 var getGoodsDescriptUrl;
-if(false) {
+if(debug) {
     getImageUrl = "http://server.1calljifa.com:86" + "/service/rest/tk.File/";
     getGoodsDescriptUrl = "http://server.1calljifa.com:86" + "/emall/goodsDescript.jsp";
 }

@@ -23,7 +23,8 @@ if (navigator.userAgent.toLowerCase().match(/MicroMessenger/i) == "micromessenge
 function getMyInfo() {
     if (isWeixin) {
         var openID = getCookie(charVec.openIDCo);
-        if($.os.chrome){
+        if(isWeixin){
+        //if($.os.chrome){
             if(debug)
             {
                 openID = null;
@@ -43,7 +44,7 @@ function getMyInfo() {
                     var data = "";
                     data += "url=";
                     // 微信回调网路连接
-                    var rootWeixinUrlCal = "http://test.narwell.cn:89/weixin/indexmine.html";
+                    var rootWeixinUrlCal = "http://test.narwell.cn:89/zsdhtml/indexmine.html";
                     data += rootWeixinUrlCal;
                     //alert(data);
                     getDataByURL(getUserInfoInitWXUrl, getUserInfoInitWXUrlSuc, data);

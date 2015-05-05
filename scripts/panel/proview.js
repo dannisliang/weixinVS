@@ -44,7 +44,6 @@ function getProductInfo(id)
     $("#PhotoSwipeTarget").empty();
     //var id = goodsPageId[index];
     currentInfoID = id;
-    getGoodsCountByID(currentInfoID,getProviewCount);
     var data = "id=" +id +"&buyerId=" + userInfo.id;
 
     getDataByURL(getGoodUrl, onGetGoodData, data);
@@ -134,13 +133,15 @@ function onGetGoodData(dataJson)
         $("#proviewcollect").attr("class","icon icon-addfav");
     }
     $("#exampleInputAmount").get(0).value = addCount;
+    $("#proviewsubtile").text(tempGoodData.subtile);
     $(".setpricepanel .red").text(addCount);
     $(".setpricepanel .gray4").text("￥" + (currentGoodsPrice * 100 *addCount)/100 + "元");
+    getGoodsCountByID(currentInfoID,getProviewCount);
 }
 function onGetGoodsPicinfo()
 {
     $("#productpicdes").show();
-
+    $("#productpicdes").empty();
     $("#productpicdes").append(tempGoodData.description);
 }
 

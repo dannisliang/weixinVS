@@ -71,13 +71,14 @@ function ontAreaByCompanyIdEdit(dataJson)
         content += dataJson[i].name;
         content += "</option>"
     }
+    $("#sel_selectquedit").prepend(content);
     if(dataJson.length > 0)
     {
         newAddressQU = currentEditData.areaId;
         getAreaAddressByAreaIdEdit(newAddressQU);
         $("#sel_selectquedit option[value="+currentEditData.areaId+"]").attr("selected", true);
     }
-    $("#sel_selectquedit").prepend(content);
+
 }
 function editAddressClicked()
 {
@@ -88,7 +89,7 @@ function editAddressClicked()
     var areadDressId =  $('#sel_selectbuildedit option:selected').val();
     var address =$("#editAddressDes").get(0).value;
     var isDefault = document.getElementById("editaddresstoggle2").checked +"";
-    if( !name || !phone|| !companyId || !areaId || !address)
+    if( !name || !phone|| !companyId || !address)
     {
         return;
     }
@@ -125,6 +126,7 @@ function onGetAreaAddressByAreaIdEdit(dataJson)
         content += "</option>"
     }
     $("#sel_selectbuildedit").prepend(content);
+    $("#sel_selectbuildedit option[value="+currentEditData.areaAddressId+"]").attr("selected", true);
 }
 function onaddAddressCompleteEdit(dataJson)
 {

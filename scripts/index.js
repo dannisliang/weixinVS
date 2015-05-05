@@ -72,7 +72,7 @@
             if( numGoods == null ){
                 $("#afbadgeCart").hide();
             }
-            $("#afbadgeCart").css("right", $("i.yicall-icon.icon-cart").position().left -deviceWidth*0.42);
+           $("#afbadgeCart").css("right", $("i.yicall-icon.icon-cart").position().left -deviceWidth*0.42);
         });
 
         // 自动登陆

@@ -16,3 +16,14 @@ function delItemToCollect(id,callback)
         callback.apply(this,[id]);
     }, data);
 }
+
+function setFooterVisible(boo)
+{
+    if(boo)
+    {
+        $(".view footer").show();
+    }else
+    {
+        $(".view footer").hide();
+    }
+}

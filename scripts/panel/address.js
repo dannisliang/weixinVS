@@ -22,7 +22,7 @@ function onGetAddressUrl(dataJson)
         addressData[i].address = dataJson[i].address;
         addressData[i].areaAddressId = dataJson[i].areaAddressId;
         addressData[i].areaAddressName = dataJson[i].areaAddressName;
-        addressData[i].areaId = dataJson[i].areaAddressId;
+        addressData[i].areaId = dataJson[i].areaId;
         addressData[i].areaName = dataJson[i].areaName;
         addressData[i].companyId = dataJson[i].companyId;
         addressData[i].companyName = dataJson[i].companyName;

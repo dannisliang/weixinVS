@@ -1,23 +1,23 @@
 
 <header class="yicallHeader">
-	<a class="backButton back">后退</a>
+	<a class="backButton back"></a>
 	<input type="search" class="input_search_key" placeholder=" 输入搜索内容" id="searchId">
-	<input type="submit" class="button" style="right:0;position:absolute;top:0" value="搜索" onclick="getSearchGoodUrl()"/>
+	<a class="icon icon-search" onclick="getSearchGoodUrl()"/></a>
 </header>
-<ul class="list-mod clearfix" style="margin-top:44px">
+<ul class="list-mod clearfix header-margin-top"  >
 	<li>
-		<span>历史搜索：
+		<span class="orange">历史搜索：</span>
 			<div class="textSelDiv clearfix" id="historySearch">
 				<a href="javascript:void(0)" style="display: none" onclick="getSearchGoodUrl()">牛奶</a>
 			</div>
-		</span>
+		
 	</li>
 	<li>
-		<span>热门搜索：
+		<span class="orange">热门搜索：</span>
 			<div class="textSelDiv clearfix" id="hotSearch">
 				<a href="javascript:void(0)" style="display: none" onclick="getSearchGoodByKeyword()">牛奶</a>
 			</div>
-		</span>
+		
 	</li>
 </ul>
 <div id="commonDivSearch">

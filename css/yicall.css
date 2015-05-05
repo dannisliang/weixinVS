@@ -237,14 +237,14 @@ body {
 
 /*#region search */
 #searchId {
-    position: absolute;
-  width: 210px;
-  left: 50px;
-  top: 3px;
-  height: 16px;
+	display:inline-block; 
+  height: 36px;
   background: #E25906;
   border:none;
   color:#fff;
+  margin-top:5px;
+  margin-left:44px;
+  float:left;
 }
 #searchId::-webkit-input-placeholder {
   color: #fff;

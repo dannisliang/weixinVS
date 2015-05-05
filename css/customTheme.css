@@ -6,6 +6,7 @@
   border: none;
   position:absolute;
   background:#ff6000;margin:0;padding:0;
+  overflow:hidden;
 }
 .yicallTheme .view header .button {
   color: #fff;
@@ -20,7 +21,7 @@
 }
 .yicallTheme .view header .backButton {
   background: #f8f8f8;
-  color: #157dfb;
+  color: #fff;
   display: block;
   position: absolute;
   line-height: 44px;
