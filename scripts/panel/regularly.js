@@ -52,6 +52,13 @@
             }
         }
         if(bExist){
+            $("#titleRegularly").find("li").each(function(index, elm){
+                if(index != 0){
+                    $(elm).removeClass("active");
+                }else{
+                    $(elm).addClass("active");
+                }
+            })
             data = data.substr(0, data.length -1);
             getDataByURL(getGoodsByIdUrl, function(dataJson){
                 if(dataJson.length != 0){
@@ -70,21 +77,19 @@
 });
 
 $(document).on("panelload", '#regularlyPanel', function (e) {
-    if($("#commonDivRegularly").find("a").length == 0){
-        $("#commonDivProlist").children().remove();
-        $("#commonDivSearch").children().remove();
-        $("#commonDivRegularly").load("html/common.html", function(){
-            $("#pro-sort .sort-left").hide();
-            $("#pro-sort .sort-pro-list .topad img").hide();
-            $("#pro-sort .sort-pro-list .list-mod").hide();
-            $("#pro-sort .sort-pro-list .sorts").hide();
-            $("#pro-sort .sort-pro-list").css({"width":"100%", "margin-left":0});
-            $("#pro-sort .sort-pro-list").css({
-                "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-                - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
-            });
+    $("#commonDivProlist").children().remove();
+    $("#commonDivSearch").children().remove();
+    $("#commonDivRegularly").load("html/common.html", function(){
+        $("#pro-sort .sort-left").hide();
+        $("sssssssssssssssssssssssss").hide();
+        $("#pro-sort .sort-pro-list .list-mod").hide();
+        $("#pro-sort .sort-pro-list .sorts").hide();
+        $("#pro-sort .sort-pro-list").css({"width":"100%", "margin-left":0});
+        $("#pro-sort .sort-pro-list").css({
+            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
         });
-    }
+    });
     checkUserBuyList();
 });
 

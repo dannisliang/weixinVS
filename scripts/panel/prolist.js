@@ -195,7 +195,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             }
         })
         if (index != 0 && prolistLeftID[index] != index) {
-            $("#pro-sort .sort-pro-list .topad img").show();
+            $("sssssssssssssssssssssssss").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#pro-sort .sort-pro-list .sorts").show();
             $("#tagProlist").parent().hide();
@@ -220,7 +220,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                     break;
                 }
             }
-            $("#pro-sort .sort-pro-list .topad img").hide();
+            $("sssssssssssssssssssssssss").hide();
             $("#pro-sort .sort-pro-list .list-mod").hide();
             $("#sortsProlist").hide();
             if(bExist){
@@ -236,7 +236,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 showGlobalMessageDialog("您还没有浏览商品。。。");
             }
         }else { // 特惠专区
-            $("#pro-sort .sort-pro-list .topad img").hide();
+            $("sssssssssssssssssssssssss").hide();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#tagProlist").parent().hide();
             hideFilterDiv();
@@ -248,7 +248,83 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     }
 
     pageSettingUrlSuccess = function (dataJson){
-
+        if(dataJson.length == 0){
+            $("sssssssssssssssssssssssss").hide();
+            return;
+        }
+        $(".commonBxslider").show();
+        var width = parseFloat($(".commonBxslider li").first().css("width")).toFixed(2);
+        $(".commonBxslider img").css({
+            width: width,
+            height:parseFloat(width/3).toFixed(2)
+        });
+        for(var i= 0 ; i < 1 ; i++){
+            var sliderPageDataProlist = new Object();
+            sliderPageDataProlist.label = dataJson[i].label;
+            sliderPageDataProlist.pageId = dataJson[i].pageId;
+            sliderPageDataProlist.pageType = dataJson[i].pageType;
+            sliderPageDataProlist.size = dataJson[i].size;
+            sliderPageDataProlist.typeSetting = dataJson[i].typeSetting;
+            sliderPageDataProlist.pageItem = new Array();
+            for(var j = 0 ; j <dataJson[i].pageItem.length;j++){
+                sliderPageDataProlist.pageItem[j] = new Object();
+                sliderPageDataProlist.pageItem[j].fileId = dataJson[i].pageItem[j].fileId;
+                sliderPageDataProlist.pageItem[j].gotoType = dataJson[i].pageItem[j].gotoType;
+                sliderPageDataProlist.pageItem[j].gotoValue = dataJson[i].pageItem[j].gotoValue;
+                sliderPageDataProlist.pageItem[j].pageItemId = dataJson[i].pageItem[j].pageItemId;
+                switch (sliderPageDataProlist.typeSetting)
+                {
+                    case "One"://；轮播
+                        var $div = $(".commonBxslider li:eq(1)").clone();
+                        if(j == 0){
+                            $(".commonBxslider li").each(function(index, elm){
+                                if($(elm).index() != 0 && $(elm) != $(".commonBxslider li").last()){
+                                    $(elm).remove();
+                                }
+                            })
+                        }
+                        $div.show();
+                        $div.find("img").attr("src", getImageUrl + sliderPageDataProlist.pageItem[j].fileId +"?thumb=" +parseInt(width) +"x");
+                        $(".commonBxslider").append('<li>' +$div.html() +'</li>');
+                        break;
+                    case "Two":
+                        $("#slideNav_0").remove();
+                        $("#eatplusone_1").remove();
+                        $("#eatplusone_2").remove();
+                        $("#up0_" + j).attr("src", getImageUrl + data.fileId );
+                        if(data.gotoType == "Category")
+                            $("#up0_" + j).parent().attr("href" ,"#prolistPanel");
+                        else if(data.gotoType == "Url")
+                            $("#up0_" + j).parent().attr("href" ,"#");
+                        break;
+                    case "Three":
+                        $("#eatplusone_0").remove();
+                        $("#slideNav_0").remove();
+                        $("#eatplusone_2").remove();
+                        $("#up1_" + j).attr("src", getImageUrl + data.fileId );
+                        if(data.gotoType == "Category")
+                            $("#up1_" + j).parent().attr("href" ,"#prolistPanel");
+                        else if(data.gotoType == "Url")
+                            $("#up1_" + j).parent().attr("href" ,"#");
+                        break;
+                    case "Four":
+                        $("#eatplusone_0").remove();
+                        $("#slideNav_0").remove();
+                        $("#eatplusone_1").remove();
+                        $("#up2_" + j).attr("src", getImageUrl + data.fileId );
+                        if(data.gotoType == "Category")
+                            $("#up2_" + j).parent().attr("href" ,"#prolistPanel");
+                        else if(data.gotoType == "Url")
+                            $("#up2_" + j).parent().attr("href" ,"#");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if(sliderPageDataProlist.typeSetting == 'one'){
+                bxSliderProlist.reloadSlider();
+            }
+        }
     }
 
     onSortLeftSuccess = function (dataJson) {
@@ -299,12 +375,18 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             $("#pro-sort .sort-left").show();
             $("#pro-sort .sort-pro-list .list-mod").show();
             $("#pro-sort .sort-pro-list .sorts").show();
-            $("#pro-sort .sort-pro-list .topad img").hide();
+            $("sssssssssssssssssssssssss").hide();
             $("#tagProlist").parent().hide();
             $("#pro-sort .sort-pro-list").css({
                 "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
                 - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
                 "width":"", "margin-left":"",
+            });
+            bxSliderProlist = $('.commonBxslider').bxSlider({
+                auto: true,
+                pause: 2000,
+                //slideWidth: $("#pro-sort .sort-pro-list").css("width"),
+                //captions: true
             });
         });
         bLoadRightProlist = false;
@@ -319,8 +401,12 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         bRefreshProlist = true;
         getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
     }
+    if(bxSliderProlist != null){
+        bxSliderProlist.reloadSlider();
+    }
 });
 
+var bxSliderProlist = null;
 var bGotoDriect = false;    // 是否是点击图片跳转进浏览界面
 var firstDriectId;
 function goToProlistById(firstId){
@@ -512,7 +598,7 @@ function getGoodListUrlSuccess(dataJson){
     addFavClicked = function(index){
         bLoadContent = false;
         var data = "id=" +goodsPageId[index];
-        data += "&buyerId"
+        data += "&buyerId";
         if(bAddFavArr[index]){
             getDataByURL(delCollectionUrl, function(dataJson){
                 $("#goodsList" +index).find(".addfav").text("收藏");
@@ -640,7 +726,7 @@ var pullActionDetect = {
         setTimeout(function () {
             if(beforeScrollY == 0){
                 beforeScrollY = myScroll.y;
-                $("#pro-sort .sort-pro-list .topad img").hide();
+                $("sssssssssssssssssssssssss").hide();
                 $("#pro-sort .sort-pro-list .list-mod").hide();
             }else{
                 if(myScroll.y <= beforeScrollY){
@@ -660,7 +746,7 @@ var pullActionDetect = {
                 showGlobalMessageDialog("已经是最后一页了。。。");
             }else if(myScroll.y >= 0){
                 $("#pro-sort .sort-pro-list .list-mod").show();
-                $("#pro-sort .sort-pro-list .topad img").show();
+                $("sssssssssssssssssssssssss").show();
             }
         }, 200);
     }

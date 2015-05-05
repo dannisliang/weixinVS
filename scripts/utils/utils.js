@@ -317,6 +317,7 @@ function hideWaitingDialog() {
 }
 
 function showGlobalMessageDialog(text) {
+    //hideGlobalMessageDialog();
     $("#globalMessageHint").attr("data-message", text);
     $("#globalMessageHint").click();
     $(".afToastContainer.bc").find("div").each(function(index,elm){
@@ -324,6 +325,11 @@ function showGlobalMessageDialog(text) {
             $(elm).remove();
         }
     })
+    //$("#globalMessageHint").show();
+}
+
+function hideGlobalMessageDialog(){
+    $("#globalMessageHint").hide();
 }
 
 var subCountReg;
