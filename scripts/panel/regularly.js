@@ -18,10 +18,8 @@
     getCollectionUrlSuccess = function(dataJson){
         if(dataJson.length != 0){
             bRefreshProlist = true;
-            $("#pro-sort .sort-pro-list").show();
-            getGoodListUrlSuccess(dataJson);
+            getGoodListUrlSuccessRegularly(dataJson);
         }else{
-            $("#pro-sort .sort-pro-list").hide();
             showGlobalMessageDialog("兄弟，肯定要有几个最爱的。。。");
         }
     }
@@ -63,10 +61,9 @@
             getDataByURL(getGoodsByIdUrl, function(dataJson){
                 if(dataJson.length != 0){
                     bRefreshProlist = true;
-                    $("#pro-sort .sort-pro-list").show();
-                    getGoodListUrlSuccess(dataJson);
+                    getGoodListUrlSuccessRegularly(dataJson);
                 }else{
-                    $("#pro-sort .sort-pro-list").hide();
+
                 }
             }, data, true);
         }else{
@@ -77,19 +74,132 @@
 });
 
 $(document).on("panelload", '#regularlyPanel', function (e) {
-    $("#commonDivProlist").children().remove();
-    $("#commonDivSearch").children().remove();
-    $("#commonDivRegularly").load("html/common.html", function(){
-        $("#pro-sort .sort-left").hide();
-        $(".commonBxslider").hide();
-        $("#pro-sort .sort-pro-list .list-mod").hide();
-        $("#pro-sort .sort-pro-list .sorts").hide();
-        $("#pro-sort .sort-pro-list").css({"width":"100%", "margin-left":0});
-        $("#pro-sort .sort-pro-list").css({
-            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
-        });
-    });
     checkUserBuyList();
 });
+
+
+function getGoodListUrlSuccessRegularly(dataJson){
+    var bLoadContent = true;    // 是否加载商品详细页
+    if( dataJson.length >= 1){
+        var $tempList = $("#goodsListRegularly");
+        if($("#goodsListRegularly").length == 0){
+            $tempList = $("#goodsListRegularly0");
+        }else{
+            //$("#goodsListRegularly").show();
+        }
+        if(bRefreshProlist){
+            $("#tabRegularly a").each(function(index, elm){
+                var id = $(elm).attr("id");
+                if(id != null && id.substr(0, 9) == 'goodsList'){
+                    $(elm).remove();
+                }
+            });
+        }
+        for(var i= 0; i<dataJson.length; i++){
+            var goodSample = $tempList.clone();
+            goodSample.show();
+            dataJson[i].price = (parseFloat(dataJson[i].price)).toFixed(1);
+            var index = (goods.page -1) *goods.rows +i;
+            goodsPageId[index] = dataJson[i].id;
+            goodSample.attr("id", "goodsListRegularly" +index);
+            goodSample.attr("onclick", "prolistRightClicked(" +index +")");
+            if (dataJson[i].pictureId != ""){
+                goodSample.find(".item .img img").attr("src", getImageUrl + dataJson[i].pictureId + "?thumb=73x73");
+            }else{
+                goodSample.find(".item .img img").attr("src", "images/temp/pro.png");
+            }
+            goodSample.find(".title.fontsize-n.ellipsis").text(dataJson[i].name);
+            if(dataJson[i].subTitle != null){
+                goodSample.find(".intro").show();
+                goodSample.find(".intro").text(dataJson[i].subTitle);
+            }
+            goodsHeadTittle[index] = dataJson[i].name;
+            goodSample.find(".nowprice").text("￥ " +dataJson[i].price);
+            if(dataJson[i].price < dataJson[i].costPrice){
+                goodSample.find(".nowprice").show();
+                goodSample.find(".nowprice").text("￥ " +dataJson[i].costPrice);
+            }
+            goodSample.find(".addfav").attr("onclick" ,"addFavClicked(" +index +")");
+            bAddFavArr[index] = dataJson[i].isCollect;
+            if(dataJson[i].isCollect){
+                goodSample.find(".addfav").text("已收藏");
+            }else{
+                goodSample.find(".addfav").text("收藏");
+            }
+            if(dataJson[i].isPriceList){
+                goodSample.find("#moreDiscountRegularly").show();
+            }
+            goodSample.find(".setcount .reduce").attr("onclick" ,"reduceButtonProlistClicked(" +index +")");
+            goodSample.find(".setcount .add").attr("onclick" ,"addButtonProlistClicked(" +index +")");
+            goodSample.find(".setcount .count").attr("id" ,"goodCountRegularly" +index);
+            getGoodsCountByID(goodsPageId[index], function setGoodCount(count, index){
+                if($("#goodCountRegularly" +index).get(0) != null){
+                    $("#goodCountRegularly" +index).get(0).value = count;
+                    if($("#goodCountRegularly" +index).get(0).value == 0){
+                        $("#goodsListRegularly" +index).find(".setcount .reduce").hide();
+                    }else{
+                        $("#goodsListRegularly" +index).find(".setcount .reduce").show();
+                    }
+                }
+            }, index);
+            $("#tabRegularly").append(goodSample);
+        }
+        bToLoadOnoffProlist = true;
+    }else if(dataJson.length == 0){
+        bShowNextPage = false;
+        if(goods.page == 1){
+            hideAllTop();
+            showGlobalMessageDialog("该分类商品正在联盟中。。。");
+            bToLoadOnoffProlist = true;
+        }else{
+            bScrollToBottom = true;
+            bToLoadOnoffProlist = false;
+        }
+    }
+
+    addFavClicked = function(index){
+        bLoadContent = false;
+        var data = "id=" +goodsPageId[index];
+        data += "&buyerId";
+        if(bAddFavArr[index]){
+            getDataByURL(delCollectionUrl, function(dataJson){
+                $("#goodsListRegularly" +index).find(".addfav").text("收藏");
+                bAddFavArr[index] = false;
+            }, data);
+        }else{
+            getDataByURL(addCollectionUrl, function(dataJson){
+                $("#goodsListRegularly" +index).find(".addfav").text("已收藏");
+                bAddFavArr[index] = true;
+            }, data);
+        }
+    }
+
+    reduceButtonProlistClicked = function (index){
+        bLoadContent = false;
+        if($("#goodCountRegularly" +index).get(0).value != 0){
+            $("#goodCountRegularly" +index).get(0).value--;
+            if($("#goodCountRegularly" +index).get(0).value == 0){
+                $("#goodsListRegularly" +index).find(".setcount .reduce").hide();
+            }
+            setCountByID(goodsPageId[index], $("#goodCountRegularly" +index).get(0).value);
+        }
+    }
+
+    addButtonProlistClicked = function (index){
+        bLoadContent = false;
+        $("#goodsListRegularly" +index).find(".setcount .reduce").show();
+        $("#goodCountRegularly" +index).get(0).value++;
+        setCountByID(goodsPageId[index], $("#goodCountRegularly" +index).get(0).value);
+    }
+
+    prolistRightClicked = function(index){
+        if(bLoadContent){
+            setSession(charVec.goodHeadTittleSe, goodsHeadTittle[index]);
+            currentProviewID =  goodsPageId[index];
+            addToHistory(goodsPageId[index], "historyProlist");
+            $.afui.loadContent("#proviewPanel", false, false, transitionYC);
+        }
+        bLoadContent = true;
+    }
+}
 

@@ -95,5 +95,10 @@ function changeNumGoodsCart(numEnd){
 }
 
 function temp() {
-    goToSearchByValue("牛奶");
+    setSession(charVec.bGetPasswordCo, true);
+    $.afui.loadContent("#regSucPanel", false, false, transitionYC);
+
+    // 取回密码
+    //setSession(charVec.bGetPasswordCo, true);
+    //$.afui.loadContent("#regPanel", false, false, transitionYC);
 }

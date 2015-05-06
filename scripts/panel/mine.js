@@ -3,6 +3,9 @@
 });
 
 $(document).on("panelload", '#minePanel', function (e) {
+    gotoMymessageClicked = function(){
+        $.afui.loadContent("#mymessagePanel", false, false, transitionYC);
+    }
 });
 
 function changeMine(){

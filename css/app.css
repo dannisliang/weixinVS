@@ -62,7 +62,7 @@ button{border:none; background-color:transparent;}
 /*字体大小*/
 .fontsize-xl{font-size:30px;line-height:30px;}
 .fontsize-l{font-size:20px;}
-.fontsize-n{font-size:14px;}
+.fontsize-n{font-size:14px; line-height:30px;}
 .fontsize-xn{font-size:16px;}
 h1{color:#FFF;}
 h4{color:#666666}
@@ -191,32 +191,32 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 .selbox-current a{background:url(../images/selected.png) top right no-repeat #eaeaea}
 
 /*商品选购*/
-#pro-sort,#sortSearch {height: 100%}
-#pro-sort .sort-left, #sortSearch .sort-left{background:#f8f8f8;overflow: auto;height: 100%;}
-#pro-sort .sort-left .sort-list, #sortSearch .sort-left .sort-list{padding:0;}
-#pro-sort .sort-left .sort-list li, #sortSearch .sort-left .sort-list li{padding:0;}
-#pro-sort .sort-left .sort-list li a, #sortSearch .sort-left .sort-list li a{  display: block;  border-right: 1px solid #d7d7d7;  border-bottom: 1px solid #d7d7d7;  height: 52px;  line-height: 52px;  text-align: center;  width: 85px;}
-#pro-sort .sort-left .sort-list li.current a, #sortSearch .sort-left .sort-list li.current a{border-right: 1px solid #fff;background:#fff;border-left:2px solid #ff6000;  }
+#pro-sort,#sortSearch,#sortProlist, {height: 100%}
+#pro-sort .sort-left, #sortSearch .sort-left, #sortProlist .sort-left{background:#f8f8f8;overflow: auto;height: 100%;}
+#pro-sort .sort-left .sort-list, #sortSearch .sort-left .sort-list, #sortProlist .sort-left .sort-list{padding:0;}
+#pro-sort .sort-left .sort-list li, #sortSearch .sort-left .sort-list li, #sortProlist .sort-left .sort-list li{padding:0;}
+#pro-sort .sort-left .sort-list li a, #sortSearch .sort-left .sort-list li a, #sortProlist .sort-left .sort-list li a{  display: block;  border-right: 1px solid #d7d7d7;  border-bottom: 1px solid #d7d7d7;  height: 52px;  line-height: 52px;  text-align: center;  width: 85px;}
+#pro-sort .sort-left .sort-list li.current a, #sortSearch .sort-left .sort-list li.current a, #sortProlist .sort-left .sort-list li.current a{border-right: 1px solid #fff;background:#fff;border-left:2px solid #ff6000;  }
 
-#pro-sort .sort-pro-list, #sortSearch .sort-pro-list{margin-left:87px;background:#fff;height:100%;overflow-y: auto;overflow-x: hidden;}
-#pro-sort .sort-pro-list .topad, #sortSearch .sort-pro-list .topad{margin:5px;}
-#pro-sort .sort-pro-list .topad img, #sortSearch .sort-pro-list .topad img{width:100%;}
-#pro-sort .sort-pro-list .list-mod li span, #sortSearch .sort-pro-list .list-mod li span {
+#pro-sort .sort-pro-list, #sortSearch .sort-pro-list, #sortProlist .sort-pro-list{margin-left:87px;background:#fff;height:100%;overflow-y: auto;overflow-x: hidden;}
+#pro-sort .sort-pro-list .topad, #sortSearch .sort-pro-list .topad, #sortProlist .sort-pro-list .topad{margin:5px;}
+#pro-sort .sort-pro-list .topad img, #sortSearch .sort-pro-list .topad img, #sortProlist .sort-pro-list .topad img{width:100%;}
+#pro-sort .sort-pro-list .list-mod li span, #sortSearch .sort-pro-list .list-mod li span , #sortProlist .sort-pro-list .list-mod li span {
   display: inline-block;
   float: left;
   width: 70px;
   color: #9a9a9a;
 }
-#pro-sort .sort-pro-list .list-mod, #sortSearch .sort-pro-list .list-mod{margin:5px;}
-#pro-sort .sort-pro-list .list-mod .textSelDiv, #sortSearch .sort-pro-list .list-mod .textSelDiv{ margin-left:75px;}
-#pro-sort .sort-pro-list .list-mod li li, #sortSearch .sort-pro-list .list-mod li li{min-width:30px; margin-left:10px; float:left;height:20px;}
-#pro-sort .sort-pro-list .sorts ,#sortSearch .sort-pro-list .sorts {
+#pro-sort .sort-pro-list .list-mod, #sortSearch .sort-pro-list .list-mod, #sortProlist .sort-pro-list .list-mod{margin:5px;}
+#pro-sort .sort-pro-list .list-mod .textSelDiv, #sortSearch .sort-pro-list .list-mod .textSelDiv, #sortProlist .sort-pro-list .list-mod .textSelDiv{ margin-left:75px;}
+#pro-sort .sort-pro-list .list-mod li li, #sortSearch .sort-pro-list .list-mod li li, #sortProlist .sort-pro-list .list-mod li li{min-width:30px; margin-left:10px; float:left;height:20px;}
+#pro-sort .sort-pro-list .sorts ,#sortSearch .sort-pro-list .sorts ,#sortProlist .sort-pro-list .sorts {
   background: #f8f8f8;
   border: 1px solid #ededed;
   padding: 5px;
   margin:5px;
 }
-#pro-sort .sort-pro-list .sorts a , #sortSearch .sort-pro-list .sorts a {
+#pro-sort .sort-pro-list .sorts a , #sortSearch .sort-pro-list .sorts a , #sortProlist .sort-pro-list .sorts a{
   margin-left: 10px;
   display: inline-block;
   min-width: 40px;
@@ -224,7 +224,7 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
   line-height: 25px;
   text-align:center
 }
-#pro-sort .sort-pro-list .sorts  a.current, #sortSearch .sort-pro-list .sorts  a.current {
+#pro-sort .sort-pro-list .sorts  a.current, #sortSearch .sort-pro-list .sorts  a.current , #sortProlist .sort-pro-list .sorts  a.current{
   background: #b0ca43;
   color: #fff;
   -moz-border-radius: 60px;
@@ -365,12 +365,12 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 /*选项卡*/
 ul,li{ list-style:none;}
 #tabRegularly{ margin:50px 10px;}
-#titleRegularly{ height:40px; line-height:40px; overflow:hidden;border:1px solid #ff6000;
+#titleRegularly,.tabs{ height:40px; line-height:40px; overflow:hidden;border:1px solid #ff6000;
     -moz-border-radius: 5px;      /* Gecko browsers */
     -webkit-border-radius: 5px;   /* Webkit browsers */
-    border-radius:5px; }
-#titleRegularly li{text-align:center; display:block; background:#fff; cursor:pointer;}
-#titleRegularly .active{ background:#ff6000; color:#fff;}
+    border-radius:5px;margin:10px }
+#titleRegularly li,.tabs li{text-align:center; display:block; background:#fff; cursor:pointer;}
+#titleRegularly .active,.tabs li.active{ background:#ff6000; color:#fff;}
 #tabcont{ width:100%; border:1px solid #ccc; height:300px;}
 
 /*经常去*/
@@ -418,3 +418,21 @@ white-space: nowrap;
 text-overflow: ellipsis;color:#9a9a9a}
 #mymessage .list li .date{ position:absolute;right:10px;top:5px;color:#cdcdcd}
 .divider .dellall{ position:absolute;right:20px;top:23px; font-size:14px;}
+
+/*我的订单 */
+.orderlist{ background:#fff;}
+#myorder .orderlist .date{ margin-bottom:10px;height:40px; line-height:40px;}
+#myorder .orderlist .proitem{position:relative;height:70px;padding-bottom:10px;margin-top:10px;}
+#myorder .orderlist .proitem .img{width:60px;height:60px;overflow:hidden;float:left }
+#myorder .orderlist .items{margin:5px 20px 5px 20px;}
+#myorder .orderlist .proitem .img img{width:100%;}
+#myorder .orderlist .proitem .title{ margin-left:70px;height:40px; }
+#myorder .orderlist .proitem .price{ margin-left:70px;height:20px;width:60px; }
+#myorder .orderlist .proitem .count{height:20px;width:60px;position:absolute;right:10px;bottom:10px;text-align:right;color:#737373;}
+#myorder .orderlist .remaining-time{ margin-left:15px; margin-top:9px;}
+#myorder .orderlist .remaining-time .time{ display:inline-block; float:left;width:30px;height:22px; line-height:22px; border:1px solid #E6E6E6; text-align:center}
+#myorder .remaining-time .sep{ float:left; display:inline-block;width:10px; text-align:center;height:22px; line-height:22px;}
+#myorder .orderlist .buttons{ margin-top:5px;}
+#myorder .orderlist .buttons a{ display:inline-block; float:left;border:1px solid #cccccc; text-align:center;-moz-border-radius: 5px;      /* Gecko browsers */
+    -webkit-border-radius: 5px;   /* Webkit browsers */
+    border-radius:5px; background:#fff; margin-right:10px;; line-height:22px; padding:5px  }

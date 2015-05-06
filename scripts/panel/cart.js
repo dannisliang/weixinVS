@@ -113,6 +113,7 @@ function onGetCartListUrl(dataJson)
         carGoodsList[i].serialVersionUID = dataJson[i].serialVersionUID;
         carGoodsList[i].specificationList = dataJson[i].specificationList;
         carGoodsList[i].unit = dataJson[i].unit;
+        carGoodsList[i].costPrice = dataJson[i].costPrice;
         carGoodsList[i].choose = carGoodsList[i].isChecked;
 
         setCountByID(carGoodsList[i].goodsId,carGoodsList[i].count);
@@ -138,6 +139,9 @@ function onGetCartListUrl(dataJson)
         parentNode.find(".del").attr("id","del_"+ i);
         parentNode.find("> input").attr("id","check_"+i);
         parentNode.find("> label").attr("for","check_"+i);
+        parentNode.find(".cartLadder0").attr("id","cartladderprice_"+i  +"_0");
+        parentNode.find(".cartLadder1").attr("id","cartladderprice_"+i  +"_1");
+        parentNode.find(".cartLadder2").attr("id","cartladderprice_"+i  +"_2");
         document.getElementById("check_" + i).checked = carGoodsList[i].isChecked;
         parentNode.find(".title,fontsize-l,ellipsis").text(carGoodsList[i].goodsTitle);
         parentNode.find(".nowprice,fontsize-xl").text("￥" + carGoodsList[i].price +"/" + carGoodsList[i].unit);
@@ -146,6 +150,45 @@ function onGetCartListUrl(dataJson)
             parentNode.find(".Ladder-price").hide();
         } else
         {
+            var len = carGoodsList[i].priceList.length;
+            for(var j = 0 ;j < 3; j++)
+            {
+                if( j < len)
+                {
+                    parentNode.find("#cartladderprice_"+i  +"_"+ j).show();
+                    switch (j)
+                    {
+                        case  0:
+                            parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(0).text("1" + carGoodsList[i].unit);
+                            parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(1).text("￥" + carGoodsList[i].priceList[j].price);
+                            break;
+                        case 1:
+                            if(carGoodsList[i].priceList[j].maxCount == 0)
+                            {
+                                parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(0).text(">" + carGoodsList[i].priceList[j].minCount+ carGoodsList[i].unit);
+                            }
+                            else{
+                                parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(0).text(carGoodsList[i].priceList[j].minCount +"~" + carGoodsList[i].priceList[j].maxCount + carGoodsList[i].unit);
+                            }
+
+                            parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(1).text("￥" + carGoodsList[i].priceList[j].price);
+                            break;
+                        case 2:
+                            if(carGoodsList[i].priceList[j].maxCount == 0)
+                            {
+                                parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(0).text(">" + carGoodsList[i].priceList[j].minCount + carGoodsList[i].unit);
+                            }else{
+                                parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(0).text(carGoodsList[i].priceList[j].minCount +"~" + carGoodsList[i].priceList[j].maxCount + carGoodsList[i].unit);
+                            }
+
+                            parentNode.find("#cartladderprice_"+i  +"_"+ j).find("> span").eq(1).text("￥" + carGoodsList[i].priceList[j].price);
+                            break;
+                    }
+                }else
+                {
+                    parentNode.find("#cartladderprice_"+i  +"_"+ j).hide();
+                }
+            }
         }
 
         parentNode.find(".total").text("总价:" + (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100);
@@ -155,6 +198,7 @@ function onGetCartListUrl(dataJson)
         parentNode.find(".add,pull-left,text-center").attr("onclick", "onCartClick(this)");
         parentNode.find(".count,pull-left,text-center").attr("id", "c_"+ i);
         parentNode.find(".carstock").attr("id", "stock_"+ i);
+        parentNode.find(".oldprice").text("￥" + carGoodsList[i].costPrice);
         $("#c_"+ i).get(0).value = carGoodsList[i].count;
 
         if(defaulAddressData.id  && userInfo.id)
@@ -288,6 +332,7 @@ function onCartClick(target)
     var type = targetID.substr(0,1);
     var index  = targetID.substr(2);
     var id = carGoodsList[index].goodsId;
+    var tempCount;
     switch (type)
     {
         case "l":
@@ -325,6 +370,24 @@ function onCartClick(target)
             break;
     }
     carGoodsList[index].count = $("#c_"+index).get(0).value;
+    tempCount = $("#c_"+index).get(0).value;
+
+    if(carGoodsList[index].priceList && carGoodsList[index].priceList.length > 1)
+    {
+        var count = carGoodsList[index].priceList.length;
+        var tempIndex = 0;
+        var parentNode = $("#cargoodslist #" + ("cart_" + index));
+        for(var i = 0 ; i < count ;i ++)
+        {
+            parentNode.find(".cartLadder" +i).attr("class","col-xs-4 cartLadder" +i);
+            $("#ladderpriceid").find("#ladderpriceid_" + i).attr("class","col-xs-4 Ladder"+(i+1));
+            if(tempCount > carGoodsList[index].priceList[i].minCount)
+            {
+                tempIndex = i;
+            }
+        }
+        parentNode.find(".cartLadder" +tempIndex).attr("class","col-xs-4 cartLadderChose");
+    }
     getChooseList();
 }
 //添加商品到购物车
@@ -446,5 +509,4 @@ function onCartCountChange(target)
     {
         target.value  = min;
     }
-    console.log("etest")
 }

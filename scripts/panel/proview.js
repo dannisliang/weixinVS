@@ -132,6 +132,13 @@ function onGetGoodData(dataJson)
     }else{
         $("#proviewcollect").attr("class","icon icon-addfav");
     }
+    if(tempGoodData.costPrice != tempGoodData.price)
+    {
+        $("#ladderpriceid_0 .oldprice").text(tempGoodData.costPrice);
+    }else
+    {
+        $("#ladderpriceid_0 .oldprice").text("");
+    }
     $("#exampleInputAmount").get(0).value = addCount;
     $("#proviewsubtile").text(tempGoodData.subtile);
     $(".setpricepanel .red").text(addCount);

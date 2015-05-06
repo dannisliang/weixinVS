@@ -1,5 +1,9 @@
 ﻿$(document).on("panelbeforeload", '#prolistPanel', function (e) {
-    //window.load("html/prolist.html");
+    if($.os.iphone){
+        $("#yicallHeaderProlist").css({
+            "top":"-20px",
+        })
+    }
 });
 
 $(document).on("panelload", '#prolistPanel', function (e) {
@@ -49,11 +53,11 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         if(dataJson.length != 0){
             dataByCondition.categoryId = dataJson[0].id;
         }
-        commonATextSel(dataJson, $("#sortProlist"), nextCategoryFunc);
+        commonATextSel(dataJson, $("#sortTagProlist"), nextCategoryFunc);
     }
 
     attrSortClicked = function(index){
-        commonATextSel(dataJson, $("#sortProlist"), nextCategoryFunc);
+        commonATextSel(dataJson, $("#sortTagProlist"), nextCategoryFunc);
     }
 
     commonAttrSortClicked = function(string, index){
@@ -178,12 +182,12 @@ $(document).on("panelload", '#prolistPanel', function (e) {
 
     // 点击一级分类
     prolistRight = function (index) {
-        if ($("#pro-sort .sort-left .sort-list li")[index].className == 'current')
+        if ($("#sortProlist .sort-left .sort-list li")[index].className == 'current')
             return;
-        $("#pro-sort .sort-pro-list").animate({scrollTop: '0px'}, 0);
-        $("#pro-sort .sort-pro-list").show();
-        $("#pro-sort .sort-left .sort-list li").removeClass("current");
-        $("#pro-sort .sort-left .sort-list li")[index].className = 'current';
+        $("#sortProlist .sort-pro-list").animate({scrollTop: '0px'}, 0);
+        $("#sortProlist .sort-pro-list").show();
+        $("#sortProlist .sort-left .sort-list li").removeClass("current");
+        $("#sortProlist .sort-left .sort-list li")[index].className = 'current';
         $("#sortsProlist").show();
         goods.page = 1;
         goods.sort = "saleCount";
@@ -198,8 +202,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         })
         bSpecialPanel = false;
         if (index != 0 && prolistLeftID[index] != index) {
-            $("#pro-sort .sort-pro-list .list-mod").show();
-            $("#pro-sort .sort-pro-list .sorts").show();
+            $("#sortProlist .sort-pro-list .list-mod").show();
+            $("#sortProlist .sort-pro-list .sorts").show();
             $("#tagProlist").parent().hide();
             goods.categoryId = prolistLeftID[index];
             bLeftSortClick = true;
@@ -222,9 +226,9 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 }
             }
             $(".bx-wrapper").hide();
-            $("#pro-sort .sort-pro-list .list-mod").hide();
+            $("#sortProlist .sort-pro-list .list-mod").hide();
             $("#sortsProlist").hide();
-            $("#pro-sort .sort-pro-list").show();
+            $("#sortProlist .sort-pro-list").show();
             if(bExist){
                 data = data.substr(0, data.length -1);
                 getDataByURL(getGoodsByIdUrl, function(dataJson){
@@ -234,13 +238,13 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                     }
                 }, data);
             }else{
-                $("#pro-sort .sort-pro-list").hide();
+                $("#sortProlist .sort-pro-list").hide();
                 showGlobalMessageDialog("您还没有浏览商品。。。");
             }
         }else { // 特惠专区
             $(".bx-wrapper").hide();
             $("#tagProlist").parent().hide();
-            $("#pro-sort .sort-pro-list .list-mod").show();
+            $("#sortProlist .sort-pro-list .list-mod").show();
             hideFilterDiv();
             bSpecialPanel = true;
             getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
@@ -254,7 +258,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     reloadBxsliderProlist = function(toAddDiv){
         if(bxSliderProlist.reloadSlider == null){
             $('.bx-wrapper').remove();
-            $("#pro-sort .sort-pro-list").prepend('<ul class="commonBxslider"> </ul>');
+            $("#sortProlist .sort-pro-list").prepend('<ul class="commonBxslider"> </ul>');
             if($('.commonBxslider').length > 1){
                 $('.commonBxslider').last().remove();
                 bxSliderProlist = $('.commonBxslider').bxSlider({
@@ -329,14 +333,14 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     onSortLeftSuccess = function (dataJson) {
         var gotoIndex = null;
         for (var j = 1, i =0; i < dataJson.length +2; i++){
-            var $div = $("#pro-sort .sort-left .sort-list").find("li").first().clone();
+            var $div = $("#sortProlist .sort-left .sort-list").find("li").first().clone();
             $div.show();
             if( i != dataJson.length+1 && i != 0){
                 if(! dataJson[i-1].isHide == true){
                     $div.find("a").attr("onclick", "prolistRight(" + j + ")");
                     prolistLeftID[j] = dataJson[i-1].id;
                     $div.find("a").text(dataJson[i-1].text);
-                    $("#pro-sort .sort-left .sort-list").append($div);
+                    $("#sortProlist .sort-left .sort-list").append($div);
                     if(bGotoDriect){
                         if(prolistLeftID[j] == firstDriectId){
                             gotoIndex = j;
@@ -348,19 +352,19 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 $div.find("a").attr("onclick", "prolistRight(" + j + ")");
                 $div.find("a").text(textVec.prolistLast);
                 prolistLeftID[j] = j;
-                $("#pro-sort .sort-left .sort-list").append($div);
+                $("#sortProlist .sort-left .sort-list").append($div);
             }else if( i== 0){
-                $("#pro-sort .sort-left .sort-list").find("li").remove();
+                $("#sortProlist .sort-left .sort-list").find("li").remove();
                 $div.find("a").attr("onclick", "prolistRight(" + 0 + ")");
                 $div.find("a").text(textVec.prolistFirst);
-                $("#pro-sort .sort-left .sort-list").append($div);
+                $("#sortProlist .sort-left .sort-list").append($div);
             }
         }
         if(bGotoDriect && gotoIndex != null){
             prolistRight(gotoIndex);
         }else{
-            if($("#pro-sort .sort-left .sort-list li")[0] != null){
-                $("#pro-sort .sort-left .sort-list li")[0].className = 'current';
+            if($("#sortProlist .sort-left .sort-list li")[0] != null){
+                $("#sortProlist .sort-left .sort-list li")[0].className = 'current';
             }
         }
     }
@@ -368,53 +372,65 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     //downloadFile("http://pic.dofay.com/2013/07/20120329211931359.jpg", "dfdfo");
     //$("#wrapper").hide();
     //$.afui.drawer.show('#left', 'left', 'cover');
-    if($("#commonDivProlist").find("a").length == 0){
-        $("#commonDivProlist").load("html/common.html", function(){
-            $("#pro-sort .sort-pro-list").show();
-            $("#pro-sort .sort-left").show();
-            $("#pro-sort .sort-pro-list .list-mod").show();
-            $("#pro-sort .sort-pro-list .sorts").show();
-            $(".commonBxslider").show();
-            $("#tagProlist").parent().hide();
-            $("#pro-sort .sort-pro-list").css({
-                "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-                - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
-                "width":"", "margin-left":"",
-            });
-            $("#pro-sort .sort-left").css({
-                "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
-                - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() +20 + "px",
-            });
+    prolistInit = function(){
+        $("#sortProlist .sort-pro-list").show();
+        $("#sortProlist .sort-left").show();
+        $("#sortProlist .sort-pro-list .list-mod").show();
+        $("#sortProlist .sort-pro-list .sorts").show();
+        $(".commonBxslider").show();
+        $("#tagProlist").parent().hide();
+        $("#sortProlist .sort-pro-list").css({
+            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
+            "width":"", "margin-left":"",
+        });
+        $("#sortProlist .sort-left").css({
+            "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
+            - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() +20 + "px",
+        });
+        if(bxSliderProlist == null){
             bxSliderProlist = $('.commonBxslider').bxSlider({
                 auto: true,
                 pause: 2000,
             });
-            $(".bx-wrapper").hide();
+        }
+        $(".bx-wrapper").hide();
 
-            $("#scrollRightCommon").scroll(function(){
-                var viewH =$(this).height(),//可见高度
-                    contentH =$(this).get(0).scrollHeight,//内容高度
-                    scrollTop =$(this).scrollTop();//滚动高度
-                //if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
-                if(scrollTop/(contentH -viewH)>=0.7){ //在滚动条距离底端60%以内：
-                    if(bToLoadOnoffProlist){
-                        bToLoadOnoffProlist = false;
-                        goods.page++;
-                        if(bSpecialPanel){
-                            loadGoodsList(false, true);
-                        }else{
-                            loadGoodsList(false);
-                        }
+        $("#sortProlist .sort-pro-list").scroll(function(){
+            var viewH =$(this).height(),//可见高度
+                contentH =$(this).get(0).scrollHeight,//内容高度
+                scrollTop =$(this).scrollTop();//滚动高度
+            //if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
+            if(scrollTop/(contentH -viewH)>=0.7){ //在滚动条距离底端60%以内：
+                if(bToLoadOnoffProlist){
+                    bToLoadOnoffProlist = false;
+                    goods.page++;
+                    if(bSpecialPanel){
+                        loadGoodsList(false, true);
+                    }else{
+                        loadGoodsList(false);
                     }
                 }
-                if(contentH - viewH - scrollTop <= 10 && bScrollToBottom){
-                    showGlobalMessageDialog("已经是最后一页了。。。");
-                    bScrollToBottom = false;
-                }
-            });
+            }
+            if(contentH - viewH - scrollTop <= 10 && bScrollToBottom){
+                showGlobalMessageDialog("已经是最后一页了。。。");
+                bScrollToBottom = false;
+            }
         });
-        bLoadRightProlist = false;
     }
+
+    //var bInit = false;
+    //if($("#commonDivProlist").find("a").length == 0){
+    //    bInit = true;
+    //    $("#commonDivProlist").load("html/common.html", function(){
+    //        prolistInit();
+    //    });
+    //    bLoadRightProlist = false;
+    //}
+    //
+    //if( ! bInit){
+        prolistInit();
+    //}
 
     if( ! bLoadRightProlist || bGotoDriect){
         bSpecialPanel = true;
@@ -582,7 +598,7 @@ var beforeScrollY = 0;
 
 // 隐藏右边分类的全部
 function hideAllTop(){
-    $("#pro-sort .sort-pro-list .list-mod").hide();
+    $("#sortProlist .sort-pro-list .list-mod").hide();
     $(".easyToHideCommon").hide();
     $(".bx-wrapper").hide();
     $("#sortsProlist").hide();
@@ -598,7 +614,7 @@ function getGoodListUrlSuccess(dataJson){
             //$("#goodsList").show();
         }
         if(bRefreshProlist){
-            $("#pro-sort .sort-pro-list a").each(function(index, elm){
+            $("#sortProlist .sort-pro-list a").each(function(index, elm){
                 var id = $(elm).attr("id");
                 if(id != null && id.substr(0, 9) == 'goodsList'){
                     $(elm).remove();
@@ -652,7 +668,7 @@ function getGoodListUrlSuccess(dataJson){
                     }
                 }
             }, index);
-            $("#pro-sort .sort-pro-list").append(goodSample);
+            $("#sortProlist .sort-pro-list").append(goodSample);
         }
         bToLoadOnoffProlist = true;
     }else if(dataJson.length == 0){
@@ -799,12 +815,12 @@ var pullActionDetect = {
             if(beforeScrollY == 0){
                 beforeScrollY = myScroll.y;
                 $(".bx-wrapper").hide();
-                $("#pro-sort .sort-pro-list .list-mod").hide();
+                $("#sortProlist .sort-pro-list .list-mod").hide();
             }else{
                 if(myScroll.y <= beforeScrollY){
-                    $("#pro-sort .sort-pro-list .list-mod").hide();
+                    $("#sortProlist .sort-pro-list .list-mod").hide();
                 }else{
-                    $("#pro-sort .sort-pro-list .list-mod").show();
+                    $("#sortProlist .sort-pro-list .list-mod").show();
                 }
                 beforeScrollY = myScroll.y;
             }
@@ -817,7 +833,7 @@ var pullActionDetect = {
             } else if( ! bShowNextPage && myScroll.y <= myScroll.maxScrollY +30){
                 showGlobalMessageDialog("已经是最后一页了。。。");
             }else if(myScroll.y >= 0){
-                $("#pro-sort .sort-pro-list .list-mod").show();
+                $("#sortProlist .sort-pro-list .list-mod").show();
                 if(bChangePic){
                     $(".bx-wrapper").show();
                 }
