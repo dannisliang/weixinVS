@@ -41,6 +41,7 @@ charVec.bGetPasswordCo = "bGetPasswordCo";      // 是否为取回密码
 charVec.numGoodsCartLo = "numGoodsCartLo";      // 购物车商品数量
 charVec.goodHeadTittleSe = "goodHeadTittleSe";      // 商品详细页标题
 charVec.userBuyList = "userBuyList";      // 购买记录
+charVec.buyerIdLo = "buyerIdLo";      // 买家id
 
 var textVec = new Object();
 textVec.prolistFirst = "特惠专区";

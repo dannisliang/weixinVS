@@ -127,3 +127,5 @@ var getHotKeywordUrl = rootUrl+ "/service/rest/emallapp.nologin.goods.goodsServi
 var getGoodsInfoByAreaAddressId = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getGoodsInfoByAreaAddressId";
 //获取买家积分
 var getCurrentPoints = rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/getCurrentPoints";
+//手机提交建议
+var submitSuggestUrl = rootUrl + "/service/rest/emallapp.login.order.buyerService/collection/submitSuggest";

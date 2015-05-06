@@ -215,26 +215,9 @@ function onHomeItemClick(target)
 
 function gotoByType(type,value,target)
 {
-    switch (type)
-    {
-        case "Goods":
-            currentProviewID = value;
-            $.afui.loadContent("#proviewPanel", false, false, transitionYC);
-            break;
-        case "Url":
-            if(value != "")
-            {
-                target.parent().attr("onclick" ,"javascript:window.location.href=" + value);
-            }
-            break;
-        case "Category":
-            target.parent().attr("href" ,"#prolistPanel");
-            break;
-        case "Keywords":
-            break;
-    }
+    target.parent().attr("onclick", 'changeToUrlClicked("' +type +'", "' +value +'")');
 }
 function onTest()
 {
-    window.location.href = "https://www.baidu.com";
+    //window.location.href = "https://www.baidu.com";
 }

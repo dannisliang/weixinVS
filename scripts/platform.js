@@ -7,6 +7,7 @@ if (navigator.userAgent.toLowerCase().match(/MicroMessenger/i) == "micromessenge
     charVec.openIDCo = "openIDCo";      // 微信openid
     charVec.nicknameCo = "nicknameCo";      // 微信昵称
     charVec.headimgurlCo = "headimgurlCo";   // 微信图像
+    charVec.sexCo = "sexCo";   // 微信性别
 
     // 获取微信用户URL
     var getUserInfoInitWXUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/collection/getUserInfoInitWX";
@@ -79,6 +80,7 @@ function getMyInfo() {
                 userInfoWeixin.province = dataJson.province;
                 userInfoWeixin.headimgurl = dataJson.headimgurl;
                 addCookie(charVec.nicknameCo, userInfoWeixin.nickname, 1);
+                addCookie(charVec.sexCo, userInfoWeixin.sex, 1);
                 addCookie(charVec.headimgurlCo, userInfoWeixin.headimgurl, 1);
                 loginClicked();
             }

@@ -1,4 +1,4 @@
-body,html,h1{font-family:微软雅黑;}
+body,html,h1,input{font-family:微软雅黑;}
 
 header{background:#ff6000;margin:0;padding:0;position:relative;}
 header h1{color:#fff;text-align:center;}
@@ -32,7 +32,10 @@ button{border:none; background-color:transparent;}
   border-bottom: 1px solid #ccc;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
   padding-right: 60px;
+  padding-left: 60px;
 }
+.list .divider{height: 38px;line-height: 24px;color: #3d3d3d;font-size: 14px;font-weight: normal;}
+.divider i{color:#898989}
 .box-shadow-1{  
   -webkit-box-shadow: 3px 3px 3px #cdcdcd;  
   -moz-box-shadow: 3px 3px 3px #cdcdcd;  
@@ -64,6 +67,7 @@ button{border:none; background-color:transparent;}
 .fontsize-l{font-size:20px;}
 .fontsize-n{font-size:14px; line-height:30px;}
 .fontsize-xn{font-size:16px;}
+.fontsize-s{font-size:12px;}
 h1{color:#FFF;}
 h4{color:#666666}
 h3{color:#666666;text-indent:44px;position:relative;height:44px;line-height:44px;}
@@ -231,15 +235,21 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
   -webkit-border-radius: 60px;
   border-radius: 60px;
 }
+ 
 .item{height:90px;margin-top:10px;position:relative}
 .item .img{width:75px;height:75px;border:1px solid #eaeaec;position:relative;float:left;}
 .item .img img{width:100%;overflow:hidden;}
 .item .img .label{position:absolute;width:30px;height:30px;}
-
-.pros .caption{margin-left:85px; position:relative}
-.caption .protitle{color:#303030;text-align:left;margin-bottom:10px;height:26px;}
-.caption .intro{color:#9a9a9a;margin-bottom:10px;height:21px;}
-.pros .caption .setcount{position:absolute;right:0;bottom:0;}
+.sort-pro-list .addfav{ display:block;position: absolute; top:7px; right:10px;heightL30px;width:30px;text-align:center;}
+.sort-pro-list .discount{ position:absolute;top:78px;left:15px;width:75px;height:20px; overflow:hidden}
+.sort-pro-list .discount img{width:100%;}
+.sort-pro-list .addfav i{ display:block;  margin:0 auto}
+.sort-pro-list .item{position:relative;  min-height: 110px;}
+.sort-pro-list .item .caption .title{ margin-right:30px;}
+.sort-pro-list .caption{margin-left:85px; }
+.sort-pro-list .caption .protitle{color:#303030;text-align:left;margin-bottom:10px;height:26px;}
+.sort-pro-list .caption .intro{color:#9a9a9a;margin-bottom:10px;height:21px;}
+.sort-pro-list .caption .setcount{position:absolute;right:10px;bottom:10px;}
 .setcount span{float:left;display:inline-block;}
 .setcount .reduce{width:30px;height:30px;background:url(../images/icons/setcount-reduce.png) no-repeat;background-size :contain;}
 .setcount .add{width:30px;height:30px;background:url(../images/icons/setcount-add.png) no-repeat;background-size :contain;}
@@ -284,7 +294,7 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 #mine .quicklink a{display:block;height:40px;line-height:40px;}
 .exitbtn{}
 #mine .menulist .icon{display:inline-block;background-size :contain;width:30px;height:30px;line-height:4px;margin-right:20px;}
-
+#noLoginMine{width:300px; margin:10px auto; text-align:center;color:#fff;}
 /*商品详情*/
  
 #pro-view .proimages{ text-align:center; vertical-align:middle; background:#fff;min-height:345px; position:relative;}
@@ -339,6 +349,7 @@ h3 .icon{display:inline-block;min-width:30px;height:30px;line-height:30px;positi
 #cart .list .divider i{color:#898989}
 #cart .choosepro .prolist {margin:0 10px 0 10px;}
 #cart .choosepro .prolist li{ position:relative;  padding: 10px;}
+#cart .cartinfo li{ line-height:30px;min-height:44px;}
 /**/
 /*地址列表*/
 #addresshtml.panel{display: block !important;}
@@ -381,24 +392,28 @@ ul,li{ list-style:none;}
 
 
 /*购物车 */
-#cargoodslist li{ position:relative;min-height:120px;}
-#cargoodslist input[type="checkbox"] + label{ position:absolute;top:20px;left:20px;}
-#cargoodslist li .img{width:69px;height:69px;text-align:center;overflow:hidden; position:absolute;top:18px; left:27px;border:1px solid #ebebeb;}
-#cargoodslist li .img img{width:100%;max-height:100%;}
-#cargoodslist li .title{ color:#494f52; margin-left:90px;  line-height: 28px;}
-#cargoodslist li .intro {color:#bababa;margin-left:90px;  line-height: 22px;}
-#cargoodslist li .addfav{ position:absolute;right:50px;top:10px; font-size:25px;}
-#cargoodslist li .del{ position:absolute;right:20px;top:10px;font-size:25px;}
-#cargoodslist li .nowprice{ display:inline-block; float:left;margin-left:90px;min-width:28px;  line-height: 28px;}
+#regularlyPanel { background:#fff}
+#cargoodslist li,#regularlyPanel li{ position:relative;min-height:140px;}
+#cargoodslist input[type="checkbox"] + label{ position:absolute;top:20px;left:10px;}
+#cargoodslist li .img{width:69px;height:69px;text-align:center;overflow:hidden; position:absolute;top:10px; left:17px;border:1px solid #ebebeb;}
+#cargoodslist li .img img,#regularlyPanel  li .img img{width:100%;max-height:100%;}
+#cargoodslist li .title,#regularlyPanel li .title{ color:#494f52; margin-left:80px;  margin-right: 30px; line-height: 20px;}
+#cargoodslist li .intro,#regularlyPanel li .intro {color:#bababa;margin-left:80px;}
+#cargoodslist li .addfav{color:#bababa; position:absolute;left: 180px;
+  bottom: 26px;font-size:25px;}
+#cargoodslist li .del{color:#bebebe; position:absolute;right:0px;
+  top: 0px;font-size:25px;}
+#cargoodslist li .nowprice{ display:inline-block; float:left;margin-left:80px;min-width:28px;  line-height: 28px;}
 #cargoodslist li .oldprice{ display:inline-block; float:left;margin-left:10px;height:20px; line-height:32px;}
-#cargoodslist li .setcount{ position:absolute;right:10px; bottom:0px}
+#cargoodslist li .setcount,#regularlyPanel .setcount{ position:absolute;right:0px; bottom:20px;}
+#cargoodslist li .carstock{ position:absolute;right:10px; bottom:5px;}
 #cargoodslist li.grayline{ border:none; border-bottom:1px solid #ebebeb}
-#cargoodslist li .Ladder-price{margin-left:90px; margin-top:28px;}
-#cargoodslist li .Ladder-price >div{height:24px;font-size:14px;color:#4f4f4f;}
-#cargoodslist .Ladder-price span{ display:inline-block;width:80px;height:18px;margin:0; margin-top:5px;color:#b7b7b7;}
+#cargoodslist li .Ladder-price,#regularlyPanel li .Ladder-price{margin-left:0px; margin-top:38px;}
+#cargoodslist li .Ladder-price >div{height:50px;font-size:14px;color:#4f4f4f;}
+#cargoodslist .Ladder-price span{ display:inline-block;width:50px;height:18px;margin:0; margin-top:5px;color:#b7b7b7;}
 #cargoodslist .Ladder-price .price{ ;color:#3f3f3f;}
 #cargoodslist .Ladder-price .LadderChose{ background:#9800FF}
-#cargoodslist li .total{ position:absolute;right:20px;bottom:55px;}
+#cargoodslist li .total{ position:absolute;right:20px;bottom:65px;}
 
 .cartinfo{ font-size:14px;}
 .cartinfo .col1,.cartinfo .col2{ float:left; width:160px;}
@@ -436,3 +451,15 @@ text-overflow: ellipsis;color:#9a9a9a}
 #myorder .orderlist .buttons a{ display:inline-block; float:left;border:1px solid #cccccc; text-align:center;-moz-border-radius: 5px;      /* Gecko browsers */
     -webkit-border-radius: 5px;   /* Webkit browsers */
     border-radius:5px; background:#fff; margin-right:10px;; line-height:22px; padding:5px  }
+/*我的地址*/
+#myaddress .list a{ display:block; padding-left:40px;color:#666;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
+
+/*个人信息*/
+#myinfo .header{width:40px;height:40px; overflow:hidden; margin:5px;-moz-border-radius: 20px;      /* Gecko browsers */
+    -webkit-border-radius:20px;   /* Webkit browsers */
+    border-radius:20px;}
+#myinfo .header img{width:100%;}
+#myinfo li{ padding-left:30px;}
+/*意见建议*/
+#suggestion form{ margin:20px;}
+#suggestion form input,#suggestion form textarea{ margin-top:10px;}

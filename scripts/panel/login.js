@@ -74,6 +74,7 @@ function onLoginSuccess(dataJson) {
     }else{
         setLocal(charVec.phoneNumberLo, userInfo.contactPhone);
         setLocal(charVec.openIDLo, userInfo.openId);
+        setLocal(charVec.buyerIdLo, userInfo.id);
     }
     changeMine();
 }

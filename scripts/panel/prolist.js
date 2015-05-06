@@ -4,6 +4,7 @@
             "top":"-20px",
         })
     }
+    bSpecialPanel = true;
 });
 
 $(document).on("panelload", '#prolistPanel', function (e) {
@@ -31,14 +32,20 @@ $(document).on("panelload", '#prolistPanel', function (e) {
 
     // 二级分类被点击
     nextCategoryClicked = function(index){
-        bLeftSortClick = false;
-        resetUrlData();
-        dataByCondition.categoryId = nextCategoryId[index];
-        if(bSpecialPanel){
-            loadGoodsListByCondition(true, true, true);
+        var text = $("#sortTagProlist a:eq(" +index +")").text();
+        if(text.indexOf("已") != -1){
+            $("#sortTagProlist a:eq(" +index +")").text(text.substr(1));
         }else{
-            loadGoodsListByCondition(true, true);
-            getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, "categoryId=" +nextCategoryId[index], true);    // 筛选区
+            $("#sortTagProlist a:eq(" +index +")").text("已" +text);
+            bLeftSortClick = false;
+            resetUrlData();
+            dataByCondition.categoryId = nextCategoryId[index];
+            if(bSpecialPanel){
+                loadGoodsListByCondition(true, true, true);
+            }else{
+                loadGoodsListByCondition(true, true);
+                getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, "categoryId=" +nextCategoryId[index], true);    // 筛选区
+            }
         }
     }
 
@@ -191,8 +198,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         $("#sortsProlist").show();
         goods.page = 1;
         goods.sort = "saleCount";
-        //myScroll.scrollTo(0);
-        //myScroll.refresh();
+        bClickFirstIdProlist = true;
         $("#sortsProlist a").each(function(id, elm){
             if(id != 0){
                 $(elm).removeClass("current");
@@ -378,7 +384,6 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         $("#sortProlist .sort-pro-list .list-mod").show();
         $("#sortProlist .sort-pro-list .sorts").show();
         $(".commonBxslider").show();
-        $("#tagProlist").parent().hide();
         $("#sortProlist .sort-pro-list").css({
             "height": (deviceHeight - (parseInt($(".view header").computedStyle("height"), 10))
             - parseInt($(".view footer").computedStyle("height"), 10)) - isIOSTop() + "px",
@@ -393,8 +398,13 @@ $(document).on("panelload", '#prolistPanel', function (e) {
                 auto: true,
                 pause: 2000,
             });
+        }else{
+            bxSliderProlist.reloadSlider();
         }
-        $(".bx-wrapper").hide();
+        if(bSpecialPanel){
+            $("#tagProlist").parent().hide();
+            $(".bx-wrapper").hide();
+        }
 
         $("#sortProlist .sort-pro-list").scroll(function(){
             var viewH =$(this).height(),//可见高度
@@ -419,18 +429,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         });
     }
 
-    //var bInit = false;
-    //if($("#commonDivProlist").find("a").length == 0){
-    //    bInit = true;
-    //    $("#commonDivProlist").load("html/common.html", function(){
-    //        prolistInit();
-    //    });
-    //    bLoadRightProlist = false;
-    //}
-    //
-    //if( ! bInit){
-        prolistInit();
-    //}
+    prolistInit();
 
     if( ! bLoadRightProlist || bGotoDriect){
         bSpecialPanel = true;
@@ -440,6 +439,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         getDataByURL(getCategoryByLeftUrl, onSortLeftSuccess, "", true);
         bRefreshProlist = true;
         getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
+        loadGoodsList(true, true);
     }
     if(bxSliderProlist != null){
         reloadBxsliderProlist();
@@ -472,6 +472,7 @@ function changeToUrlClicked(type, value){
     }
 }
 
+var bClickFirstIdProlist = false;   // 是否点击的一级分类
 var bScrollToBottom = false;        // 是否下拉到底部
 var bToLoadOnoffProlist = false;    // 下拉的時候是否加載新內容
 var bChangePic = false; // 轮播控件是否显示
@@ -540,6 +541,8 @@ loadGoodsListByCondition = function (bRefresh, bReset, bSpecial, index){
                 data += "&categoryId=" +dataByCondition.categoryId;
             }
         }else{
+            data += "&sort=saleCount";
+            data += "&order=asc";
             data += "&categoryId=" +dataByCondition.categoryId;
         }
         if(bSpecial == null && ! bSpecialPanel){
@@ -674,7 +677,11 @@ function getGoodListUrlSuccess(dataJson){
     }else if(dataJson.length == 0){
         bShowNextPage = false;
         if(goods.page == 1){
-            hideAllTop();
+            if(bClickFirstIdProlist){
+                hideAllTop();
+            }else{
+                $(".easyToHideCommon").hide();
+            }
             showGlobalMessageDialog("该分类商品正在联盟中。。。");
             bToLoadOnoffProlist = true;
         }else{
@@ -682,6 +689,7 @@ function getGoodListUrlSuccess(dataJson){
             bToLoadOnoffProlist = false;
         }
     }
+    bClickFirstIdProlist = false;
 
     addFavClicked = function(index){
         bLoadContent = false;

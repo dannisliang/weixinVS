@@ -287,7 +287,28 @@ function onPostV2Ordel(dataJson)
 function getGooodsDataFromSQL()
 {
     var id;
-    select(orderTable, "id, count", "", null, function (rows) {
+    selectLocalStorage(localcount,"count",function(data){
+        if(data && data.length >0)
+        {
+            for (var i = 0; i < data.length; i++) {
+                goodsList[i] = new Object();
+                goodsList[i].id = data[i].key;
+                goodsList[i].count =  data[i].count;
+                idList.push(goodsList[i].id);
+                countList.push(goodsList[i].count);
+            }
+            if(idList.length >0 && countList.length > 0)
+            {
+                var value = "goodsId=" + idList.join(",") + "&count=" +countList.join(",") ;
+
+                getDataByURL(addShopCartByGoodsIds,onAddShopCartByGoodsIds,value);
+            }
+        }else
+        {
+            onAddShopCartByGoodsIds();
+        }
+    });
+    /*select(orderTable, "id, count", "", null, function (rows) {
         if (rows) {
             for (var i = 0; i < rows.length; i++) {
                 goodsList[i] = new Object();
@@ -306,7 +327,7 @@ function getGooodsDataFromSQL()
         {
             onAddShopCartByGoodsIds();
         }
-    });
+    });*/
 
 }
 
@@ -364,6 +385,9 @@ function onCartClick(target)
                     addGoodsToCart(id,($("#c_"+index).get(0).value));
                     carGoodsList[index].choose = true;
                 }
+            }else
+            {
+                    $("#cargoodslist #cart_" + index) .find("#stock_" +index).fadeOut(200).fadeIn(200);
             }
             break;
         default :
@@ -425,10 +449,10 @@ function addCartToFavClicked(target)
     var targetId = target.getAttribute("id");
     var index = targetId.substr(targetId.indexOf("_") + 1);
     var data;
-    if(carGoodsList[index].isCollection){
+    if(!carGoodsList[index].isCollection){
 
         addItemToCollect(carGoodsList[index].goodsId,function(data){
-            alert(data);
+            carGoodsList[index].isCollection = true;
         })
         /*data = "goodsIds=" + carGoodsList[index].goodsId;
          getDataByURL(delCollectionByGoodsIds, function(dataJson){
@@ -437,7 +461,7 @@ function addCartToFavClicked(target)
          }, data);*/
     }else{
         delItemToCollect(carGoodsList[index].goodsId,function(data){
-
+            carGoodsList[index].isCollection = false;
         })
         /*data = "id=" + carGoodsList[index].goodsId;
          getDataByURL(addCollectionUrl, function(dataJson){
@@ -468,12 +492,10 @@ function onGetGoodsInfoByAreaAddressId(dataJson)
             carGoodsList[index].stockCount = dataJson[i].stockCount;
             if( $("#cargoodslist #cart_" + index))
             {
-                $("#cargoodslist #cart_" + index) .find("#c_" +index).attr("oninput","onCartCountChange(this)");
+                $("#cargoodslist #cart_" + index) .find("#c_" +index).attr("oninput","oncountChange(this)");
                 $("#cargoodslist #cart_" + index) .find("#c_" +index).attr("max",carGoodsList[index].stockCount);
                 $("#cargoodslist #cart_" + index) .find("#stock_" +index).text("当前最大库存为:"+ carGoodsList[index].stockCount);
 
-            }else{
-                break;
             }
         }
     }
@@ -496,7 +518,7 @@ function getIndexByID(id)
     return -1;
 }
 
-function onCartCountChange(target)
+function oncountChange(target)
 {
     var count = Number(target.value);
     var min = Number(target.min);

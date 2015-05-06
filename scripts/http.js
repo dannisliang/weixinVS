@@ -35,7 +35,8 @@ function getDataAjax(url, okcall, data, bCache, time) {
                 if (object.code == 0) {
                     if (bCache) {
                         if(object.data != "[]"){
-                            saveOrUpdate(tableUrl, ['data', 'time'], [object.data, dicUrlTime.get(url, time)], 'url', url +data);
+                            //saveOrUpdate(tableUrl, ['data', 'time'], [object.data, dicUrlTime.get(url, time)], 'url', url +data);
+                            setLocalStorage(localJavaUrl,url +data,['data', 'time'], [object.data, dicUrlTime.get(url, time)]);
                         }
                     }
                     if (object.data != null) {
@@ -54,7 +55,7 @@ function getDataAjax(url, okcall, data, bCache, time) {
                         }
 
                     } else {
-                       // showGlobalMessageDialog(object.message);
+                        // showGlobalMessageDialog(object.message);
                         okcall();
                     }
                 }
@@ -86,18 +87,31 @@ function getDataAjax(url, okcall, data, bCache, time) {
 }
 
 function getUrlByTime(url, okcall, data, bCache, time) {
-    select(tableUrl, "data,time", "url=?", [url+data], function (rows) {
-        if (rows) {
-            var time = rows.item(0).time;
-            if (time != null && time > 0) {
-                okcall.apply(this, [$.parseJSON(rows.item(0).data)]);
-                //alert("cache");
+    /*select(tableUrl, "data,time", "url=?", [url+data], function (rows) {
+     if (rows) {
+     var time = rows.item(0).time;
+     if (time != null && time > 0) {
+     okcall.apply(this, [$.parseJSON(rows.item(0).data)]);
+     //alert("cache");
+     }
+     }
+     else {
+     getDataAjax(url, okcall, data, bCache, time);
+     }
+     });*/
+    getLocalStorage(localJavaUrl,url+data,function(dataJson){
+        if(dataJson)
+        {
+            var tempTime = dataJson.time;
+            if(tempTime != null && tempTime > 0)
+            {
+                okcall.apply(this, [$.parseJSON(dataJson.data)]);
             }
-        }
-        else {
+        }else
+        {
             getDataAjax(url, okcall, data, bCache, time);
         }
-    });
+    })
 }
 
 // 缓存默认时间
@@ -112,7 +126,23 @@ function initUrlTime() {
 }
 
 function subUrlTime() {
-    select(tableUrl, "time, url", "", null, function (rows) {
+    selectLocalStorage(localJavaUrl,"time",function(data){
+     if(data)
+     {
+       for(var i = 0 ; i< data.length ; i++)
+       {
+           var time = --data[i].time;
+           if(time == 0)
+           {
+               removeLocalStorage(localJavaUrl,data[i].key);
+           }else
+           {
+               setLocalStorage(localJavaUrl, data[i].key,['time'], [time]);
+           }
+       }
+     }
+    });
+    /*select(tableUrl, "time, url", "", null, function (rows) {
         if (rows) {
             for (var i = 0; i < rows.length; i++) {
                 var time = --rows.item(i).time;
@@ -124,7 +154,7 @@ function subUrlTime() {
                 }
             }
         }
-    });
+    });*/
 }
 
 function onSortRightSuccess(dataJson) {

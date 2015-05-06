@@ -1,12 +1,20 @@
 ﻿$(document).on("panelbeforeload", '#minePanel', function (e) {
     getMyInfo();
+    loginClicked();
 });
 
 $(document).on("panelload", '#minePanel', function (e) {
-    gotoMymessageClicked = function(){
-        $.afui.loadContent("#mymessagePanel", false, false, transitionYC);
+    if(getLocal(charVec.buyerIdLo) != ""){
+        var data = "buyerId=" + getLocal(charVec.buyerIdLo);
+        getDataByURL(getCurrentPoints, function(dataJson){
+            $("#integralMine").text(dataJson);
+        }, data);
     }
 });
+
+function gotoPanel(stringPanel){
+    $.afui.loadContent("#" +stringPanel, false, false, transitionYC);
+}
 
 function changeMine(){
     if(isWeixin || $.os.chrome){

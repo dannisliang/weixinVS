@@ -61,7 +61,7 @@
         }
 
         // 购物车数量操作
-        selectSumSql(orderTable, "count", [], [], function (rows) {
+        /*selectSumSql(orderTable, "count", [], [], function (rows) {
             var numGoods;
             for (var key in rows.item(0))
             {
@@ -73,7 +73,7 @@
                 $("#afbadgeCart").hide();
             }
            $("#afbadgeCart").css("right", $("i.yicall-icon.icon-cart").position().left -deviceWidth*0.42);
-        });
+        });*/
 
         // 自动登陆
         if(debug)
@@ -92,7 +92,7 @@
     }
 
     function initAndroid() {
-        alert("android");
+        //alert("android");
     }
 
     function initIphone() {
