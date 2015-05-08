@@ -4,6 +4,7 @@
 //var rootUrl = "http://o.narwell.com/yicalljifa";
 //var rootUrl = "http://o.narwell.com:8085";
 //var rootUrl = "http://o.narwell.com:8888";
+//var myURL = window.location.protocol +"//" +window.location.host;
 var rootUrl = myURL;
 
 //登录
@@ -24,7 +25,7 @@ var getGoodUrl = rootUrl + "/service/rest/emallapp.nologin.goods.goodsService/co
 var getImageUrl;
 //商品详情的展示页
 var getGoodsDescriptUrl;
-if(debug) {
+if(false) {
     getImageUrl = "http://server.1calljifa.com:86" + "/service/rest/tk.File/";
     getGoodsDescriptUrl = "http://server.1calljifa.com:86" + "/emall/goodsDescript.jsp";
 }

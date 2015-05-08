@@ -4,7 +4,6 @@
             "top":"-20px",
         })
     }
-    bSpecialPanel = true;
 });
 
 $(document).on("panelload", '#prolistPanel', function (e) {
@@ -13,7 +12,22 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     }
     // 标签分类被点击
     tagProlistClicked = function(index){
-        dataByCondition.tagId = tagProlistId[index];
+        if($("#tagProlist a:eq(" +index +")").hasClass("selected")){
+            $("#tagProlist a:eq(" +index +")").removeClass("selected");
+            dataByCondition.tagId = "";
+        }else {
+            $("#tagProlist a:eq(" + index + ")").addClass("selected");
+            for (var i = 0; ; i++) {
+                if ($("#tagProlist a:eq(" + i + ")").length > 0) {
+                    if (i != index) {
+                        $("#tagProlist a:eq(" + i + ")").removeClass("selected");
+                    }
+                } else {
+                    break;
+                }
+            }
+            dataByCondition.tagId = tagProlistId[index];
+        }
         loadGoodsListByCondition(true, true);
     }
 
@@ -31,21 +45,38 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     }
 
     // 二级分类被点击
+    var resetCateProperties = false;
     nextCategoryClicked = function(index){
-        var text = $("#sortTagProlist a:eq(" +index +")").text();
-        if(text.indexOf("已") != -1){
-            $("#sortTagProlist a:eq(" +index +")").text(text.substr(1));
+        if($("#sortTagProlist a:eq(" +index +")").hasClass("selected")){
+            $("#sortTagProlist a:eq(" +index +")").removeClass("selected");
+            dataByCondition.categoryId = "";
+            if( ! bSpecialPanel){
+                bLeftSortClick = true;
+                resetCateProperties = true;
+                getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, "categoryId=" + prolistLeftID[idxLeftSortClick], true);  //属性
+            }
         }else{
-            $("#sortTagProlist a:eq(" +index +")").text("已" +text);
+            $("#sortTagProlist a:eq(" +index +")").addClass("selected");
+            for(var i = 0;;i++){
+                if($("#sortTagProlist a:eq(" +i +")").length > 0){
+                    if(i !=  index){
+                        $("#sortTagProlist a:eq(" +i +")").removeClass("selected");
+                    }
+                }else{
+                    break;
+                }
+            }
             bLeftSortClick = false;
             resetUrlData();
             dataByCondition.categoryId = nextCategoryId[index];
-            if(bSpecialPanel){
-                loadGoodsListByCondition(true, true, true);
-            }else{
-                loadGoodsListByCondition(true, true);
+            if( ! bSpecialPanel){
                 getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, "categoryId=" +nextCategoryId[index], true);    // 筛选区
             }
+        }
+        if(bSpecialPanel){
+            loadGoodsListByCondition(true, true, true);
+        }else{
+            loadGoodsListByCondition(true, true);
         }
     }
 
@@ -68,27 +99,21 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     }
 
     commonAttrSortClicked = function(string, index){
-        if($("#" +string +index).text().indexOf("已") != -1){
-            for(var i = 0; i<idxFilter;i++){
-                if(selectContent[i] == $("#" +string +index).text().substr(1)){
-                    if(idxFilter-1 != 0){
-                        selectCategoryId[i] = selectCategoryId[idxFilter-1];
-                        selectContent[i] = selectCategoryId[idxFilter-1];
-                    }else{
-                        selectCategoryId[i] = null;
-                        selectContent[i] = null;
-                    }
-                }
-            }
-            idxFilter--;
-            $("#" +string +index).text($("#" +string +index).text().substr(1));
+        if($("#" +string +index).hasClass("selected")){
+            $("#" +string +index).removeClass("selected");
             goods.page = 1;
             loadGoodsListByCondition(true, true);
         }else{
-            selectCategoryId[idxFilter] = categoryPropertiesId[parseInt(index/10)];
-            selectContent[idxFilter] = $("#" +string +index).text();
-            idxFilter++;
-            $("#" +string +index).text("已" +$("#" +string +index).text());
+            $("#" +string +index).addClass("selected");
+            for (var i = 0; ; i++) {
+                if ($("#" +string +parseInt(index/10) +i).length > 0) {
+                    if (i != index%10) {
+                        $("#" +string +parseInt(index/10) +i).removeClass("selected");
+                    }
+                } else {
+                    break;
+                }
+            }
             goods.page = 1;
             loadGoodsListByCondition(true, true);
         }
@@ -187,6 +212,17 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         }
     }
 
+    selectDefaultCountProlist = function(){
+        // 人气默认选定
+        $("#sortsProlist a").each(function(id, elm){
+            if(id != 0){
+                $(elm).removeClass("current");
+            }else{
+                $(elm).addClass("current");
+            }
+        })
+    }
+
     // 点击一级分类
     prolistRight = function (index) {
         if ($("#sortProlist .sort-left .sort-list li")[index].className == 'current')
@@ -199,13 +235,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         goods.page = 1;
         goods.sort = "saleCount";
         bClickFirstIdProlist = true;
-        $("#sortsProlist a").each(function(id, elm){
-            if(id != 0){
-                $(elm).removeClass("current");
-            }else{
-                $(elm).addClass("current");
-            }
-        })
+        selectDefaultCountProlist();
+        idxLeftSortClick = index;
         bSpecialPanel = false;
         if (index != 0 && prolistLeftID[index] != index) {
             $("#sortProlist .sort-pro-list .list-mod").show();
@@ -217,11 +248,11 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             getDataByURL(getCategoryPropertiesUrl, getCategoryPropertiesUrlSuccess, data, true);  //属性
             getDataByURL(getNextCategoryUrl, onCategoryPropertiesSuccess, data, true);  //分类
             getDataByURL(getTagUrl, getTagUrlSuccess, "", true);    //标签
-            data += "&companyId=" +goods.companyId;
-            getDataByURL(pageSettingUrl, pageSettingUrlSuccess, data, true);    //动态图
+            data += "&companyId=" +getLocal("schoolid");
+            getDataByURL(pageSettingUrl, pageSettingUrlSuccess, data);    //动态图
         } else if (prolistLeftID[index] == index) { // 最近浏览
             var bExist = false;
-            var data = "buyerId=" +userInfo.id;
+            var data = "buyerId=" +getLocal(charVec.buyerIdLo);
             data += "&goodsIds=";
             for(var i = 0;i<20;i++){
                 if(getLocal("historyProlist" +i) != ""){
@@ -253,7 +284,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
             $("#sortProlist .sort-pro-list .list-mod").show();
             hideFilterDiv();
             bSpecialPanel = true;
-            getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
+            getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +getLocal("schoolid"));
         }
         bShowNextPage = true;
         loadGoodsList(true, bSpecialPanel);
@@ -283,9 +314,11 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     pageSettingUrlSuccess = function (dataJson){
         bChangePic = false;
         if(dataJson.length == 0){
+            bHideBxslider = true;
             $(".bx-wrapper").hide();
             return;
         }
+        bHideBxslider = false;
         $(".commonBxslider").show();
         var width = parseFloat($(".commonBxslider li").first().css("width")).toFixed(2);
         $(".commonBxslider img").css({
@@ -339,6 +372,7 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     onSortLeftSuccess = function (dataJson) {
         var gotoIndex = null;
         for (var j = 1, i =0; i < dataJson.length +2; i++){
+            $("#sortProlist .sort-left .sort-list").find("li").removeClass("current");
             var $div = $("#sortProlist .sort-left .sort-list").find("li").first().clone();
             $div.show();
             if( i != dataJson.length+1 && i != 0){
@@ -368,11 +402,17 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         }
         if(bGotoDriect && gotoIndex != null){
             prolistRight(gotoIndex);
+        }else if(bGotoDriect){
+            prolistRight(0);
         }else{
             if($("#sortProlist .sort-left .sort-list li")[0] != null){
                 $("#sortProlist .sort-left .sort-list li")[0].className = 'current';
             }
+            bSpecialPanel = true;
+            getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +getLocal("schoolid"), true);
+            loadGoodsList(true, true);
         }
+        bGotoDriect = false;
     }
 
     //downloadFile("http://pic.dofay.com/2013/07/20120329211931359.jpg", "dfdfo");
@@ -403,6 +443,8 @@ $(document).on("panelload", '#prolistPanel', function (e) {
         }
         if(bSpecialPanel){
             $("#tagProlist").parent().hide();
+        }
+        if (bHideBxslider){
             $(".bx-wrapper").hide();
         }
 
@@ -432,46 +474,18 @@ $(document).on("panelload", '#prolistPanel', function (e) {
     prolistInit();
 
     if( ! bLoadRightProlist || bGotoDriect){
-        bSpecialPanel = true;
         //load_content();
         bLoadRightProlist = true;
         hideFilterDiv();
-        getDataByURL(getCategoryByLeftUrl, onSortLeftSuccess, "", true);
         bRefreshProlist = true;
-        getDataByURL(getSpecialOfferCategoryUrl, onCategoryPropertiesSuccess, "companyId=" +goods.companyId, true);
-        loadGoodsList(true, true);
+        getDataByURL(getCategoryByLeftUrl, onSortLeftSuccess, "", true);
     }
     if(bxSliderProlist != null){
         reloadBxsliderProlist();
     }
 });
 
-// 轮播图片点击事件
-function changeToUrlClicked(type, value){
-    switch (type){
-        case 'Url':{
-            window.location = value;
-            break;
-        }
-        case 'Category':{
-            goToProlistById(value);
-            break;
-        }
-        case 'Goods':{
-            currentProviewID =  value;
-            addToHistory(value, "historyProlist");
-            $.afui.loadContent("#proviewPanel", false, false, transitionYC);
-            break;
-        }
-        case 'Keywords':{
-            goToSearchByValue(value);
-            break;
-        }
-        default :
-            break;
-    }
-}
-
+var bHideBxslider = true;
 var bClickFirstIdProlist = false;   // 是否点击的一级分类
 var bScrollToBottom = false;        // 是否下拉到底部
 var bToLoadOnoffProlist = false;    // 下拉的時候是否加載新內容
@@ -498,6 +512,7 @@ function commonATextSel(dataJson, div, callback){
             }
             $child.text(dataJson[i].name);
             $child.show();
+            $child.removeClass("selected");
             callback(i, $child, dataJson[i].id);
             div.append($child);
         }
@@ -509,14 +524,14 @@ function loadGoodsList(bRefresh, bSpecial){
         bRefreshProlist = bRefresh;
         bShowWaitingDialog = false;
         var data = "";
-        data += "buyerId=" +userInfo.id;
+        data += "buyerId=" +getLocal(charVec.buyerIdLo);
         data += "&page=" + goods.page;
         if( ! bSpecial){
             data += "&categoryId=" +goods.categoryId;
-            getDataByURL(getGoodsByNonLastCategoryUrl, getGoodListUrlSuccess, data, true);
+            getDataByURL(getGoodsByNonLastCategoryUrl, getGoodListUrlSuccess, data);
         }else{
-            data += "&companyId=" +goods.companyId;
-            getDataByURL(getSpecialOfferUrl, getGoodListUrlSuccess, data, true);
+            data += "&companyId=" +getLocal("schoolid");
+            getDataByURL(getSpecialOfferUrl, getGoodListUrlSuccess, data);
         }
     }
 }
@@ -526,38 +541,81 @@ loadGoodsListByCondition = function (bRefresh, bReset, bSpecial, index){
     if(bShowNextPage || bReset){
         bRefreshProlist = bRefresh;
         var data = "";
-        data += "buyerId=" +userInfo.id;
+        data += "buyerId=" +getLocal(charVec.buyerIdLo);
         data += "&page=" + goods.page;
-        if(index != null){
-            if(index == 0){
-                goods.sort = "saleCount";
-                data += "&sort=saleCount";
-            }else{
-                goods.sort = "salePrice";
-                data += "&sort=salePrice";
+
+        // 人气价格参数
+        $("#sortsProlist a").each(function(id, elm){
+            if($(elm).hasClass("current")){
+                switch (id){
+                    case 0:
+                        data += "&sort=saleCount";
+                        break;
+                    case 1:
+                        data += "&sort=salePrice";
+                        break;
+                    default :
+                        data += "&sort=saleCount";
+                }
             }
-            data += "&order=asc";
-            if( bSpecial == false || ! bSpecialPanel){
-                data += "&categoryId=" +dataByCondition.categoryId;
+        })
+        data += "&order=asc";
+
+        // 二级分类参数
+        var bCateExist = false;
+        for(var i=0; i < nextCategoryId.length; i++){
+            if($("#sortTagProlist a:eq(" +i +")").hasClass("selected")){
+                data += "&categoryId=" +nextCategoryId[i];
+                bCateExist = true;
+                break;
             }
-        }else{
-            data += "&sort=saleCount";
-            data += "&order=asc";
-            data += "&categoryId=" +dataByCondition.categoryId;
         }
         if(bSpecial == null && ! bSpecialPanel){
-            data += "&tagId=" +dataByCondition.tagId;
+            if(! bCateExist){
+                data += "&categoryId=" +prolistLeftID[idxLeftSortClick];
+            }
+            for(var i=0; i < nextCategoryId.length; i++){
+                if($("#tagProlist a:eq(" +i +")").hasClass("selected")){
+                    data += "&tagId=" +tagProlistId[i];
+                    break;
+                }
+            }
+
+            // 筛选参数加入
             data+= "&filterStr=";
-            for(var i = 0; i<idxFilter; i++){
-                if(i==0){
-                    data += selectCategoryId[i] +":" +selectContent[i];
-                }else{
-                    data += "#" +selectCategoryId[i] +":" +selectContent[i];
+            var stringAttr = "";
+            if($("#secondAttrSortId00").length > 0){
+                stringAttr = "#secondAttrSortId";
+            }else if($("#firstAttrSortId00").length >0){
+                stringAttr = "#firstAttrSortId00";
+            }
+            if(stringAttr != ""){
+                var bFilterExist = false;
+                for(var i = 0; ; i++){
+                    if($(stringAttr +i +0).length > 0){
+                        for(var j = 0; ; j++){
+                            var $div = $(stringAttr +i +j);
+                            if($div.length > 0){
+                                if($div.hasClass("selected")){
+                                    if( ! bFilterExist){
+                                        bFilterExist = true;
+                                        data += categoryPropertiesId[i] +":" +$div.text();
+                                    }else{
+                                        data += "#" +categoryPropertiesId[i] +":" +$div.text();
+                                    }
+                                }
+                            }else{
+                                break;
+                            }
+                        }
+                    }else{
+                        break;
+                    }
                 }
             }
             getDataByURL(getCategoryGoodsByConditionUrl, getGoodListUrlSuccess, data, true);
         }else{
-            data += "&companyId=" +goods.companyId;
+            data += "&companyId=" +getLocal("schoolid");
             getDataByURL(getSpecialOfferGoodsByCategoryIdUrl, getGoodListUrlSuccess, data, true);
         }
     }
@@ -578,6 +636,7 @@ sortsClicked = function (index){
     loadGoodsListByCondition(true, true, null, index);
 }
 
+var idxLeftSortClick = 0;     // 左边被点击分类的索引
 var bLeftSortClick = false; // 是否是点击的左边分类
 var bRefreshProlist = false;
 var bLoadRightProlist = false;
@@ -618,11 +677,12 @@ function getGoodListUrlSuccess(dataJson){
         }
         if(bRefreshProlist){
             $("#sortProlist .sort-pro-list a").each(function(index, elm){
-                var id = $(elm).attr("id");
-                if(id != null && id.substr(0, 9) == 'goodsList'){
-                    $(elm).remove();
-                }
+                //var id = $(elm).attr("id");
+                //if(id != null && id.substr(0, 9) == 'goodsList'){
+                //    $(elm).remove();
+                //}
             });
+            $(".easyToHideCommon").remove();
         }
         for(var i= 0; i<dataJson.length; i++){
             var goodSample = $tempList.clone();
@@ -638,7 +698,7 @@ function getGoodListUrlSuccess(dataJson){
                 goodSample.find(".item .img img").attr("src", "images/temp/pro.png");
             }
             goodSample.find(".title.fontsize-n.ellipsis").text(dataJson[i].name);
-            if(dataJson[i].subTitle != null){
+            if(isNotNullValue(dataJson[i].subTitle)){
                 goodSample.find(".intro").show();
                 goodSample.find(".intro").text(dataJson[i].subTitle);
             }
@@ -651,27 +711,29 @@ function getGoodListUrlSuccess(dataJson){
             goodSample.find(".addfav").attr("onclick" ,"addFavClicked(" +index +")");
             bAddFavArr[index] = dataJson[i].isCollect;
             if(dataJson[i].isCollect){
-                goodSample.find(".addfav").text("已收藏");
+                goodSample.find(".addfav").addClass("orange");
             }else{
-                goodSample.find(".addfav").text("收藏");
+                goodSample.find(".addfav").removeClass("orange");
             }
             if(dataJson[i].isPriceList){
                 goodSample.find("#moreDiscountProlist").show();
             }
-            goodSample.find(".setcount .reduce").attr("onclick" ,"reduceButtonProlistClicked(" +index +")");
-            goodSample.find(".setcount .add").attr("onclick" ,"addButtonProlistClicked(" +index +")");
+            goodSample.find(".setcount .reduce i").attr("onclick" ,"reduceButtonProlistClicked(" +index +")");
+            goodSample.find(".setcount .add i").attr("onclick" ,"addButtonProlistClicked(" +index +")");
             goodSample.find(".setcount .count").attr("id" ,"goodCountProlist" +index);
+            $("#sortProlist .sort-pro-list").append(goodSample);
             getGoodsCountByID(goodsPageId[index], function setGoodCount(count, index){
                 if($("#goodCountProlist" +index).get(0) != null){
                     $("#goodCountProlist" +index).get(0).value = count;
                     if($("#goodCountProlist" +index).get(0).value == 0){
-                        $("#goodsList" +index).find(".setcount .reduce").hide();
+                        $("#goodsList" +index).find(".setcount .reduce i").removeClass("yellow");
+                        $("#goodsList" +index).find(".setcount .reduce i").addClass("gray");
                     }else{
-                        $("#goodsList" +index).find(".setcount .reduce").show();
+                        $("#goodsList" +index).find(".setcount .reduce i").removeClass("gray");
+                        $("#goodsList" +index).find(".setcount .reduce i").addClass("yellow");
                     }
                 }
             }, index);
-            $("#sortProlist .sort-pro-list").append(goodSample);
         }
         bToLoadOnoffProlist = true;
     }else if(dataJson.length == 0){
@@ -693,16 +755,16 @@ function getGoodListUrlSuccess(dataJson){
 
     addFavClicked = function(index){
         bLoadContent = false;
-        var data = "id=" +goodsPageId[index];
-        data += "&buyerId";
         if(bAddFavArr[index]){
-            getDataByURL(delCollectionUrl, function(dataJson){
-                $("#goodsList" +index).find(".addfav").text("收藏");
+            var data = "goodsIds=" +goodsPageId[index];
+            getDataByURL(delCollectionByGoodsIds, function(dataJson){
+                $("#goodsList" +index).find(".addfav").removeClass("orange");
                 bAddFavArr[index] = false;
             }, data);
         }else{
+            var data = "id=" +goodsPageId[index];
             getDataByURL(addCollectionUrl, function(dataJson){
-                $("#goodsList" +index).find(".addfav").text("已收藏");
+                $("#goodsList" +index).find(".addfav").addClass("orange");
                 bAddFavArr[index] = true;
             }, data);
         }
@@ -713,7 +775,8 @@ function getGoodListUrlSuccess(dataJson){
         if($("#goodCountProlist" +index).get(0).value != 0){
             $("#goodCountProlist" +index).get(0).value--;
             if($("#goodCountProlist" +index).get(0).value == 0){
-                $("#goodsList" +index).find(".setcount .reduce").hide();
+                $("#goodsList" +index).find(".setcount a i:eq(0)").removeClass("yellow");
+                $("#goodsList" +index).find(".setcount a i:eq(0)").addClass("gray");
             }
             setCountByID(goodsPageId[index], $("#goodCountProlist" +index).get(0).value);
         }
@@ -721,7 +784,7 @@ function getGoodListUrlSuccess(dataJson){
 
     addButtonProlistClicked = function (index){
         bLoadContent = false;
-        $("#goodsList" +index).find(".setcount .reduce").show();
+        $("#goodsList" +index).find(".setcount a i:eq(0)").addClass("yellow");
         $("#goodCountProlist" +index).get(0).value++;
         setCountByID(goodsPageId[index], $("#goodCountProlist" +index).get(0).value);
     }
@@ -729,7 +792,7 @@ function getGoodListUrlSuccess(dataJson){
     prolistRightClicked = function(index){
         if(bLoadContent){
             setSession(charVec.goodHeadTittleSe, goodsHeadTittle[index]);
-            currentProviewID =  goodsPageId[index];
+            setcurrentProviewID(goodsPageId[index]);
             addToHistory(goodsPageId[index], "historyProlist");
             $.afui.loadContent("#proviewPanel", false, false, transitionYC);
         }

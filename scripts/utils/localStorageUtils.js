@@ -1,5 +1,50 @@
 ﻿var localJavaUrl = "localUrl_";//缓存后端通信数据
 var localcount = "localcount_";//缓存购物车
+var localBuyList = "localBuyList_";//最近购买记录缓存
+
+/**
+ * @key  关键字
+ * @type 分类前缀
+*/
+getLocal = function (key,type) {
+    var data;
+    if(!type)
+    {
+        data = window.localStorage.getItem(key);
+        if(data == null){
+            return "";
+        }
+        else{
+            return data;
+        }
+    }else
+    {
+        data = window.localStorage.getItem(type + key);
+        if(data == null){
+            return "";
+        }
+        else{
+            return data;
+        }
+    }
+
+};
+/**
+ * @key  关键字
+ * @value 值
+ * @type 分类前缀
+ */
+setLocal = function (key, value,type) {
+    if(!type)
+    {
+        window.localStorage.setItem(key, value);
+    }else
+    {
+        window.localStorage.setItem(type + key, value);
+    }
+
+
+};
 /**
  * @type 键值前缀，区别不同模块的数据（见上的定义）
  * @key  键值

@@ -238,21 +238,6 @@ function isIOSTop() {
     setSession = function (key, value) {
         window.sessionStorage.setItem(key, value);
     };
-
-    getLocal = function (key) {
-        var data = window.localStorage.getItem(key);
-        if(data == null){
-            return "";
-        }
-        else{
-            return data;
-        }
-    };
-
-    setLocal = function (key, value) {
-        window.localStorage.setItem(key, value);
-    };
-
     swipeLeftChange = function(panel) {
         $(panel).bind("swipeLeft", function () {
             $(panel).unbind("swipeLeft");

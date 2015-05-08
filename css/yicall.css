@@ -238,7 +238,7 @@ body {
 /*#region search */
 #searchId {
 	display:inline-block; 
-  height: 36px;
+  height: 14px;
   background: #E25906;
   border:none;
   color:#fff;

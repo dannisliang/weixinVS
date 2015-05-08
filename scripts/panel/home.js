@@ -12,7 +12,7 @@ $(document).on("panelbeforeload", '#home', function (e)
 });
 $(document).on("panelload", '#home', function (e)
 {
-
+    getDataByURL(pageSettingUrl, ongetPageSetting, "companyId=" + goods.companyId,true);
 });
 function ongetPageSetting(dataJson)
 {
@@ -217,7 +217,7 @@ function gotoByType(type,value,target)
 {
     target.parent().attr("onclick", 'changeToUrlClicked("' +type +'", "' +value +'")');
 }
-function onTest()
+function onOddsClicked()
 {
-    //window.location.href = "https://www.baidu.com";
+    changeToUrlClicked("Category","abc");
 }

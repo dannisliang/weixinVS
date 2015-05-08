@@ -20,7 +20,7 @@ function setCountByID(id,count)
 function updataCartBtnNum()
 {
     selectLocalStorage(localcount,"count",function(data){
-        if(data)
+        if(data && data.length)
         {
             var tempCount = 0;
             for(var i = 0 ; i< data.length ; i++)

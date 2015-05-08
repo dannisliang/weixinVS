@@ -1,4 +1,4 @@
-﻿$(document).on("panelbeforeload", '#regularlyPanel', function (e) {
+﻿﻿$(document).on("panelbeforeload", '#regularlyPanel', function (e) {
     tabRegular = function(target,Num){
         if($(target).hasClass("active"))return;
         $(target.parentNode).find("li").each(function(index, elm){
@@ -42,9 +42,9 @@
         var data = "buyerId=" +userInfo.id;
         data += "&goodsIds=";
         for(var i = 0;i<20;i++){
-            if(getLocal("userBuyList" +i) != ""){
+            if(getLocal("localBuyList_" +i) != ""){
                 bExist = true;
-                data += getLocal("userBuyList" +i) +",";
+                data += $.parseJSON(getLocal("localBuyList_" +i)).id +",";
             }else{
                 break;
             }
@@ -109,7 +109,7 @@ function getGoodListUrlSuccessRegularly(dataJson){
                 goodSample.find(".item .img img").attr("src", "images/temp/pro.png");
             }
             goodSample.find(".title.fontsize-n.ellipsis").text(dataJson[i].name);
-            if(dataJson[i].subTitle != null){
+            if(isNotNullValue(dataJson[i].subTitle)){
                 goodSample.find(".intro").show();
                 goodSample.find(".intro").text(dataJson[i].subTitle);
             }
@@ -132,6 +132,7 @@ function getGoodListUrlSuccessRegularly(dataJson){
             goodSample.find(".setcount .reduce").attr("onclick" ,"reduceButtonProlistClicked(" +index +")");
             goodSample.find(".setcount .add").attr("onclick" ,"addButtonProlistClicked(" +index +")");
             goodSample.find(".setcount .count").attr("id" ,"goodCountRegularly" +index);
+            $("#tabRegularly").append(goodSample);
             getGoodsCountByID(goodsPageId[index], function setGoodCount(count, index){
                 if($("#goodCountRegularly" +index).get(0) != null){
                     $("#goodCountRegularly" +index).get(0).value = count;
@@ -142,7 +143,6 @@ function getGoodListUrlSuccessRegularly(dataJson){
                     }
                 }
             }, index);
-            $("#tabRegularly").append(goodSample);
         }
         bToLoadOnoffProlist = true;
     }else if(dataJson.length == 0){
@@ -195,7 +195,7 @@ function getGoodListUrlSuccessRegularly(dataJson){
     prolistRightClicked = function(index){
         if(bLoadContent){
             setSession(charVec.goodHeadTittleSe, goodsHeadTittle[index]);
-            currentProviewID =  goodsPageId[index];
+            setcurrentProviewID(goodsPageId[index]);
             addToHistory(goodsPageId[index], "historyProlist");
             $.afui.loadContent("#proviewPanel", false, false, transitionYC);
         }

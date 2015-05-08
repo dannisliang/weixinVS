@@ -7,6 +7,11 @@ $(document).on("panelbeforeload", '#editAddressPanel', function (e)
 });
 $(document).on("panelload", '#editAddressPanel', function (e)
 {
+    if(!userInfo.id)
+    {
+        $.afui.loadContent("#cartPanel", false, false, transitionYC);
+        return;
+    }
     $("#sel_selectschooledit").empty();
     $("#sel_selectquedit").empty();
     $("#sel_selectbuildedit").empty();

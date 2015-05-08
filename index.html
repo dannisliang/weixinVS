@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>yicalljifav2</title>
+    <title>一call即发</title>
 
     <!-- yicalljifav2 references -->
     <link href="css/index.css" rel="stylesheet" />
@@ -36,10 +36,10 @@
 
     <script type="text/javascript" charset="utf-8" src="scripts/globalData.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/test.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/protocolID.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/http.js"></script>
     <link rel="stylesheet" type="text/css" href="css/yicall.css" />
     <script type="text/javascript" charset="utf-8" src="scripts/yicall.js"></script>
-    <script type="text/javascript" charset="utf-8" src="scripts/protocolID.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/platform.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/model/hintData.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/panel/search.js"></script>
@@ -63,6 +63,7 @@
     <script type="text/javascript" charset="utf-8" src="scripts/panel/regularly.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/panel/suggestion.js"></script>
     <script type="text/javascript" charset="utf-8" src="scripts/panel/myorder.js"></script>
+    <script type="text/javascript" charset="utf-8" src="scripts/panel/mymessage.js"></script>
 
 
 	<script type="text/javascript" src="scripts/hardwareApply.js"></script>
@@ -97,6 +98,7 @@
         $.afui.ready(function(){
             console.log('afui is ready');
             getDataByURL(pageSettingUrl, ongetPageSetting, "companyId=" + goods.companyId,true);
+            updataCartBtnNum();
         });
         /* This function runs when the body is loaded.  当body加载完再加载这个函数 */
         var init = function ()
@@ -121,8 +123,8 @@
             <div class="panel" id="prolistPanel">
                 <header class="yicallHeader" id="yicallHeaderProlist">
                     <a class="icon icon-position">湖南涉外经济学院</a>
-                    <span class="headspan pull-right leftborder"><a class="icon icon-message"></a></span>
-                    <span class="headspan pull-right leftborder"><a class=" icon icon-search" href="#searchPanel" data-transition="invoke"></a></span>
+                    <span class="headspan pull-right leftborder"><a class="icon icon-message" href="#mymessagePanel" data-transition="slide"></a></span>
+                    <span class="headspan pull-right leftborder"><a class=" icon icon-search" href="#searchPanel" data-transition="slide"></a></span>
                 </header>
                 <div id="sortProlist" class="pages">
                     <div class="pull-left sort-left  header-margin-top">
@@ -166,11 +168,11 @@
                             <a href="#" class="current" onclick="sortsClicked(0)">人气</a>
                             <a href="#" onclick="sortsClicked(1)">价格</a>
                         </div>
-                        <a href="javascript:void(0)" onclick="prolistRightClicked(0)" id="goodsList" style="display: none" class="easyToHideCommon">
+                        <div style="display: none" class="easyToHideCommon" id="goodsList">
                             <!-- item start -->
                             <div class="item grayline-bottom col-xs-12 col-md-4">
                                 <div class="img">
-                                    <img data-src="holder.js/100%x200" alt="100%x200" src="images/temp/pro.png" data-holder-rendered="true" display block;">
+                                    <img onclick="prolistRightClicked(0)"  data-src="holder.js/100%x200" alt="100%x200" src="images/temp/pro.png" data-holder-rendered="true" display block;">
                                     <span class="label hot"></span>
                                 </div>
                                 <div class="caption">
@@ -178,18 +180,17 @@
                                     <div class="intro" style="display: none">筋道可口，美味不停歇</div>
                                     <p class="nowprice">$5.2</p>
                                     <p class="oldprice" style="display: none">$6.2</p>
-                                    <button class="addfav" onclick="addFavClicked()">收藏</button>
-                                    <div class="discount" style="display: none;" id="moreDiscountProlist">量大更优惠</div>
-
+                                    <a class="addfav" onclick="addFavClicked()"><i class="yicall-icon icon-fav"></i>收藏</a>
+                                    <div class="discount" style="display: none;" id="moreDiscountProlist"><img src="images/tip-ldyh.gif" alt="量大更优惠"> </div>
                                     <div class="setcount">
-                                        <button class="reduce" onclick="reduceButtonProlistClicked(0)"></button>
-                                        <input class="count" placeholder="0" id="goodCountProlist"/>
-                                        <button class="add" onclick="addButtonProlistClicked(0)"></button>
+                                        <a class="reduce pull-left text-center"><i class="yicall-icon icon-minus-circle yellow fontsize-xl" onclick="reduceButtonProlistClicked(0)"></i></a>
+                                        <input  class="count pull-left text-center"  placeholder="0" id="goodCountProlist"/>
+                                        <a class="add pull-left text-center" ><i class="yicall-icon icon-plus-circle yellow fontsize-xl" onclick="addButtonProlistClicked(0)"></i></a>
                                     </div>
                                 </div>
                             </div>
                             <!-- item end -->
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -279,14 +280,14 @@
             <a class="button" data-toast data-type="error" data-message="Bottom Center" data-position="bc" id="globalMessageHint" style="display:none"></a>
         </div>
         <footer>
-            <a href="#home" data-transition="invoke"><i class="yicall-icon icon-home"></i><div>首  页</div></a>
-            <a href="#prolistPanel" data-transition="invoke"><i class="yicall-icon icon-list"></i><div>分 类 </div></a>
-            <a href="#regularlyPanel" data-transition="invoke"><i class="yicall-icon icon-fav"></i><div>最爱</div></a>
-            <a href="#cartPanel" data-transition="invoke">
+            <a href="#home" data-transition="slide"><i class="yicall-icon icon-home"></i><div>首  页</div></a>
+            <a href="#prolistPanel" data-transition="slide"><i class="yicall-icon icon-list"></i><div>分 类 </div></a>
+            <a href="#regularlyPanel" data-transition="slide"><i class="yicall-icon icon-fav"></i><div>最爱</div></a>
+            <a href="#cartPanel" data-transition="slide">
                 <i class="yicall-icon icon-cart"></i><div> 购物车</div>
-                <span class="af-badge" id="afbadgeCart">5</span>
+                <span class="af-badge" id="afbadgeCart">0</span>
             </a>
-            <a href="#minePanel" data-transition="invoke"><i class="yicall-icon icon-mine"></i><div>我  的</div></a>
+            <a href="#minePanel" data-transition="slide"><i class="yicall-icon icon-mine"></i><div>我  的</div></a>
         </footer>
     </div>
     

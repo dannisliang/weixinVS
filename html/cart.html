@@ -4,7 +4,7 @@
     <h1>购物车</h1>
 </header>
 
-<div id="cart" class="header-margin-top">
+<div id="cart" class="header-margin-top margin-bottom">
 
 
     <ul class="list">
@@ -59,9 +59,9 @@
                     <div class="total">小计：6.8元</div>
                     <div class="setcount">
                         <div class=" fontsize-xl">
-                            <a class="reduce pull-left text-center " id ="lid" onclick="onCartClick(this)"></a>
-                            <input type="number" class="count pull-left text-center"  id="cid" placeholder="0" min="0">
-                            <a class="add pull-left text-center" id="rid" onclick="onCartClick(this)"></a>
+                            <a class="reduce pull-left text-center " id ="lid" onclick="onCartClick(this)"><i class="yicall-icon icon-minus-circle yellow fontsize-xl" onclick="reduceButtonProlistClicked(0)"></i></a>
+                            <input type="tel" class="count pull-left text-center"  id="cid" placeholder="0" min="0" disabled="disabled">
+                            <a class="add pull-left text-center" id="rid" onclick="onCartClick(this)"><i class="yicall-icon icon-plus-circle yellow fontsize-xl" onclick="addButtonProlistClicked(0)"></i></a>
                         </div>                       
                      </div>
                       <div class="carstock">当前库存为</div>
@@ -79,21 +79,29 @@
             <div class="count col1"> 选中数量：<span class="red" id="totalcount">3</span></div>
         </li>
         <li>
-            <div class="points col1"> 当前积分：<span class="red" id="totalpoints">3</span></div>
-            <div class="points col1"> 积分抵现：<span class="red" id="costpoints"></span></div>
+            <div class="points col1"> 当前积分：<span class="red" id="totalpoints">3</span></div>          
+            <div class="pull-right">
+            	<input id="pointstoggle2" type="checkbox" name="toggle2" value="1" class="toggle" onclick="onPointsCheckbox(this)">
+                 <label for="pointstoggle2" data-on="Yes" data-off="No">
+                 <span></span>
+                 </label> 
+            </div> 
+        </li>
+        <li class="valence " id="pointsdes"> 积分抵现：<span class="red" id="costpoints"></span>
+            使用<input type="tel" id="points" placeholder="" style="width:40px;height:32px;">积分，抵<span class="red" id="pointtomoney">￥0元</span>
         </li>
         <li>
-            <input type="number" id="points" placeholder="">
-            <div class="points"> 购买备注：</div>
-            <input type="text" id="remarks" placeholder="">
+            <div class="buyremarks"> 购买备注：</div>
+            <textarea rows="3" id="remarks" placeholder=""></textarea>
         </li>
     </ul>
 
 
 </div>
-<div class="confirm" >
-    <div>应付金额:<span class="red" id="totalpay">￥2.0</span></div>
-    <a href="#prolistPanel"><div class="pull-right" >继续选购 </div></a>
-    <button type="button" class="button btn-green  btn-lg btn-block" onclick="onOrderOk()">确定下单 </button>
+<div class="confirm row" >
+    
+    <button type="button" class="btn-green" onclick="onOrderOk()">确定下单 </button>
+    <div class="waittopay">应付金额:<span class="red" id="totalpay">￥2.0</span><a href=""><div  class="pull-right"><a href="#prolistPanel">>> 继续选购</a>  &nbsp;</div></a></div>
+    
 </div>
 </div>

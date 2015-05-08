@@ -9,7 +9,7 @@ $(document).on("panelload", '#addressPanel', function (e) {
     }
 
     $("#addresslist").empty();
-    getDataByURL(getAddressUrl, onGetAddressUrl,"companyId="+ myCompanyId);
+    getDataByURL(getAddressUrl, onGetAddressUrl,"companyId="+ getLocal("schoolid"));
 });
 
 //获得收货地址

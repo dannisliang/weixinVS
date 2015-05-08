@@ -8,7 +8,7 @@ var goodsPageImg = new Array();  // 商品图片Id
 // 商品数量
 var numGoods = 0;
 var versionYC = "0.0.1";
-var transitionYC="invoke";    // 页面切换动作
+var transitionYC="slide";    // 页面切换动作
 //学校id
 //var myCompanyId ="7411bcb2c9c34675ab02043920d2fb8e";
 var myCompanyId;

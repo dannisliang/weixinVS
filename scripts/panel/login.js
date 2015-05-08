@@ -1,7 +1,7 @@
 ﻿function showLoginPanel() {
     $.afui.loadContent("#loginPanel", false, false, transitionYC);
     $("#phoneNumber2").css({
-        "maxLength": "11",
+        "maxLength": "11"
     })
 }
 

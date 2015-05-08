@@ -1,6 +1,6 @@
 ﻿$(document).on("panelbeforeload", '#minePanel', function (e) {
     getMyInfo();
-    loginClicked();
+    //loginClicked();
 });
 
 $(document).on("panelload", '#minePanel', function (e) {

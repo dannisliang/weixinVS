@@ -21,6 +21,7 @@ $(document).on("panelbeforeload", '#searchPanel', function (e) {
         }
     });
 
+
     loadGoodsListByConditionSearch = function (bRefresh, bReset, bSpecial, index){
         if(bShowNextPage || bReset){
             bRefreshProlist = bRefresh;
@@ -43,7 +44,8 @@ $(document).on("panelbeforeload", '#searchPanel', function (e) {
             getDataByURL(getCategoryGoodsByConditionUrl, getGoodListUrlSuccessSearch, data, true);
         }
     }
-// 人气价格排序
+
+    // 人气价格排序
     sortsClickedSearch = function (index){
         if($("#sortsSearch").find("a:eq(" +index +")").hasClass("current")){
             return;
@@ -57,6 +59,16 @@ $(document).on("panelbeforeload", '#searchPanel', function (e) {
         })
         loadGoodsListByConditionSearch(true, true, null, index);
     }
+
+    // 搜索获取焦点
+    $("#searchId").focus(function(){
+        $("#searchKeyHead").show();
+    });
+
+    // 搜索失去焦点
+    $("#searchId").blur(function(){
+        $("#searchKeyHead").hide();
+    });
 });
 
 
@@ -65,9 +77,9 @@ $(document).on("panelload", '#searchPanel', function (e) {
         if (getSession(charVec.bSearchFocusSe) === "true") {
             $("input[id=searchId]").focus();
             if ($.os.android) {
-                alert("dddfs");
-                var softKeyboard = new SoftKeyboard();
-                softKeyboard.show();
+                //alert("dddfs");
+                //var softKeyboard = new SoftKeyboard();
+                //softKeyboard.show();
             }
         }
     });
@@ -159,6 +171,9 @@ $(document).on("panelload", '#searchPanel', function (e) {
             }, "", true);
             getGoodListUrlSuccessSearch(dataJson);
         }else{
+            $("#sortSearch .sort-pro-list .list-mod").hide();
+            $("#sortSearch .sort-pro-list").hide();
+            $("#sortSearch .sort-left").hide();
             showGlobalMessageDialog("您搜索的商品还在月球上。。。");
         }
     }
@@ -254,7 +269,9 @@ function getSearchGoodUrl(value) {
                 }
             }
         }
+        $("#searchKeyHead").hide();
         bHistoryClicked = false;
+        bRefreshProlist = true;
         var data = "buyerId=" +userInfo.id;
         data += "&keyword=" +value;
         $("#searchId").get(0).value = value;
@@ -306,7 +323,7 @@ function getGoodListUrlSuccessSearch(dataJson){
                 goodSample.find(".item .img img").attr("src", "images/temp/pro.png");
             }
             goodSample.find(".title.fontsize-n.ellipsis").text(dataJson[i].name);
-            if(dataJson[i].subTitle != null){
+            if(isNotNullValue(dataJson[i].subTitle)){
                 goodSample.find(".intro").show();
                 goodSample.find(".intro").text(dataJson[i].subTitle);
             }
@@ -329,6 +346,7 @@ function getGoodListUrlSuccessSearch(dataJson){
             goodSample.find(".setcount .reduce").attr("onclick" ,"reduceButtonProlistClicked(" +index +")");
             goodSample.find(".setcount .add").attr("onclick" ,"addButtonProlistClicked(" +index +")");
             goodSample.find(".setcount .count").attr("id" ,"goodCountSearch" +index);
+            $("#sortSearch .sort-pro-list").append(goodSample);
             getGoodsCountByID(goodsPageId[index], function setGoodCount(count, index){
                 if($("#goodCountSearch" +index).get(0) != null){
                     $("#goodCountSearch" +index).get(0).value = count;
@@ -339,7 +357,6 @@ function getGoodListUrlSuccessSearch(dataJson){
                     }
                 }
             }, index);
-            $("#sortSearch .sort-pro-list").append(goodSample);
         }
         bToLoadOnoffProlist = true;
     }else if(dataJson.length == 0){
@@ -392,7 +409,7 @@ function getGoodListUrlSuccessSearch(dataJson){
     prolistRightClicked = function(index){
         if(bLoadContent){
             setSession(charVec.goodHeadTittleSe, goodsHeadTittle[index]);
-            currentProviewID =  goodsPageId[index];
+            setcurrentProviewID(goodsPageId[index]);
             addToHistory(goodsPageId[index], "historyProlist");
             $.afui.loadContent("#proviewPanel", false, false, transitionYC);
         }

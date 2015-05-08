@@ -45,8 +45,8 @@
   margin: 0 !important;
 }
 .yicallTheme .view footer {
-  background: #eaeaec;
-  color: 9a9a9a;
+  background-color: rgba(234,234,236,0.8);
+  color:#9a9a9a;
   border-top: 1px solid #cdcdcd;
   box-shadow: none;
 }
@@ -289,7 +289,7 @@
   background: white;
 }
 .yicallTheme input.toggle:checked + label {
-  background: #4cd964;
+  background: #b0ca43;
   line-height: -1em;
   -webkit-transition: background 150ms;
   transition: background 150ms;

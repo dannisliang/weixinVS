@@ -94,6 +94,32 @@ function changeNumGoodsCart(numEnd){
     }
 }
 
+// 轮播图片点击事件
+function changeToUrlClicked(type, value){
+    switch (type){
+        case 'Url':{
+            window.location = value;
+            break;
+        }
+        case 'Category':{
+            goToProlistById(value);
+            break;
+        }
+        case 'Goods':{
+            setcurrentProviewID(value);
+            addToHistory(value, "historyProlist");
+            $.afui.loadContent("#proviewPanel", false, false, transitionYC);
+            break;
+        }
+        case 'Keywords':{
+            goToSearchByValue(value);
+            break;
+        }
+        default :
+            break;
+    }
+}
+
 function temp() {
     gotoPanel('myOrderPanel');
 }

@@ -4,7 +4,7 @@
 	<input type="search" class="input_search_key" placeholder=" 输入搜索内容" id="searchId">
 	<a class="icon icon-search" onclick="getSearchGoodUrl()"/></a>
 </header>
-<ul class="list-mod clearfix header-margin-top"  >
+<ul class="list-mod clearfix header-margin-top"  id="searchKeyHead">
 	<li>
 		<span class="orange">历史搜索：</span>
 			<div class="textSelDiv clearfix" id="historySearch">
@@ -20,13 +20,14 @@
 		
 	</li>
 </ul>
+ 
 <div id="sortSearch" class="pages">
-	<div class="pull-left sort-left  header-margin-top">
+	<div class="pull-left sort-left">
 		<ul class="sort-list fontsize-n ">
 			<li style="display: none"><a href="javascript:void(0)" onclick="prolistRight(0)">特惠专区</a></li>
 		</ul>
 	</div>
-	<div class="sort-pro-list  header-margin-top">
+	<div class="sort-pro-list">
 		<ul class="list-mod clearfix" id="sortAll">
 			<li>
 				<span>全部分类：</span>

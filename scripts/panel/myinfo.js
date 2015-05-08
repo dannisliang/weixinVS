@@ -10,7 +10,7 @@
             var string = "您尚未添加收货地址";
             $("#addressMyinfo").text(string);
         }
-    },"companyId="+ myCompanyId);
+    },"companyId="+ getLocal("schoolid"));
     if(getCookie(charVec.nicknameCo) != ""){
         $("#nickNameMyinfo").text(getCookie(charVec.nicknameCo));
     }

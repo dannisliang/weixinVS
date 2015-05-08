@@ -3465,7 +3465,7 @@ li .icon:before {
   padding: 0px;
   list-style: none;
   background-color: #fff;
-  margin: 0 -10px;
+  margin: 0 0px;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }

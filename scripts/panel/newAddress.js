@@ -7,12 +7,17 @@ $(document).on("panelbeforeload", '#newAddressPanel', function (e)
 });
 $(document).on("panelload", '#newAddressPanel', function (e)
 {
+    if(!userInfo.id)
+    {
+        $.afui.loadContent("#cartPanel", false, false, transitionYC);
+        return;
+    }
     document.getElementById("newaddresstoggle2").checked = true;
     $("#sel_selectschool").empty();
     $("#sel_selectqu").empty();
     $("#sel_selectbuild").empty();
     getDataByURL(getSchoolListUrl, onGetNewAddressCompany, "", true);
-    $("#newAddressPhone").get(0).value = userInfo.contactPhone;
+    $("#newAddressPhone").get(0).value = getLocal(charVec.phoneNumberLo);
 });
 var newAddressID;
 var newAddressQU;

@@ -100,6 +100,8 @@ function regSuccess(dataJson) {
             break;
         case 1:
             setSession(charVec.bindingPhoneCo, true);
+            // Todo
+            setLocal(charVec.buyerIdLo, dataJson);
             break;
         case 2:
             setSession(charVec.bGetPasswordCo, true);

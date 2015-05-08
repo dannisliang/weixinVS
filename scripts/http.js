@@ -29,7 +29,6 @@ function getDataAjax(url, okcall, data, bCache, time) {
         data: data,
         timeout: 8000,
         success: function (object) {
-            hideWaitingDialog();
             var tempString
             if (object != null) {
                 if (object.code == 0) {
@@ -66,22 +65,31 @@ function getDataAjax(url, okcall, data, bCache, time) {
                             showGlobalMessageDialog($.parseJSON(object).message);
                         }
                     }else  if(typeof(object) == "object"){
-                        showGlobalMessageDialog(object.message);
+                        if(object.message == "有商品没有足够库存!")
+                        {
+                            //下单库存判断
+                            okcall.apply(this, [object]);
+                        }else
+                        {
+                            showGlobalMessageDialog(object.message);
+                        }
+
                     }else
                     {
                         showGlobalMessageDialog("获取数据失败");
                     }
                 }
             }
+            hideWaitingDialog();
         },
         error: function (err) {
             console.log('Error:' + err.dataGet);
-            hideWaitingDialog();
             if (err.dataGet == null) {
                 showGlobalMessageDialog("连接服务器失败！！！");
             } else {
                 showGlobalMessageDialog(err.dataGet);
             }
+            hideWaitingDialog();
         }
     });
 }
@@ -204,7 +212,7 @@ function goodsListSuccess(dataJson) {
     for (i = 0; i < dataJson.length; i++, numGoods++) {
         goodsPageId[numGoods] = dataJson[i].id;
         dataJson[i].price = (dataJson[i].price).toFixed(1);
-        content += "<li><a href=\"#productinfo\"  data-transition=\"invoke\" onclick=\"getProductInfo(" + i + ")\">";
+        content += "<li><a href=\"#productinfo\"  data-transition=\"slide\" onclick=\"getProductInfo(" + i + ")\">";
         content += "<img id=\"listImage\" src=\"" + rootUrl + "/service/rest/tk.File/" + dataJson[i].pictureId +"?thumb=80x80\"/>";
         content += "<h2 id=\"listTopText\">"+  dataJson[i].name +"</h2>";
         content += "<p id=\"listPriceText\">￥ " + dataJson[i].price + "</p></a>"

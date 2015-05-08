@@ -46,9 +46,13 @@
             <div class="setpricepanel">
                 <div class="setcount">
                     <div class=" fontsize-xl">
-                        <a class="reduce pull-left text-center " id ="proviewL" onclick="onProviewClick(this)"></a>
-                        <input type="text" class="count pull-left text-center" id="exampleInputAmount" placeholder="0">
-                        <a class="add pull-left text-center" id="proviewR" onclick="onProviewClick(this)"></a>
+                        <a class="reduce pull-left text-center " id ="proviewL" onclick="onProviewClick(this)">
+                        	<i class="yicall-icon icon-minus-circle yellow fontsize-xl" onclick="reduceButtonProlistClicked(0)"></i>
+                        </a>
+                        <input type="tel" class="count pull-left text-center" id="exampleInputAmount" placeholder="0" disabled="disabled">
+                        <a class="add pull-left text-center" id="proviewR" onclick="onProviewClick(this)">
+                        	<i class="yicall-icon icon-plus-circle yellow fontsize-xl" onclick="addButtonProlistClicked(0)"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="total  fontsize-xn"><span class="black">共</span><span class="red"> 0</span><span class="black">件 </span><span class="gray4">￥0元</span></div>
@@ -59,8 +63,8 @@
     <div class="divider">更多选择</div>
     <div class="morepros clearfix">
 
-        <ul class="clearfix" id="clearfixlist">
-            <li id="clearfixlistli">
+        <ul class="clearfix row" id="clearfixlist">
+            <li id="clearfixlistli" class="col-xs-3" >
                 <img src=""/>
                 <span class="title" ></span>
                 <span class="price" ></span>

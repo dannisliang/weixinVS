@@ -27,12 +27,17 @@
 		<div class="divider"></div>
 		<div class="menulist">
 		   <ul class="list">
-		    <li onclick="gotoPanel('mymessagePanel')"><span class="icon icon-mymessage"></span>我的消息</li>
-		    <li onclick="gotoPanel('myOrderPanel')"><span class="icon icon-myorder"></span>我的订单</li>
-		    <li><span class="icon icon-myintegral"></span>我的积分<span class="af-badge" id="integralMine">0</span></li>
-		    <li onclick="gotoPanel('addressPanel')"><span class="icon icon-myaddress"></span>我的常用地址</li>
-		    <li onclick="gotoPanel('myInfoPanel')"><span class="icon icon-myinfo"></span>我的资料</li>
-		    <li onclick="gotoPanel('suggestionPanel')"><span class="icon icon-mysugest"></span>我的建议</li>
+		    <li onclick="gotoPanel('mymessagePanel')"><a><i class="yicall-icon icon-message orange"></i>我的消息</a></li>
+		    <li onclick="gotoPanel('myOrderPanel')"><a><i class="yicall-icon icon-myorder orange"></i>我的订单</a></li>
+		    <li>
+                <a>
+                <i class="yicall-icon icon-credit orange"></i>我的积分
+                <span class="pull-right gray4 fontsize-s jifen" id="sexMyinfo">0</span>
+                </a>
+            </li>
+		    <li onclick="gotoPanel('addressPanel')"><a><i class="yicall-icon icon-home orange"></i>我的常用地址</a></li>
+		    <li onclick="gotoPanel('myInfoPanel')"><a><i class="yicall-icon icon-myinfo orange"></i>我的资料</a></li>
+		    <li onclick="gotoPanel('suggestionPanel')"><a><i class="yicall-icon icon-edit orange"></i>我的建议</a></li>
 		  </ul>
            <div class="divider"></div>
 		  <button type="button" class="button btn-green  btn-lg btn-block" style="margin:10px;">注销登录</button>

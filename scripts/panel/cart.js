@@ -10,9 +10,15 @@ var chooseCountList;
 var totalCount;//订单商品个数
 var totalCost;//订单总价格
 var totalPoints;//买家积分
+var defaulAddressData;
 //购物车
 $(document).on("panelbeforeload", '#cartPanel', function (e)
 {
+    /*if(!userInfo.id)
+     {
+     $.afui.loadContent("#loginPanel", false, false, transitionYC);
+     return;
+     }*/
     goodsList = new Array();
     idList = new Array();
     countList = new Array();
@@ -25,6 +31,8 @@ $(document).on("panelload", '#cartPanel', function (e)
         carGoodsItem = $("#cargoodslist .grayline").clone();
         initcart = true;
     }
+    $("#pointsdes").hide();
+    $("#pointstoggle2").checked = false;
     $("#cargoodslist").empty();
     $("#totalmoney").text("");
     $("#totalcount").text("");
@@ -33,8 +41,9 @@ $(document).on("panelload", '#cartPanel', function (e)
     $("#remarks").get(0).value = "";
     document.getElementById("defaultaddressradio_1").checked = false;
     document.getElementById("defaultaddressradio_1").style.visibility ="hidden";
+    showWaitingDialog();
     getGooodsDataFromSQL();
-    getDataByURL(getCurrentPoints, onGetCurrentPoints,"buyerId="+userInfo.id);
+    getDataByURL(getCurrentPoints, onGetCurrentPoints,"buyerId="+getLocal(charVec.buyerIdLo));
     $("#points").on('input',function(e){
         var min = Math.min(totalCost * 100,totalPoints);
         if(Number(e.target.value) > min)
@@ -42,6 +51,8 @@ $(document).on("panelload", '#cartPanel', function (e)
         if(Number(e.target.value) <0 )
             $("#points").get(0).value = "0";
         $("#totalpay").text("￥" + (totalCost - Number($("#points").get(0).value)/100));
+        $("#pointtomoney").text("￥" + (Number($("#points").get(0).value)/100) +"元");
+
     });
 });
 function onGetDefualtAddressUrl(dataJson)
@@ -76,12 +87,12 @@ function onGetDefualtAddressUrl(dataJson)
             $("#defaultadd").text("");
             document.getElementById("defaultaddressradio_1").style.visibility ="hidden";
         }
-        if(defaulAddressData.id  && userInfo.id)
-        {
-            var data = "areaAddressId=" + defaulAddressData.id;
-            data += "&buyerId=" + userInfo.id;
-            getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
-        }
+        /*if(defaulAddressData.id  && userInfo.id)
+         {
+         var data = "areaAddressId=" + defaulAddressData.id;
+         data += "&buyerId=" + userInfo.id;
+         getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
+         }*/
     }
 }
 //购物车商品列表
@@ -191,22 +202,29 @@ function onGetCartListUrl(dataJson)
             }
         }
 
-        parentNode.find(".total").text("总价:" + (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100);
+        parentNode.find(".total").text("小计:" + (carGoodsList[i].count * (100 * carGoodsList[i].price)) / 100);
         parentNode.find(".reduce,pull-left,text-center").attr("id", "l_" + i);
         parentNode.find(".reduce,pull-left,text-center").attr("onclick", "onCartClick(this)");
         parentNode.find(".add,pull-left,text-center").attr("id", "r_" + i);
         parentNode.find(".add,pull-left,text-center").attr("onclick", "onCartClick(this)");
         parentNode.find(".count,pull-left,text-center").attr("id", "c_"+ i);
         parentNode.find(".carstock").attr("id", "stock_"+ i);
-        parentNode.find(".oldprice").text("￥" + carGoodsList[i].costPrice);
+        if(carGoodsList[i].costPrice != carGoodsList[i].price)
+        {
+            parentNode.find(".oldprice").text("￥" + carGoodsList[i].costPrice);
+        }else
+        {
+            parentNode.find(".oldprice").text("");
+        }
+
         $("#c_"+ i).get(0).value = carGoodsList[i].count;
 
-        if(defaulAddressData.id  && userInfo.id)
-        {
-            var data = "areaAddressId=" + defaulAddressData.id;
-            data += "&buyerId=" + userInfo.id;
-            getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
-        }
+    }
+    if(defaulAddressData.id  && userInfo.id)
+    {
+        var data = "areaAddressId=" + defaulAddressData.id;
+        data += "&buyerId=" + getLocal(charVec.buyerIdLo);
+        getDataByURL(getGoodsInfoByAreaAddressId, onGetGoodsInfoByAreaAddressId, data);
     }
     getChooseList();
 }
@@ -234,10 +252,11 @@ function onOrderOk()
     getChooseList();
     if(delIDList.length == 0)
         return;
+    var points = $("#pointstoggle2").checked  ?  ($("#points").get(0).value ? $("#points").get(0).value :0)  : 0;
     var data = "";
     data += "receiverId="+defaulAddressData.id;
     data += "&remark="+ ($("#remarks").get(0).value ? $("#remarks").get(0).value :"") ;
-    data += "&points=" + ($("#points").get(0).value ? $("#points").get(0).value :0) ;
+    data += "&points=" + points ;
     data += "&goodsId=" +chooseIDList;
     data += "&count=" + chooseCountList;
     orderPoints = ($("#points").get(0).value ? $("#points").get(0).value :0);
@@ -259,7 +278,6 @@ function getChooseList()
         if(carGoodsList[i].choose)
         {
             chooseIDList += carGoodsList[i].goodsId +",";
-            setLocal(charVec.userBuyList + i, carGoodsList[i].goodsId);
             chooseCountList += carGoodsList[i].count +",";
             delIDList.push(carGoodsList[i].goodsId);
             delCount += carGoodsList[i].count;
@@ -274,15 +292,57 @@ function getChooseList()
 }
 function onPostV2Ordel(dataJson)
 {
-    if(delIDList && delIDList.length )
+    if(dataJson.code && dataJson.code == -1)
     {
-        for (var i = 0 ;i  < delIDList.length ;i++)
+        $.afui.popup({
+            title: "库存不够",
+            message: "有商品库存不够啦，是否自动修改购物车商品数量？",
+            cancelText: "确定",
+            cancelCallback: function () {
+                autoUpDataCartList(dataJson);
+            },
+            doneText: "取消",
+            doneCallback: function () {
+
+            },
+            cancelOnly: false
+        });
+
+    }else
+    {
+        if(delIDList && delIDList.length )
         {
-            setCountByID(delIDList[i],0);
+            for (var i = 0 ;i  < delIDList.length ;i++)
+            {
+                setCountByID(delIDList[i],0);
+            }
+        }
+        updataCartBtnNum();
+        oederCode = dataJson[0];
+        $.afui.loadContent("#placeorderPanel", false, false, "transitionYC");
+    }
+}
+function autoUpDataCartList(dataJson)
+{
+    var data = $.parseJSON(dataJson.data);
+    for(var i = 0; i < data.length ;i ++)
+    {
+        upDataItemByIndex(getIndexByID(data[i].goodsId),data[i].count);
+    }
+    getChooseList();
+}
+function getIndexByID(goodsId)
+{
+    var index = -1;
+    for(var i = 0 ; i <carGoodsList.length ;i++)
+    {
+        if(carGoodsList[i].goodsId == goodsId)
+        {
+            index = i;
+            break;
         }
     }
-    //changeNumGoodsCart(delCount,false);
-    $.afui.loadContent("#placeorderPanel", false, false, "transitionYC");
+    return index;
 }
 function getGooodsDataFromSQL()
 {
@@ -309,25 +369,25 @@ function getGooodsDataFromSQL()
         }
     });
     /*select(orderTable, "id, count", "", null, function (rows) {
-        if (rows) {
-            for (var i = 0; i < rows.length; i++) {
-                goodsList[i] = new Object();
-                goodsList[i].id = rows.item(i).id;
-                goodsList[i].count = rows.item(i).count;
-                idList.push(goodsList[i].id);
-                countList.push(goodsList[i].count);
-            }
-            if(idList.length >0 && countList.length > 0)
-            {
-                var data = "goodsId=" + idList.join(",") + "&count=" +countList.join(",") ;
+     if (rows) {
+     for (var i = 0; i < rows.length; i++) {
+     goodsList[i] = new Object();
+     goodsList[i].id = rows.item(i).id;
+     goodsList[i].count = rows.item(i).count;
+     idList.push(goodsList[i].id);
+     countList.push(goodsList[i].count);
+     }
+     if(idList.length >0 && countList.length > 0)
+     {
+     var data = "goodsId=" + idList.join(",") + "&count=" +countList.join(",") ;
 
-                getDataByURL(addShopCartByGoodsIds,onAddShopCartByGoodsIds,data);
-            }
-        }else
-        {
-            onAddShopCartByGoodsIds();
-        }
-    });*/
+     getDataByURL(addShopCartByGoodsIds,onAddShopCartByGoodsIds,data);
+     }
+     }else
+     {
+     onAddShopCartByGoodsIds();
+     }
+     });*/
 
 }
 
@@ -335,7 +395,7 @@ function onAddShopCartByGoodsIds()
 {
     if (userChooseAddress == null)
     {
-        getDataByURL(getDefualtAddressUrl, onGetDefualtAddressUrl,"companyId="+ myCompanyId);
+        getDataByURL(getDefualtAddressUrl, onGetDefualtAddressUrl,"companyId="+ getLocal("schoolid"));
         userChooseAddress = null;
     }else
     {
@@ -353,7 +413,6 @@ function onCartClick(target)
     var type = targetID.substr(0,1);
     var index  = targetID.substr(2);
     var id = carGoodsList[index].goodsId;
-    var tempCount;
     switch (type)
     {
         case "l":
@@ -387,21 +446,28 @@ function onCartClick(target)
                 }
             }else
             {
-                    $("#cargoodslist #cart_" + index) .find("#stock_" +index).fadeOut(200).fadeIn(200);
+                $("#cargoodslist #cart_" + index) .find("#stock_" +index).fadeOut(200).fadeIn(200);
             }
             break;
         default :
             break;
     }
-    carGoodsList[index].count = $("#c_"+index).get(0).value;
-    tempCount = $("#c_"+index).get(0).value;
+    upDataItemByIndex(index,$("#c_"+index).get(0).value);
+    getChooseList();
+}
+function upDataItemByIndex(index,count,autoflags)
+{
+    if(! carGoodsList[index])
+        return;
+    carGoodsList[index].count = count;
+    var  tempCount = count;
 
     if(carGoodsList[index].priceList && carGoodsList[index].priceList.length > 1)
     {
-        var count = carGoodsList[index].priceList.length;
+        var len = carGoodsList[index].priceList.length;
         var tempIndex = 0;
         var parentNode = $("#cargoodslist #" + ("cart_" + index));
-        for(var i = 0 ; i < count ;i ++)
+        for(var i = 0 ; i < len ;i ++)
         {
             parentNode.find(".cartLadder" +i).attr("class","col-xs-4 cartLadder" +i);
             $("#ladderpriceid").find("#ladderpriceid_" + i).attr("class","col-xs-4 Ladder"+(i+1));
@@ -412,7 +478,24 @@ function onCartClick(target)
         }
         parentNode.find(".cartLadder" +tempIndex).attr("class","col-xs-4 cartLadderChose");
     }
-    getChooseList();
+    $("#cargoodslist #" + ("cart_" + index)).find(".total").text("小计:" + (carGoodsList[index].count * (100 * carGoodsList[index].price)) / 100);
+    if(autoflags)
+    {
+        if(($("#c_"+index).get(0).value) == 0)
+        {
+            document.getElementById("check_" + index).checked  = false;
+            carGoodsList[index].choose = false;
+            deleteGoodsToCart(id);
+        }else{
+            if(Number(($("#c_"+index).get(0).value)) > 0)
+            {
+                document.getElementById("check_" + index).checked  = true;
+                addGoodsToCart(id,($("#c_"+index).get(0).value));
+                carGoodsList[index].choose = true;
+            }
+        }
+    }
+
 }
 //添加商品到购物车
 function addGoodsToCart(goodsID,count)
@@ -453,21 +536,13 @@ function addCartToFavClicked(target)
 
         addItemToCollect(carGoodsList[index].goodsId,function(data){
             carGoodsList[index].isCollection = true;
+            $("#cargoodslist #cart_" + index).find(".addfav").find(" > i").attr("class","yicall-icon icon-cancel-circle orange");
         })
-        /*data = "goodsIds=" + carGoodsList[index].goodsId;
-         getDataByURL(delCollectionByGoodsIds, function(dataJson){
-         //$("#cargoodslist #" + i).find(".addfav").text("收藏");
-         carGoodsList[index].isCollection = false;
-         }, data);*/
     }else{
         delItemToCollect(carGoodsList[index].goodsId,function(data){
             carGoodsList[index].isCollection = false;
+            $("#cargoodslist #cart_" + index).find(".addfav").find(" > i").attr("class","yicall-icon icon-cancel-circle");
         })
-        /*data = "id=" + carGoodsList[index].goodsId;
-         getDataByURL(addCollectionUrl, function(dataJson){
-         // $("#cargoodslist #" + i).find(".addfav").text("已收藏");
-         carGoodsList[index].isCollection = true;
-         }, data);*/
     }
 
 }
@@ -475,8 +550,11 @@ function delItemFromCarClicked(target)
 {
     var targetID = target.getAttribute("id");
     var index = targetID.substr(targetID.indexOf("_") + 1);
+    document.getElementById("check_" + index).checked  = false;
+    carGoodsList[index].choose = false;
     deleteGoodsToCart(carGoodsList[index].goodsId);
     $("#" + targetID).parent().remove();
+    getChooseList();
 }
 
 function onGetGoodsInfoByAreaAddressId(dataJson)
@@ -520,6 +598,8 @@ function getIndexByID(id)
 
 function oncountChange(target)
 {
+    var targetID = String(target.id);
+    var index = targetID.substr(targetID.indexOf("_") + 1);
     var count = Number(target.value);
     var min = Number(target.min);
     var max = Number(target.max);
@@ -531,4 +611,40 @@ function oncountChange(target)
     {
         target.value  = min;
     }
+
+    if((Number(target.value) > 0))
+    {
+        document.getElementById("check_" + index).checked  = true;
+        addGoodsToCart(carGoodsList[index].goodsId,target.value);
+        carGoodsList[index].choose = true;
+    }else{
+        if(carGoodsList[index].choose)
+        {
+            deleteGoodsToCart(carGoodsList[index].goodsId);
+        }
+        document.getElementById("check_" + index).checked  = false;
+        carGoodsList[index].choose = false;
+    }
+    if(carGoodsList[index].priceList && carGoodsList[index].priceList.length > 1)
+    {
+        var count = carGoodsList[index].priceList.length;
+        var tempIndex = 0;
+        var parentNode = $("#cargoodslist #" + ("cart_" + index));
+        for(var i = 0 ; i < count ;i ++)
+        {
+            parentNode.find(".cartLadder" +i).attr("class","col-xs-4 cartLadder" +i);
+            $("#ladderpriceid").find("#ladderpriceid_" + i).attr("class","col-xs-4 Ladder"+(i+1));
+            if(target.value > carGoodsList[index].priceList[i].minCount)
+            {
+                tempIndex = i;
+            }
+        }
+        parentNode.find(".cartLadder" +tempIndex).attr("class","col-xs-4 cartLadderChose");
+    }
+    getChooseList();
+}
+
+function onPointsCheckbox(target)
+{
+    $("#pointsdes").toggle();
 }

@@ -34,7 +34,7 @@
 
         setSession(charVec.bSearchFocusSe, true);
         // 版本检测
-        if( ! isWeixin){
+        if( ! isWeixin && !$.os.ie && !$.os.opera){
             var bIgnoreUpdata = getLocal(charVec.bIgnoreUpdataLo)==="true" || false;  // 是否忽略更新
             var lastestVersion = "0.0.5";
             var subVersion = getNumFromChar(lastestVersion) - getNumFromChar(versionYC);
@@ -76,15 +76,9 @@
         });*/
 
         // 自动登陆
-        if(debug)
-        {
-            var phone = testPhone;
-            var password = testPasswrod;
-        }
+        setLocal(charVec.openIDLo, "obhaAt0A3xAF6WoY9oJwWDBDLUAY");
         var openID = getLocal(charVec.openIDLo);
-        if(phone != "" && password != ""){
-            loginClicked(phone, password);
-        }else if(openID != ""){
+        if(openID != ""){
             loginClicked();
         }
 

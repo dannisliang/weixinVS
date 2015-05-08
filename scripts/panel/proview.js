@@ -1,20 +1,31 @@
 ﻿var addCount = 0;
 var initProview = false;
 var sameNameItem;
-var currentProviewID ="411911104eab42c9941bf729bb888bef";
+function setcurrentProviewID(id)
+{
+    setLocal("currentProviewID",id);
+}
 $(document).on("panelbeforeload", '#proviewPanel', function (e)
 {
-    if( document.getElementById("proviewScroll"))
-        document.getElementById("proviewScroll").style.visibility = "hidden";
-    $("#productpicdes").hide();
-    $("#exampleInputAmount").attr("disabled", "disabled");
+    initPanelbeforeload();
     if(getSession(charVec.goodHeadTittleSe) != ""){
         $("#headProview h1").text(getSession(charVec.goodHeadTittleSe));
     }else{
         $("#headProview h1").text("商品详情");
     }
 });
+function initPanelbeforeload()
+{
+    if( document.getElementById("proviewScroll"))
+        document.getElementById("proviewScroll").style.visibility = "hidden";
+    $("#productpicdes").hide();
+    $("#exampleInputAmount").attr("disabled", "disabled");
+}
 $(document).on("panelload", '#proviewPanel', function (e)
+{
+    initPanelload();
+});
+function initPanelload()
 {
     if (!initProview)
     {
@@ -28,11 +39,11 @@ $(document).on("panelload", '#proviewPanel', function (e)
         document.getElementById("proviewScroll").style.visibility = "visible";
         TouchSlide({ slideCell: "#proviewScroll", titCell: ".hd ul", mainCell: ".bd ul", effect: "left", autoPage: true, autoPlay: true });
     }
-    if(currentProviewID)
+    if(getLocal("currentProviewID"))
     {
-        getProductInfo(currentProviewID);
+        getProductInfo(getLocal("currentProviewID"));
     }
-});
+}
 /**
  * fffeg
  * @param index
@@ -63,6 +74,7 @@ function getProviewCount(count)
             if(addCount > tempGoodData.priceList[i].minCount)
             {
                 tempIndex = i;
+                currentGoodsPrice = tempGoodData.priceList[tempIndex].price;
             }
         }
         $("#ladderpriceid").find("#ladderpriceid_" + tempIndex).attr("class","col-xs-4 LadderChose");
@@ -168,10 +180,8 @@ function onProviewClick(target)
         default:
             break;
     }
-    if(addCount > 0)
-        setCountByID(currentInfoID,addCount);
-    else
-        deleteGoodsToCart(currentInfoID);
+
+    setCountByID(currentInfoID,addCount);
     if(tempGoodData  && tempGoodData.priceList &&　　tempGoodData.priceList.length > 1)
     {
         var count = tempGoodData.priceList.length;
@@ -182,6 +192,7 @@ function onProviewClick(target)
             if(addCount > tempGoodData.priceList[i].minCount)
             {
                 tempIndex = i;
+                currentGoodsPrice = tempGoodData.priceList[tempIndex].price;
             }
         }
         $("#ladderpriceid").find("#ladderpriceid_" + tempIndex).attr("class","col-xs-4 LadderChose");
@@ -198,9 +209,10 @@ function onGetVarietyGoods(dataJson)
     {
         sameNameList[i] = goodsSNDataProcess(dataJson[i]);
         var tempItem = sameNameItem.clone();
-        tempItem.attr("id", i);
+        tempItem.attr("id", "same_" + sameNameList[i].id);
+        tempItem.attr("onclick", "onSameTtemClick(sameNameList["+i +"].id)");
         $("#clearfixlist").append(tempItem);
-        var parentNode = $("#clearfixlist #" + i);
+        var parentNode = $("#clearfixlist #" + "same_" + sameNameList[i].id);
         parentNode.find("> img").attr("src",getImageUrl + sameNameList[i].imgArr[0] + "?thumb=200x200");
         parentNode.find(".title").text(sameNameList[i].title);
         parentNode.find(".price").text(sameNameList[i].price);
@@ -226,4 +238,10 @@ function onClickProviewCollect()
             tempGoodData.isCollect = true;
         })
     }
+}
+function onSameTtemClick(id)
+{
+    setcurrentProviewID(id);
+    initPanelbeforeload();
+    initPanelload();
 }

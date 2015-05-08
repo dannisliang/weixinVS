@@ -9,4 +9,3 @@ var myURL = "http://test.narwell.cn:89";
 //var myURL = "http://localhost:8888";
 var testPhone = "18774849056";
 var testPasswrod = "123456";
-//setLocal(charVec.openIDLo, "obhaAt0A3xAF6WoY9oJwWDBDLUAY");
